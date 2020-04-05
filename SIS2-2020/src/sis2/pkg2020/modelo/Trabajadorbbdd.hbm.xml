@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2020 15:22:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="sis2.pkg2020.modelo.Trabajadorbbdd" table="trabajadorbbdd" catalog="importarddbb" optimistic-lock="version">
+        <id name="idTrabajador" type="java.lang.Integer">
+            <column name="idTrabajador" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="categorias" class="sis2.pkg2020.modelo.Categorias" fetch="select">
+            <column name="IdCategoria" not-null="true" />
+        </many-to-one>
+        <many-to-one name="empresas" class="sis2.pkg2020.modelo.Empresas" fetch="select">
+            <column name="IdEmpresa" not-null="true" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="Nombre" length="50" not-null="true" />
+        </property>
+        <property name="apellido1" type="string">
+            <column name="Apellido1" length="75" not-null="true" />
+        </property>
+        <property name="apellido2" type="string">
+            <column name="Apellido2" length="75" />
+        </property>
+        <property name="nifnie" type="string">
+            <column name="NIFNIE" length="10" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="75" />
+        </property>
+        <property name="fechaAlta" type="date">
+            <column name="FechaAlta" length="10" />
+        </property>
+        <property name="codigoCuenta" type="string">
+            <column name="CodigoCuenta" length="20" />
+        </property>
+        <property name="iban" type="string">
+            <column name="IBAN" length="24" />
+        </property>
+        <set name="nominas" table="nomina" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdTrabajador" not-null="true" />
+            </key>
+            <one-to-many class="sis2.pkg2020.modelo.Nomina" />
+        </set>
+    </class>
+</hibernate-mapping>

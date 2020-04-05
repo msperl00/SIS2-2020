@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2020 15:22:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="sis2.pkg2020.modelo.Empresas" table="empresas" catalog="importarddbb" optimistic-lock="version">
+        <id name="idEmpresa" type="int">
+            <column name="idEmpresa" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="Nombre" length="100" />
+        </property>
+        <property name="cif" type="string">
+            <column name="CIF" length="10" />
+        </property>
+        <set name="trabajadorbbdds" table="trabajadorbbdd" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="IdEmpresa" not-null="true" />
+            </key>
+            <one-to-many class="sis2.pkg2020.modelo.Trabajadorbbdd" />
+        </set>
+    </class>
+</hibernate-mapping>

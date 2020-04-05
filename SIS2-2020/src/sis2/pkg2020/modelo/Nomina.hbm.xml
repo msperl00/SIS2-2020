@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 05-abr-2020 15:22:35 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="sis2.pkg2020.modelo.Nomina" table="nomina" catalog="importarddbb" optimistic-lock="version">
+        <id name="idNomina" type="java.lang.Integer">
+            <column name="IdNomina" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="trabajadorbbdd" class="sis2.pkg2020.modelo.Trabajadorbbdd" fetch="select">
+            <column name="IdTrabajador" not-null="true" />
+        </many-to-one>
+        <property name="mes" type="int">
+            <column name="Mes" not-null="true" />
+        </property>
+        <property name="anio" type="int">
+            <column name="Anio" not-null="true" />
+        </property>
+        <property name="numeroTrienios" type="int">
+            <column name="NumeroTrienios" not-null="true" />
+        </property>
+        <property name="importeTrienios" type="java.lang.Double">
+            <column name="ImporteTrienios" precision="22" scale="0" />
+        </property>
+        <property name="importeSalarioMes" type="java.lang.Double">
+            <column name="importeSalarioMes" precision="22" scale="0" />
+        </property>
+        <property name="importeComplementoMes" type="java.lang.Double">
+            <column name="importeComplementoMes" precision="22" scale="0" />
+        </property>
+        <property name="valorProrrateo" type="java.lang.Double">
+            <column name="ValorProrrateo" precision="22" scale="0" />
+        </property>
+        <property name="brutoAnual" type="java.lang.Double">
+            <column name="brutoAnual" precision="22" scale="0" />
+        </property>
+        <property name="irpf" type="java.lang.Double">
+            <column name="IRPF" precision="22" scale="0" />
+        </property>
+        <property name="importeIrpf" type="java.lang.Double">
+            <column name="ImporteIRPF" precision="22" scale="0" />
+        </property>
+        <property name="baseEmpresario" type="java.lang.Double">
+            <column name="BaseEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="seguridadSocialEmpresario" type="java.lang.Double">
+            <column name="SeguridadSocialEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="importeSeguridadSocialEmpresario" type="java.lang.Double">
+            <column name="ImporteSeguridadSocialEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="desempleoEmpresario" type="java.lang.Double">
+            <column name="DesempleoEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="importeDesempleoEmpresario" type="java.lang.Double">
+            <column name="ImporteDesempleoEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="formacionEmpresario" type="java.lang.Double">
+            <column name="FormacionEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="importeFormacionEmpresario" type="java.lang.Double">
+            <column name="ImporteFormacionEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="accidentesTrabajoEmpresario" type="java.lang.Double">
+            <column name="AccidentesTrabajoEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="importeAccidentesTrabajoEmpresario" type="java.lang.Double">
+            <column name="ImporteAccidentesTrabajoEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="fogasaempresario" type="java.lang.Double">
+            <column name="FOGASAEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="importeFogasaempresario" type="java.lang.Double">
+            <column name="ImporteFOGASAEmpresario" precision="22" scale="0" />
+        </property>
+        <property name="seguridadSocialTrabajador" type="java.lang.Double">
+            <column name="SeguridadSocialTrabajador" precision="22" scale="0" />
+        </property>
+        <property name="importeSeguridadSocialTrabajador" type="java.lang.Double">
+            <column name="ImporteSeguridadSocialTrabajador" precision="22" scale="0" />
+        </property>
+        <property name="desempleoTrabajador" type="java.lang.Double">
+            <column name="DesempleoTrabajador" precision="22" scale="0" />
+        </property>
+        <property name="importeDesempleoTrabajador" type="java.lang.Double">
+            <column name="ImporteDesempleoTrabajador" precision="22" scale="0" />
+        </property>
+        <property name="formacionTrabajador" type="java.lang.Double">
+            <column name="FormacionTrabajador" precision="22" scale="0" />
+        </property>
+        <property name="importeFormacionTrabajador" type="java.lang.Double">
+            <column name="ImporteFormacionTrabajador" precision="22" scale="0" />
+        </property>
+        <property name="brutoNomina" type="java.lang.Double">
+            <column name="BrutoNomina" precision="22" scale="0" />
+        </property>
+        <property name="liquidoNomina" type="java.lang.Double">
+            <column name="LiquidoNomina" precision="22" scale="0" />
+        </property>
+        <property name="costeTotalEmpresario" type="java.lang.Double">
+            <column name="CosteTotalEmpresario" precision="22" scale="0" />
+        </property>
+    </class>
+</hibernate-mapping>
