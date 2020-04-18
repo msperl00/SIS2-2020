@@ -311,6 +311,11 @@ public class Nomina  implements java.io.Serializable {
         this.costeTotalEmpresario = costeTotalEmpresario;
     }
 
+    @Override
+    public String toString() {
+        return "Nomina{" + "idNomina=" + idNomina + ", trabajadorbbdd=" + trabajadorbbdd.toString() + ", mes=" + mes + ", anio=" + anio + ", numeroTrienios=" + numeroTrienios + ", importeTrienios=" + importeTrienios + ", importeSalarioMes=" + importeSalarioMes + ", importeComplementoMes=" + importeComplementoMes + ", valorProrrateo=" + valorProrrateo + ", brutoAnual=" + brutoAnual + ", irpf=" + irpf + ", importeIrpf=" + importeIrpf + ", baseEmpresario=" + baseEmpresario + ", seguridadSocialEmpresario=" + seguridadSocialEmpresario + ", importeSeguridadSocialEmpresario=" + importeSeguridadSocialEmpresario + ", desempleoEmpresario=" + desempleoEmpresario + ", importeDesempleoEmpresario=" + importeDesempleoEmpresario + ", formacionEmpresario=" + formacionEmpresario + ", importeFormacionEmpresario=" + importeFormacionEmpresario + ", accidentesTrabajoEmpresario=" + accidentesTrabajoEmpresario + ", importeAccidentesTrabajoEmpresario=" + importeAccidentesTrabajoEmpresario + ", fogasaempresario=" + fogasaempresario + ", importeFogasaempresario=" + importeFogasaempresario + ", seguridadSocialTrabajador=" + seguridadSocialTrabajador + ", importeSeguridadSocialTrabajador=" + importeSeguridadSocialTrabajador + ", desempleoTrabajador=" + desempleoTrabajador + ", importeDesempleoTrabajador=" + importeDesempleoTrabajador + ", formacionTrabajador=" + formacionTrabajador + ", importeFormacionTrabajador=" + importeFormacionTrabajador + ", brutoNomina=" + brutoNomina + ", liquidoNomina=" + liquidoNomina + ", costeTotalEmpresario=" + costeTotalEmpresario + '}';
+    }
+
 
 
 

@@ -3,19 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sis2.pkg2020;
+package sis2.pkg2020.controlador;
+import sis2.pkg2020.modelo.*;
 
 /**
  *
  * @author Marco Speranza López
  */
-public class SIS22020 {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+public class Main {
+    
+    public static void main (String [ ] args) {
+    
+           Controlador rc = new Controlador();
+            
     }
+
+    
     
 }

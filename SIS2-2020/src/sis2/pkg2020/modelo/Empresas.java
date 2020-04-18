@@ -59,6 +59,11 @@ public class Empresas  implements java.io.Serializable {
         this.trabajadorbbdds = trabajadorbbdds;
     }
 
+    @Override
+    public String toString() {
+        return "Empresas{" + "idEmpresa=" + idEmpresa + ", nombre=" + nombre + ", cif=" + cif + ", trabajadorbbdds=" + trabajadorbbdds + '}';
+    }
+
 
 
 

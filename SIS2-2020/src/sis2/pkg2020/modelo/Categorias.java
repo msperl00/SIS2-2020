@@ -71,6 +71,11 @@ public class Categorias  implements java.io.Serializable {
         this.trabajadorbbdds = trabajadorbbdds;
     }
 
+    @Override
+    public String toString() {
+        return "idCategoria=" + idCategoria + ", nombreCategoria=" + nombreCategoria + ", salarioBaseCategoria=" + salarioBaseCategoria + ", complementoCategoria=" + complementoCategoria;
+    }
+
 
 
 

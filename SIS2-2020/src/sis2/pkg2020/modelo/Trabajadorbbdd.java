@@ -4,6 +4,7 @@ package sis2.pkg2020.modelo;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -134,6 +135,91 @@ public class Trabajadorbbdd  implements java.io.Serializable {
     public void setNominas(Set nominas) {
         this.nominas = nominas;
     }
+
+     @Override
+    public String toString() {
+        return "" +
+                "idTrabajador=" + idTrabajador.toString() +
+                ", nombre='" + nombre + '\'' +
+                ", apellido1='" + apellido1 + '\'' +
+                ", apellido2='" + apellido2 + '\'' +
+                ", nifnie='" + nifnie + '\'' +
+                ", email='" + email + '\'' +
+                ", fechaAlta=" + fechaAlta.toString() +
+                ", codigoCuenta='" + codigoCuenta + '\'' +
+                ", iban='" + iban.toString() + '\'' +
+                ", Empresa=" + empresas.getNombre() +
+                ", Categoria=" + categorias.getNombreCategoria() 
+                ;
+    }
+    public String toStringHQL() {
+        return "" +
+               
+                "Nombre='" + nombre + '\'' +
+                ", apellidos" +apellido1 +" "+ apellido2 + '\'' +
+                ", nifnie='" + nifnie + '\'' +
+                ", Empresa=" + empresas.getNombre() +
+                ", Categoria=" + categorias.getNombreCategoria() 
+                ;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Trabajadorbbdd other = (Trabajadorbbdd) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.apellido1, other.apellido1)) {
+            return false;
+        }
+        if (!Objects.equals(this.apellido2, other.apellido2)) {
+            return false;
+        }
+        if (!Objects.equals(this.nifnie, other.nifnie)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.codigoCuenta, other.codigoCuenta)) {
+            return false;
+        }
+        if (!Objects.equals(this.iban, other.iban)) {
+            return false;
+        }
+        if (!Objects.equals(this.idTrabajador, other.idTrabajador)) {
+            return false;
+        }
+        if (!Objects.equals(this.categorias, other.categorias)) {
+            return false;
+        }
+        if (!Objects.equals(this.empresas, other.empresas)) {
+            return false;
+        }
+        if (!Objects.equals(this.fechaAlta, other.fechaAlta)) {
+            return false;
+        }
+        if (!Objects.equals(this.nominas, other.nominas)) {
+            return false;
+        }
+        return true;
+    }
+    
 
 
 

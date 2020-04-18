@@ -41,14 +41,19 @@ Contributor(s):
 -->
 <hibernate-configuration>
   <session-factory>
+    <property name="show_sql">true</property>
+    <property name="format_sql">true</property>
+    <property name="use_sql_comments">true</property>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/importarddbb?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/importarddbb</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">0000</property>
+  
     <mapping resource="sis2/pkg2020/modelo/Nomina.hbm.xml"/>
     <mapping resource="sis2/pkg2020/modelo/Empresas.hbm.xml"/>
     <mapping resource="sis2/pkg2020/modelo/Trabajadorbbdd.hbm.xml"/>
     <mapping resource="sis2/pkg2020/modelo/Categorias.hbm.xml"/>
+ 
   </session-factory>
 </hibernate-configuration>
