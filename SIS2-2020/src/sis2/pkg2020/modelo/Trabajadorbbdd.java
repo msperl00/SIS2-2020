@@ -51,6 +51,7 @@ public class Trabajadorbbdd  implements java.io.Serializable {
        this.nominas = nominas;
     }
    
+    
     public Integer getIdTrabajador() {
         return this.idTrabajador;
     }
@@ -135,6 +136,8 @@ public class Trabajadorbbdd  implements java.io.Serializable {
     public void setNominas(Set nominas) {
         this.nominas = nominas;
     }
+    
+   
 
      @Override
     public String toString() {

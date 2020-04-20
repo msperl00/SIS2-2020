@@ -23,11 +23,17 @@ public class TrabajadorDAO {
     }
     
     
-    
+    /**
+     * Hacemos la consulta a base de datos con hql, y devolvemos el trabajador con el correponiente NIF elegido
+     * @param session
+     * @param trabajador
+     * @param nif
+     * @return trabajador 
+     */
     public Trabajadorbbdd recogidaTrabajadorNIF(Session session, Trabajadorbbdd trabajador,String nif) {
                 try{
                 //09741138V
-                    Query query = session.createQuery("select t from Trabajadorbbdd t where nifnie=:nif");
+                    Query query = session.createQuery("from Trabajadorbbdd t where nifnie=:nif");
                     query.setParameter("nif", nif);
                     trabajador = (Trabajadorbbdd) query.uniqueResult();
                     System.out.println(trabajador.toStringHQL());
@@ -35,7 +41,7 @@ public class TrabajadorDAO {
                 
                 }catch(QuerySyntaxException e){
                     System.out.println("La consulta de trabajador es erronea, intentelo de nuevo!");
-                } 
+                }
                 
                 return trabajador;
     }
@@ -49,6 +55,21 @@ public class TrabajadorDAO {
     public List listarTrabajadores(){
         
         return HibernateUtil.abrirConexionHibernate().createCriteria(Trabajadorbbdd.class).list();
+    }
+
+    /**
+     * Eliminaremos el trabajador y la nomina correspodiente a la empresa objeto recogido por argumentos en el trabajdor correspodiente.
+     * @param trabajador 
+     */
+    public void eliminarTrabajador(Session session,Trabajadorbbdd trabajador) {
+        try{
+            
+            session.delete(trabajador);
+            session.flush();
+        
+        }catch(QuerySyntaxException e){
+            System.err.println("Error en la consulta DELETE de trabajador.");
+        }
     }
 
      

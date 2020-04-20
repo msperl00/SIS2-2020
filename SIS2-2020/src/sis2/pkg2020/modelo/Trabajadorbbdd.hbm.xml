@@ -38,7 +38,7 @@
         <property name="iban" type="string">
             <column name="IBAN" length="24" />
         </property>
-        <set name="nominas" table="nomina" inverse="true" lazy="true" fetch="select">
+        <set name="nominas" table="nomina"  inverse="true" cascade="all-delete-orphan" lazy="true" fetch="select">
             <key>
                 <column name="IdTrabajador" not-null="true" />
             </key>

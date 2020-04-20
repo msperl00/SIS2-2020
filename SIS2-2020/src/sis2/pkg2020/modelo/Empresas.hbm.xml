@@ -14,7 +14,7 @@
         <property name="cif" type="string">
             <column name="CIF" length="10" />
         </property>
-        <set name="trabajadorbbdds" table="trabajadorbbdd" inverse="true" lazy="true" fetch="select">
+        <set name="trabajadorbbdds" table="trabajadorbbdd" cascade="all" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="IdEmpresa" not-null="true" />
             </key>

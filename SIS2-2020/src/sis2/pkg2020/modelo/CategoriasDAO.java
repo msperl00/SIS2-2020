@@ -8,7 +8,9 @@ package sis2.pkg2020.modelo;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Query;
+import org.hibernate.QueryException;
 import org.hibernate.Session;
+import org.hibernate.hql.internal.ast.QuerySyntaxException;
 
 /**
  *
@@ -31,7 +33,8 @@ public class CategoriasDAO {
  * @param subida 
  */
     public void subidaSalarioBase(Session session, Categorias categoria, int subida) {
-             Query query= session.createQuery("select o from Categorias o where o not in (select o from Categorias o where o.nombreCategoria='"+categoria.getNombreCategoria()+"') ");
+            try{
+             Query query= session.createQuery("from Categorias o where o not in (select o from Categorias o where o.nombreCategoria='"+categoria.getNombreCategoria()+"') ");
               List<Categorias> categorias = query.list();
               for(Categorias c: categorias){
                   
@@ -40,7 +43,10 @@ public class CategoriasDAO {
                   session.update(c);
                   System.out.println(c.toString());
               }
-    }
+            }catch(QuerySyntaxException e){
+                System.err.println("Error en la consulta de Categorias");
+            }
+    }        
    
   
 }

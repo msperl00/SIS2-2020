@@ -6,6 +6,7 @@
 package sis2.pkg2020.controlador;
 import java.util.List;
 import java.util.Scanner;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -13,6 +14,8 @@ import org.hibernate.Transaction;
 import org.hibernate.hql.internal.ast.QuerySyntaxException;
 import sis2.pkg2020.modelo.Categorias;
 import sis2.pkg2020.modelo.CategoriasDAO;
+import sis2.pkg2020.modelo.Empresas;
+import sis2.pkg2020.modelo.EmpresasDAO;
 import sis2.pkg2020.modelo.TrabajadorDAO;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
 
@@ -48,9 +51,11 @@ public class Controlador {
             System.out.println("Deme el NIF correspodiente al trabajador que quiere buscar.");
             String nif = teclado.nextLine();
             System.out.println(nif);
-                    
-            Session session = HibernateUtil.abrirConexionHibernate();
-            Transaction t = HibernateUtil.abrirConexionBbdd(session);
+                   
+               Session session = HibernateUtil.abrirConexionHibernate();
+               Transaction t = HibernateUtil.abrirConexionBbdd(session);
+            try{
+         
            
             //1. Recogida del trabajador.
               Trabajadorbbdd trabajador = new Trabajadorbbdd();
@@ -62,10 +67,25 @@ public class Controlador {
             Categorias categoria = trabajador.getCategorias();
             CategoriasDAO categoriaDAO = new CategoriasDAO();
             categoriaDAO.subidaSalarioBase(session,categoria,200);
-           
+            
+            
+            //3.Eliminar todas las nominas y trabajadores de dicha empresa.
+            Empresas empresa = trabajador.getEmpresas();
+           EmpresasDAO empresaDAO = new EmpresasDAO();
+            empresaDAO.eliminarEmpresa(session,empresa);
+            
+            
+            //Cerramos la conexion con hibernate y con la base de datos.
+             HibernateUtil.cerrarConexiones(t, session);
+             
+            }catch( HibernateException e){
+                t.rollback();
+                System.err.println("Error en Hibernate -> controlador.");
+              
+            }
 
         
-           HibernateUtil.cerrarConexiones(t, session);
+          
            
 
     }
