@@ -54,115 +54,39 @@ public class ExcelCrud {
 
         InputStream excelStream = null;
         try {
-            excelStream = new FileInputStream(excelFile);
 
+            excelStream = new FileInputStream(excelFile);
             Workbook workbook = new XSSFWorkbook(excelStream);
             //Cogemos la primera hoja del excel.
             Sheet sheet = workbook.getSheetAt(0);
             Iterator<Row> rowIterator = sheet.iterator();
             Trabajadorbbdd trabajador = null;
-            HashMap<String, String> empresas = new HashMap<String, String>();
+            Empresas empresa = null;
+            Categorias categoria = null;
+            EmpresasDAO empresasDAO = new EmpresasDAO();
+            CategoriasDAO categoriasDAO = new CategoriasDAO();
 
             //Recorremos por filas el excel
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
+                int idempresas = 0;
+                System.out.println("Numero de fila: " + row.getRowNum());
+                //Descartamos la fila 0, ya que es en la que se nos presenta el titulo y las filas vacias.
+                if (row.getRowNum() != 0 && !isRowEmpty(row)) {
 
-                //Subdividimos por celdas los valores de cada trabajador.
-                if (row.getRowNum() != 0) {
+                    trabajador = new Trabajadorbbdd();
+                    empresa = new Empresas();
+                    categoria = new Categorias();
 
-                    for (int i = 0; i < row.getLastCellNum(); i++) {
-                        Cell cell = row.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-                        trabajador = new Trabajadorbbdd();
-                        
-                        switch (i) {
-                            //CIF EMPRESA
-                            case 1:
-                                trabajador.setCifEmpresa(cell.getStringCellValue()); 
-                                break;
-                            //NOMBRE EMPRESA
-                            case 2:
-                                   trabajdor.setCif
-                                break;
-                            //CATEGORIA
-                            case 3:
-
-                                break;
-                            //FECHA ALTA EMPRESA
-                            case 4:
-                                trabajador.setFechaAlta(new Date(cell.getDateCellValue().getTime()));
-                                break;
-                            //NOMBRE
-                            case 5:
-                                trabajador.setNombre(cell.getStringCellValue());
-                                break;
-
-                            //APELLIDO 1
-                            case 6:
-                                trabajador.setApellido1(cell.getStringCellValue());
-
-                                break;
-                            //APELLIDO 2
-                            case 7:
-                                trabajador.setApellido2(cell.getStringCellValue());
-
-                                break;
-                            //NIF/NIE
-                            case 8:
-                                trabajador.setNifnie(cell.getStringCellValue());
-                                break;
-                            //EMAIL
-                            case 9:
-                                trabajador.setEmail(cell.getStringCellValue()); 
-                                break;
-                            //CODIGO CUENTA
-                            case 10:
-                                trabajador.setCodigoCuenta(cell.getStringCellValue());
-                                break;
-                            //PAIS ORIGEN CUENTA BANCARIA
-                            case 11:
-                                
-                                break;
-                            //IBAN
-                            case 12:
-
-                                break;
-                            //PRORRATA
-                            case 13:
-
-                                break;
-                            //EXTRA
-                            case 14:
-
-                                break;
-                        }
-
-                        /**
-                         * switch(cell.getCellType()){ case BLANK:
-                         * System.out.println("Celda en blanco"); break; case
-                         * STRING:
-                         * System.out.println(cell.getStringCellValue());
-                         *
-                         * break;
-                         *
-                         * case NUMERIC: DataFormatter dataFormatter = new
-                         * DataFormatter(); String cellValue =
-                         * dataFormatter.formatCellValue(cell);
-                         * System.out.println(cellValue);
-                         *
-                         * break; case FORMULA: System.out.println("valor
-                         * formula"); System.out.println(i); case BOOLEAN:
-                         * System.out.println("valor boolean");
-                         * System.out.println(i);
-                         *
-                         *
-                         * }
-                         */
-                    }
-
-                    //Descartamos la fila 0, ya que es en la que se nos presenta el titulo
+                    TrabajadorDAO.recogidaTrabajadorExel(row, trabajador, empresasDAO, categoriasDAO);
+                    System.out.println(trabajador.toString());
+                    trabajadores.add(trabajador);
                 }
+
             }
 
+            //  empresasDAO.listarEmpresasExcel();
+            //   categoriasDAO.listarCategoriasExcel();
         } catch (FileNotFoundException e) {
             System.out.println("Fichero no encontrado");
             e.printStackTrace();
@@ -172,7 +96,96 @@ public class ExcelCrud {
         }
 
         System.out.println("Fichero leido");
-        return null;
+        return trabajadores;
     }
 
+    /**
+     * Comporbamos si la fila que estamos recogiendo esta vacia o no
+     *
+     * @param row
+     * @return
+     */
+    private boolean isRowEmpty(Row row) {
+        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+            Cell cell = row.getCell(c);
+            if (cell != null && cell.getCellType() != CellType.BLANK) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Comprueba si los vslores NIE/NIF son correctos, y sino los actualiza.
+     *
+     * @param trabajadores
+     */
+    void comprobarNIF_NIE(ArrayList<Trabajadorbbdd> trabajadores) {
+
+        for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
+            Trabajadorbbdd trabajador = iterator.next();
+
+            boolean correcto = calculoNIF_NIE(trabajador.getNifnie());
+            System.out.println(correcto);
+
+        }
+    }
+
+    private boolean calculoNIF_NIE(String nifnie) {
+
+        if(nifnie == ""){
+            System.out.println("Vacio NIFNIE");
+            return false;
+        }
+        String correcto = "";
+        char letra = nifnie.charAt(0);
+        String caracteresValidos = "TRWAGMYFPDXBNJZSQVHLCKE";
+      
+        if (Character.isLetter(letra)) {
+            //Si es una letra es el NIE
+            switch (nifnie.charAt(0)) {
+
+                case 'X':
+
+                    correcto = "0" + nifnie.substring(1);
+                    break;
+                case 'Y':
+
+                    correcto = "1" + nifnie.substring(1);
+
+                    break;
+                case 'Z':
+
+                    correcto = "2" + nifnie.substring(1);
+
+                    break;
+                default:
+
+                    System.out.println("Letra invalida");
+                    System.out.println("sis2.pkg2020.controlador.ExcelCrud.calculoNIF_NIE()");
+                    
+
+            }
+  
+        }else{
+                   correcto = nifnie.substring(0,nifnie.length() - 1);
+
+        }
+              correcto = correcto.substring(0,correcto.length() - 1);
+
+
+                int numero = Integer.parseInt(correcto);
+                int resto = numero % 23;
+                char letracorrecta = caracteresValidos.charAt(resto);
+
+                System.out.println(letracorrecta + " vs "+ nifnie.charAt(nifnie.length()-1));
+                if(letracorrecta == nifnie.charAt(nifnie.length()-1))
+                    return true;
+
+                //TODO 1ºfalsos 2º duplicados
+                
+                return false;
+    }
+
+ 
 }

@@ -12,7 +12,7 @@ import sis2.pkg2020.modelo.*;
  */
 public class Main {
     
-    public static void main (String [ ] args) {
+    public static void main (String [ ] args) throws Exception {
     
            Controlador controladorPractica = new Controlador();
           //Correspodiente a la práctica 1 HQL
@@ -26,7 +26,7 @@ public class Main {
         controladorPractica.pruebaHQL();
     }
 
-    private static void practicaNIF(Controlador controladorPractica) {
+    private static void practicaNIF(Controlador controladorPractica) throws Exception {
         controladorPractica.pruebaNIF();
     }
 
