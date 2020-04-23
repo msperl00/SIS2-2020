@@ -25,6 +25,7 @@ public class Trabajadorbbdd  implements java.io.Serializable {
      private String codigoCuenta;
      private String iban;
      private Set nominas = new HashSet(0);
+     
 
     public Trabajadorbbdd() {
     }

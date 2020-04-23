@@ -12,12 +12,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.hql.internal.ast.QuerySyntaxException;
-import sis2.pkg2020.modelo.Categorias;
-import sis2.pkg2020.modelo.CategoriasDAO;
-import sis2.pkg2020.modelo.Empresas;
-import sis2.pkg2020.modelo.EmpresasDAO;
-import sis2.pkg2020.modelo.TrabajadorDAO;
-import sis2.pkg2020.modelo.Trabajadorbbdd;
+import sis2.pkg2020.modelo.*;
+import java.io.File;
+import java.util.*;
 
 
 /**
@@ -30,7 +27,7 @@ public class Controlador {
     static Scanner teclado = new Scanner(System.in);
     
     public Controlador(){
-        pruebaHQL();
+       
 
     }
 
@@ -45,7 +42,7 @@ public class Controlador {
      * 2. Incrementar el salario base de todas las categorias, excepto la categoria que no pertenece al trabajador
      * 3. Eliminar todas las nominas y trabajdores que pertenezcan a la misma empresa que el trabajador es introducido.
      */
-    public static void pruebaHQL(){
+    public void pruebaHQL(){
       
             System.out.println("¡Bienvenidos a la practica correspodiente a HQL!\n");
             System.out.println("Deme el NIF correspodiente al trabajador que quiere buscar.");
@@ -88,6 +85,15 @@ public class Controlador {
           
            
 
+    }
+    /**
+     * Vamos a recoger el acceso a la hoja excel
+     */
+    public void pruebaNIF() throws Exception {
+        
+       ExcelCrud excel = new ExcelCrud();
+       File excelFile = new File("resources/SistemasInformacionII.xlsx");
+       ArrayList<Trabajadorbbdd> trabajadores = excel.readExcelFile(excelFile);
     }
     
 }

@@ -14,8 +14,20 @@ public class Main {
     
     public static void main (String [ ] args) {
     
-           Controlador rc = new Controlador();
-            
+           Controlador controladorPractica = new Controlador();
+          //Correspodiente a la práctica 1 HQL
+         // practicaHQL(controladorPractica);
+           
+          //Correspodiente a la práctica 2
+          practicaNIF(controladorPractica);
+    }
+
+    private static void practicaHQL(Controlador controladorPractica) {
+        controladorPractica.pruebaHQL();
+    }
+
+    private static void practicaNIF(Controlador controladorPractica) {
+        controladorPractica.pruebaNIF();
     }
 
     
