@@ -63,44 +63,41 @@ public class ModeloXML {
         erroresblanco.add(trabajador);
     }
     
+    public void addSinDuplicar(Trabajadorbbdd trabajador){
+        listaTrabajadores.add(trabajador);
+    }
+    
     public void listarStrings(){
          System.out.println("Unicos "+listaTrabajadores.toString());
         System.out.println("Errores duplicados " +erroresduplicados.toString());
         System.out.println("Errores blanco " +erroresblanco.toString());
     }
     
-    
-
-    public void addListaSinDuplicados(Trabajadorbbdd trabajador) {
-
-        if (listaTrabajadores.isEmpty()) {
-            
-            listaTrabajadores.add(trabajador);
-            
-        } else {
-                boolean unico = true;
-            for (Trabajadorbbdd trabajadoresunicos : listaTrabajadores) {
-               //     System.out.println(trabajadoresunicos.getNombre()+ " vs "+ trabajador.getNombre());
-
-                if(trabajadoresunicos.equals(trabajador) && unico){
-               //     System.out.println("Iguales");
-                    unico = false;
-                }
-                
-            }
-            //SI no es unico
-            if(!unico){
-                erroresduplicados.add(trabajador);
-            }else{
-                listaTrabajadores.add(trabajador);
-                
-            }
-            
+    /**
+     * Comprueba si el trabajdor pasado es un duplicado.
+     * Si lo es se guarda en la lista de duplicados. y se deuvelve true
+     * Si no lo es, se guarda en la lista de sin duplicar y se devuelve false
+     * @param trabajador
+     * @return 
+     */
+    public boolean isDuplicado(Trabajadorbbdd trabajador){
         
-      
+        if(listaTrabajadores.isEmpty()){
+            addSinDuplicar(trabajador);
+        }else{
+             for (Trabajadorbbdd trabajadoresunicos : listaTrabajadores){
+                 if(trabajadoresunicos.equals(trabajador)){
+                     addDuplicados(trabajador);
+                     return true;
+                 }
+             }
+             addSinDuplicar(trabajador);
         }
-       
+        
+        
+        return false;
     }
+
 
     public void exportarErroresXML() {
         

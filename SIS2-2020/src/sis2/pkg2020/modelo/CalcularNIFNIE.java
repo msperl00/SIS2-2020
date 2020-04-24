@@ -35,9 +35,7 @@ public class CalcularNIFNIE {
     public boolean validar() {
         
         if (!nifnie.equals("")) {
-            
-            modelo.addListaSinDuplicados(trabajador);
-            
+
             if (isNieValido(nifnie)) {
                 return true;
             } else if (isDniValido(nifnie)) {

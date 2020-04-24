@@ -119,7 +119,9 @@ public class ExcelCrud {
                   
                    trabajador.setFilaExcel(numeroFila);
                    trabajador.setIdTrabajador(numeroFila);
-                   
+                   //Comprueba si es un duplicado
+                   modelo.isDuplicado(trabajador);
+                   //Comprueba si es vacio o esta mal 
                    comprobarNIF_NIE(trabajador, modelo);
                     
                 }
@@ -134,7 +136,6 @@ public class ExcelCrud {
             System.out.println("Fallo en el acceso de los valores");
             e.printStackTrace();
         }
-        System.out.println(trabajadores.toString());
         System.out.println("Fichero leido");
        
     }
