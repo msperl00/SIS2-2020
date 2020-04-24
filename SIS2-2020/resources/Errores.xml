@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Trabajadores>
+    <Trabajador Fila="80">
+        <TipoError>blanco</TipoError>
+        <Nombre>Pilar</Nombre>
+        <PrimerApellido>Molina</PrimerApellido>
+        <SegundoApellido>Vara</SegundoApellido>
+        <Categoria>Analista</Categoria>
+        <Empresa>TecnoProyectSL</Empresa>
+    </Trabajador>
+    <Trabajador Fila="85">
+        <TipoError>blanco</TipoError>
+        <Nombre>Paulina</Nombre>
+        <PrimerApellido>Orejas</PrimerApellido>
+        <SegundoApellido>Díez</SegundoApellido>
+        <Categoria>Auxiliar</Categoria>
+        <Empresa>PBlankSA</Empresa>
+    </Trabajador>
+    <Trabajador Fila="3">
+        <TipoError>duplicado</TipoError>
+        <Nombre>Mohamed</Nombre>
+        <PrimerApellido>Ahmed</PrimerApellido>
+        <SegundoApellido>Ahmed</SegundoApellido>
+        <Categoria>Analista</Categoria>
+        <Empresa>TecnoProyectSL</Empresa>
+    </Trabajador>
+    <Trabajador Fila="13">
+        <TipoError>duplicado</TipoError>
+        <Nombre>Alencar</Nombre>
+        <PrimerApellido>Alves</PrimerApellido>
+        <SegundoApellido>Lidiane</SegundoApellido>
+        <Categoria>Programador</Categoria>
+        <Empresa>TecnoProyectSL</Empresa>
+    </Trabajador>
+    <Trabajador Fila="17">
+        <TipoError>duplicado</TipoError>
+        <Nombre>Vittorio</Nombre>
+        <PrimerApellido>Baglione</PrimerApellido>
+        <SegundoApellido>Baglione</SegundoApellido>
+        <Categoria>Cuidador</Categoria>
+        <Empresa>TecnoProyectSL</Empresa>
+    </Trabajador>
+</Trabajadores>

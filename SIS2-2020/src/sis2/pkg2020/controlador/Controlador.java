@@ -96,8 +96,9 @@ public class Controlador {
        ArrayList<Trabajadorbbdd> trabajadores = excel.readExcelFile(excelFile);
        ModeloXML modelo  = new ModeloXML();
        excel.comprobarNIF_NIE(trabajadores, modelo);
-       modelo.listarStrings();
+     
        //TODO CREACION DE XML ERRORES
+       //CORRECCION DEL NIF/NIE
        
        
        

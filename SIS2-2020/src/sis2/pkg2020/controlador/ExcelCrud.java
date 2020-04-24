@@ -84,6 +84,7 @@ public class ExcelCrud {
                     TrabajadorDAO.recogidaTrabajadorExel(row, trabajador, empresasDAO, categoriasDAO);
                   
                    trabajador.setFilaExcel(numeroFila);
+                   trabajador.setIdTrabajador(numeroFila);
                     trabajadores.add(trabajador);
                     
                 }
@@ -134,6 +135,7 @@ public class ExcelCrud {
         System.out.println("Trabajador con numero de fila "+ trabajador.getFilaExcel());
 
              dni = new CalcularNIFNIE(trabajador, modelo);
+             
             System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
                 
             
@@ -144,6 +146,9 @@ public class ExcelCrud {
             //XML
 
         }
+        
+       modelo.listarStrings();
+       modelo.exportarErroresXML();
     }
  
 }
