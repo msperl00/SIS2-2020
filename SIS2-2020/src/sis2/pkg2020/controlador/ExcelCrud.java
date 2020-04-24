@@ -116,76 +116,24 @@ public class ExcelCrud {
     }
 
     /**
-     * Comprueba si los vslores NIE/NIF son correctos, y sino los actualiza.
+     * Comprueba si los valores NIE/NIF son correctos, y sino los actualiza.
      *
      * @param trabajadores
      */
-    void comprobarNIF_NIE(ArrayList<Trabajadorbbdd> trabajadores) {
-
+    public void comprobarNIF_NIE(ArrayList<Trabajadorbbdd> trabajadores) {
+        
+        CalcularNIFNIE dni = null;
         for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
             Trabajadorbbdd trabajador = iterator.next();
-
-            boolean correcto = calculoNIF_NIE(trabajador.getNifnie());
-            System.out.println(correcto);
+             dni = new CalcularNIFNIE(trabajador.getNifnie());
+            System.out.println("En validacion -> "+trabajador.getNombre()+ trabajador.getNifnie());
+            System.out.println(dni.validar());
+             
+            //TODO 
+            //COLECCION Y CORRECION DE ERRORES
+            //XML
 
         }
     }
-
-    private boolean calculoNIF_NIE(String nifnie) {
-
-        if(nifnie == ""){
-            System.out.println("Vacio NIFNIE");
-            return false;
-        }
-        String correcto = "";
-        char letra = nifnie.charAt(0);
-        String caracteresValidos = "TRWAGMYFPDXBNJZSQVHLCKE";
-      
-        if (Character.isLetter(letra)) {
-            //Si es una letra es el NIE
-            switch (nifnie.charAt(0)) {
-
-                case 'X':
-
-                    correcto = "0" + nifnie.substring(1);
-                    break;
-                case 'Y':
-
-                    correcto = "1" + nifnie.substring(1);
-
-                    break;
-                case 'Z':
-
-                    correcto = "2" + nifnie.substring(1);
-
-                    break;
-                default:
-
-                    System.out.println("Letra invalida");
-                    System.out.println("sis2.pkg2020.controlador.ExcelCrud.calculoNIF_NIE()");
-                    
-
-            }
-  
-        }else{
-                   correcto = nifnie.substring(0,nifnie.length() - 1);
-
-        }
-              correcto = correcto.substring(0,correcto.length() - 1);
-
-
-                int numero = Integer.parseInt(correcto);
-                int resto = numero % 23;
-                char letracorrecta = caracteresValidos.charAt(resto);
-
-                System.out.println(letracorrecta + " vs "+ nifnie.charAt(nifnie.length()-1));
-                if(letracorrecta == nifnie.charAt(nifnie.length()-1))
-                    return true;
-
-                //TODO 1ºfalsos 2º duplicados
-                
-                return false;
-    }
-
  
 }

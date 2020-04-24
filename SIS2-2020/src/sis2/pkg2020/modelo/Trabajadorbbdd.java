@@ -26,6 +26,10 @@ public class Trabajadorbbdd  implements java.io.Serializable {
      private String iban;
      private Set nominas = new HashSet(0);
      
+     /****NO PERSISTIDOS ****/
+     private String prorrata;
+     private String paisCCC;
+     private String extra;
 
     public Trabajadorbbdd() {
     }
@@ -143,17 +147,17 @@ public class Trabajadorbbdd  implements java.io.Serializable {
      @Override
     public String toString() {
         return "" +
-                "idTrabajador=" + idTrabajador.toString() +
-                ", nombre='" + nombre + '\'' +
-                ", apellido1='" + apellido1 + '\'' +
-                ", apellido2='" + apellido2 + '\'' +
-                ", nifnie='" + nifnie + '\'' +
-                ", email='" + email + '\'' +
-                ", fechaAlta=" + fechaAlta.toString() +
-                ", codigoCuenta='" + codigoCuenta + '\'' +
-                ", iban='" + iban.toString() + '\'' +
-                ", Empresa=" + empresas.getNombre() +
-                ", Categoria=" + categorias.getNombreCategoria() 
+               
+                " " + nombre +  
+                " " + apellido1 +  
+                " " + apellido2 +  
+                " " + nifnie +  
+                " " + email +  
+                "fechaAlta=" + fechaAlta +
+                " codigoCuenta='" + codigoCuenta   +
+                " iban='" + iban + 
+                " Empresa=" + empresas.getNombre() +
+                " Categoria=" + categorias.getNombreCategoria() 
                 ;
     }
     public String toStringHQL() {
@@ -222,6 +226,31 @@ public class Trabajadorbbdd  implements java.io.Serializable {
             return false;
         }
         return true;
+    }
+
+    public String getProrrata() {
+        return prorrata;
+    }
+
+    public void setProrrata(String prorrata) {
+        this.prorrata = prorrata;
+    }
+
+
+    public String getPaisCCC() {
+        return paisCCC;
+    }
+
+    public void setPaisCCC(String paisCCC) {
+        this.paisCCC = paisCCC;
+    }
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
     
 

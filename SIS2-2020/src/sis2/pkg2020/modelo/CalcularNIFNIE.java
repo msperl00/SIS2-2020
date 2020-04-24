@@ -1,0 +1,122 @@
+package sis2.pkg2020.modelo;
+
+/**
+ * Clase que se encarga de la validación y correción de los errores en el nif y
+ * en el nie
+ *
+ * @author Marco Speranza López
+ */
+public class CalcularNIFNIE {
+
+    private final String letrasNie = "XYZ";
+    private final String letrasNif = "TRWAGMYFPDXBNJZSQVHLCKE";
+    private final String numeros = "0123456789";
+
+    private String nifnie;
+
+    public CalcularNIFNIE(String nifnie) {
+        this.nifnie = nifnie;
+    }
+
+    public boolean validar() {
+        if (!nifnie.equals("")) {
+
+            if (isNieValido(nifnie)) {
+                return true;
+            } else if (isDniValido(nifnie)) {
+                return true;
+            }
+
+        }else{
+            System.out.println("Else");
+            //todo
+            //Recoger los valores e insertarlos en el xml
+        }
+
+        return false;
+    }
+
+    private boolean isDniValido(String dni) {
+        String aux;
+        aux = calcular(dni);
+        System.out.println(dni+ " VS "+ aux);
+        return dni.equals(aux);
+    }
+
+    private boolean isNieValido(String dni) {
+        String aux;
+        aux = calcular(dni);
+        System.out.println(dni+ " VS "+ aux);
+        return dni.equals(aux);
+    }
+
+    public String calcular(String nifnie) {
+
+        String inicial = nifnie.substring(0, 1);
+        if (isNIF(inicial)) {
+            return calcularNIF(nifnie);
+        } else if (isNIE(inicial)) {
+            return calcularNIE(nifnie);
+        }
+
+        return " ";
+    }
+
+    private boolean isNIF(String inicial) {
+        if (numeros.contains(inicial)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isNIE(String inicial) {
+
+
+        if (letrasNie.contains(inicial) && nifnie.startsWith(inicial)) {
+            return true;
+        }
+        return false;
+    }
+
+    private String calcularNIF(String nifnie) {
+        String prueba = nifnie;
+        if (prueba.length() == 9) {
+            prueba = prueba.substring(0, prueba.length() - 1);
+
+        }
+        return prueba + calcularLetra(prueba);
+    }
+
+    private String calcularNIE(String nifnie) {
+        String prueba = null;
+        String devolver = null;
+        if (nifnie.length() == 9) {
+            prueba = nifnie.substring(0, nifnie.length() - 1);
+            devolver = nifnie.substring(0, nifnie.length() - 1);
+
+        }
+
+        if (prueba.startsWith("X")) {
+
+            prueba = prueba.replace('X', '0');
+
+        } else if (prueba.startsWith("Y")) {
+            prueba = prueba.replace('Y', '1');
+        } else if (prueba.startsWith("Z")) {
+            prueba = prueba.replace('Z', '2');
+        }
+
+        return devolver + calcularLetra(prueba);
+    }
+
+    /**
+     * Calcula la letra correspodiente a una cadena que se le pasa, segun el
+     * agoritmo de validacion del codigo fiscal
+     *
+     * @param prueba
+     * @return
+     */
+    private char calcularLetra(String prueba) {
+        return letrasNif.charAt(Integer.parseInt(prueba) % 23);
+    }
+}

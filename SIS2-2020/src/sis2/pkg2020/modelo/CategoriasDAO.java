@@ -6,7 +6,10 @@
 package sis2.pkg2020.modelo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.QueryException;
 import org.hibernate.Session;
@@ -18,10 +21,10 @@ import org.hibernate.hql.internal.ast.QuerySyntaxException;
  */
 public class CategoriasDAO {
     
-     List<Categorias> categorias;
+         private HashMap<String, Integer> hashCategorias;
      
    public CategoriasDAO(){
-        categorias = new ArrayList<Categorias>();
+       hashCategorias = new HashMap<String, Integer>();
     }
 /**
  * Este metodo recoge como valores prinicipales la categoria que no se va a subir de sueldo, y el incremento de sueldo
@@ -47,6 +50,28 @@ public class CategoriasDAO {
                 System.err.println("Error en la consulta de Categorias");
             }
     }        
+
+    void asignarIdCategorias(Categorias categoria) {
+        
+                        if(!hashCategorias.containsKey(categoria.getNombreCategoria())){
+                            int id = hashCategorias.size();
+                            hashCategorias.put(categoria.getNombreCategoria(),id);
+                            categoria.setIdCategoria(id);
+                            
+                        }else{
+                            //Si la categoria ya existe
+                            categoria.setIdCategoria(hashCategorias.get(categoria.getNombreCategoria()));
+                        }
+           
+    }
+
+    public void listarCategoriasExcel() {
+        Iterator<Map.Entry<String,Integer>> it  = hashCategorias.entrySet().iterator();
+        
+        while(it.hasNext()){
+            Map.Entry<String,Integer> e = it.next();
+            System.out.println(e.getKey()+ " " + e.getValue());
+    }    }
    
   
 }
