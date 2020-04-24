@@ -47,7 +47,7 @@ public class CalcularNIFNIE {
         }else{
             //Si es vacio, lo añado a errores de nif vacios.
             modelo.addBlanco(trabajador);
-           // System.out.println("Añadiendo vacio en fila "+ trabajador.getFilaExcel());
+            System.out.println("Añadiendo vacio en fila "+ trabajador.getFilaExcel());
         }
 
         return false;

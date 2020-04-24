@@ -93,12 +93,10 @@ public class Controlador {
         
        ExcelCrud excel = new ExcelCrud();
        File excelFile = new File("resources/SistemasInformacionII.xlsx");
-       ArrayList<Trabajadorbbdd> trabajadores = excel.readExcelFile(excelFile);
        ModeloXML modelo  = new ModeloXML();
-       excel.comprobarNIF_NIE(trabajadores, modelo);
-     
-       //TODO CREACION DE XML ERRORES
-       //CORRECCION DEL NIF/NIE
+       excel.readExcelFile(excelFile, modelo);
+   
+
        
        
        

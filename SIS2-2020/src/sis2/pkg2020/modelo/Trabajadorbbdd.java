@@ -208,29 +208,29 @@ public class Trabajadorbbdd  implements java.io.Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
-            System.out.println("1--");
+            //System.out.println("1--");
             return true;
         }
         if (obj == null) {
-            System.out.println("2--");
+            //System.out.println("2--");
             return false;
         }
         if (getClass() != obj.getClass()) {
-                System.out.println("3--");
+                //System.out.println("3--");
             return false;
         }
         final Trabajadorbbdd other = (Trabajadorbbdd) obj;
         if (!Objects.equals(this.nombre, other.nombre)) {
-            System.out.println("4--");
+            //System.out.println("4--");
             return false;
         }
         if (!Objects.equals(this.apellido1, other.apellido1)) {
-            System.out.println("5--");
+            //System.out.println("5--");
             return false;
         }
      
         if (!Objects.equals(this.nifnie, other.nifnie)) {
-            System.out.println("7--");
+            //System.out.println("7--");
             return false;
         }
        

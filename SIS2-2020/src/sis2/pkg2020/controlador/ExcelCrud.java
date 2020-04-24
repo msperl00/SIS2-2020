@@ -46,15 +46,49 @@ public class ExcelCrud {
        
     }
 
+ 
+
     /**
-     * Leemos el fichero y recogemos a los trabajadores de la hoja de excel
+     * Comporbamos si la fila que estamos recogiendo esta vacia o no
      *
-     * @param excelFile
+     * @param row
      * @return
      */
-    public ArrayList<Trabajadorbbdd> readExcelFile(File excelFile) throws Exception {
+    private boolean isRowEmpty(Row row) {
+        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+            Cell cell = row.getCell(c);
+            if (cell != null && cell.getCellType() != CellType.BLANK) {
+                return false;
+            }
+        }
+        return true;
+    }
 
+    /**
+     * Comprueba si los valores NIE/NIF son correctos, y sino los actualiza.
+     *
+     * @param trabajadores
+     */
+    public void comprobarNIF_NIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
+        
+        
+        CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
+     //   System.out.println("Trabajador con numero de fila "+ trabajador.getFilaExcel());
+        System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
+
+
+        
+
+    }
+    /**
+     * Este metodo recoge lo datos del excel, y los envia a validacion
+     * @param excelFile
+     * @param modelo 
+     */
+    public void readExcelFile(File excelFile, ModeloXML modelo) {
+        
         InputStream excelStream = null;
+        
         try {
 
             excelStream = new FileInputStream(excelFile);
@@ -85,14 +119,14 @@ public class ExcelCrud {
                   
                    trabajador.setFilaExcel(numeroFila);
                    trabajador.setIdTrabajador(numeroFila);
-                    trabajadores.add(trabajador);
+                   
+                   comprobarNIF_NIE(trabajador, modelo);
                     
                 }
 
             }
 
-            //  empresasDAO.listarEmpresasExcel();
-            //   categoriasDAO.listarCategoriasExcel();
+          
         } catch (FileNotFoundException e) {
             System.out.println("Fichero no encontrado");
             e.printStackTrace();
@@ -100,55 +134,9 @@ public class ExcelCrud {
             System.out.println("Fallo en el acceso de los valores");
             e.printStackTrace();
         }
-
+        System.out.println(trabajadores.toString());
         System.out.println("Fichero leido");
-        return trabajadores;
-    }
-
-    /**
-     * Comporbamos si la fila que estamos recogiendo esta vacia o no
-     *
-     * @param row
-     * @return
-     */
-    private boolean isRowEmpty(Row row) {
-        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
-            Cell cell = row.getCell(c);
-            if (cell != null && cell.getCellType() != CellType.BLANK) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Comprueba si los valores NIE/NIF son correctos, y sino los actualiza.
-     *
-     * @param trabajadores
-     */
-    public void comprobarNIF_NIE(ArrayList<Trabajadorbbdd> trabajadores, ModeloXML modelo) {
-        
-        
-        CalcularNIFNIE dni = null;
-        for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
-            Trabajadorbbdd trabajador = iterator.next();
-        System.out.println("Trabajador con numero de fila "+ trabajador.getFilaExcel());
-
-             dni = new CalcularNIFNIE(trabajador, modelo);
-             
-            System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
-                
-            
-            
-             
-            //TODO 
-            //COLECCION Y CORRECION DE ERRORES
-            //XML
-
-        }
-        
-       modelo.listarStrings();
-       modelo.exportarErroresXML();
+       
     }
  
 }

@@ -68,20 +68,22 @@ public class ModeloXML {
         System.out.println("Errores duplicados " +erroresduplicados.toString());
         System.out.println("Errores blanco " +erroresblanco.toString());
     }
+    
+    
 
     public void addListaSinDuplicados(Trabajadorbbdd trabajador) {
 
         if (listaTrabajadores.isEmpty()) {
-            System.out.println("Añadiendo primer trabajador");
+            
             listaTrabajadores.add(trabajador);
-            System.out.println(listaTrabajadores.size());
+            
         } else {
                 boolean unico = true;
             for (Trabajadorbbdd trabajadoresunicos : listaTrabajadores) {
-                    System.out.println(trabajadoresunicos.getNombre()+ " vs "+ trabajador.getNombre());
+               //     System.out.println(trabajadoresunicos.getNombre()+ " vs "+ trabajador.getNombre());
 
                 if(trabajadoresunicos.equals(trabajador) && unico){
-                    System.out.println("Iguales");
+               //     System.out.println("Iguales");
                     unico = false;
                 }
                 
