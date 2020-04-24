@@ -95,6 +95,7 @@ public class Controlador {
        File excelFile = new File("resources/SistemasInformacionII.xlsx");
        ModeloXML modelo  = new ModeloXML();
        excel.readExcelFile(excelFile, modelo);
+       modelo.exportarErroresXML();
    
 
        

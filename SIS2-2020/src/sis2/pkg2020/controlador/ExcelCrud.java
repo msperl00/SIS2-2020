@@ -79,9 +79,12 @@ public class ExcelCrud {
      
         System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
         
-        if(!dni.validar()){
-            
+        if(!dni.validar() && !modelo.isDuplicado(trabajador) ){
+            //Añadiendo trabajdores
+            trabajadores.add(trabajador);
         }
+     
+                
 
         
 
@@ -125,15 +128,17 @@ public class ExcelCrud {
                   
                    trabajador.setFilaExcel(numeroFila);
                    trabajador.setIdTrabajador(numeroFila);
-                   //Comprueba si es un duplicado
-                   modelo.isDuplicado(trabajador);
+                   
                    //Comprueba si es vacio o esta mal en NIF/NIE
                    comprobarNIF_NIE(trabajador, modelo);
-                    
+                  
                 }
+                
+                 
+                    
 
             }
-
+            System.out.println(trabajadores.toString());
           
         } catch (FileNotFoundException e) {
             System.out.println("Fichero no encontrado");

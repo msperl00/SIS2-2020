@@ -18,7 +18,7 @@ public class CalcularNIFNIE {
     private Trabajadorbbdd trabajador;
     public CalcularNIFNIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
 
-        this.trabajador = new Trabajadorbbdd(trabajador);
+        this.trabajador = trabajador;
         this.nifnie = this.trabajador.getNifnie();
         this.modelo = modelo;
        
@@ -43,7 +43,7 @@ public class CalcularNIFNIE {
                     System.out.println("Correcto");
                 }else{
                     System.out.println("Incorrecto");
-
+                    trabajador.setNifnie(calcularNIE(nifnie));
                 }
                 
             }else if(isNIF(nifnie.substring(0, 1))){
@@ -53,6 +53,8 @@ public class CalcularNIFNIE {
                     System.out.println("Correcto");
                 }else{
                     System.out.println("Incorrecto");
+                    trabajador.setNifnie(calcularNIF(nifnie));
+
 
                 }
             }else{
