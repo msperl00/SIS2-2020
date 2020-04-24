@@ -2,6 +2,7 @@ package sis2.pkg2020.modelo;
 // Generated 05-abr-2020 15:22:34 by Hibernate Tools 4.3.1
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -30,6 +31,7 @@ public class Trabajadorbbdd  implements java.io.Serializable {
      private String prorrata;
      private String paisCCC;
      private String extra;
+     private int filaExcel;
 
     public Trabajadorbbdd() {
     }
@@ -54,6 +56,26 @@ public class Trabajadorbbdd  implements java.io.Serializable {
        this.codigoCuenta = codigoCuenta;
        this.iban = iban;
        this.nominas = nominas;
+    }
+
+    /**
+     * Constructor para copia profunda del objeto
+     * @param trabajador 
+     */
+    Trabajadorbbdd(Trabajadorbbdd trabajador) {
+           
+        this.categorias = trabajador.getCategorias();
+       this.empresas = trabajador.getEmpresas();
+       this.nombre = trabajador.getNombre();
+       this.apellido1 = trabajador.getApellido1();
+       this.apellido2 = trabajador.getApellido2();
+       this.nifnie = trabajador.getNifnie();
+       this.email = trabajador.getEmail();
+       this.fechaAlta = trabajador.getFechaAlta();
+       this.codigoCuenta = trabajador.getCodigoCuenta();
+       this.iban = trabajador.getIban();
+       this.nominas = trabajador.getNominas();
+       this.filaExcel = trabajador.getFilaExcel();
     }
    
     
@@ -141,14 +163,20 @@ public class Trabajadorbbdd  implements java.io.Serializable {
     public void setNominas(Set nominas) {
         this.nominas = nominas;
     }
+
+    public int getFilaExcel() {
+        return filaExcel;
+    }
+
+    public void setFilaExcel(int filaExcel) {
+        this.filaExcel = filaExcel;
+    }
     
    
 
      @Override
     public String toString() {
-        return "" +
-               
-                " " + nombre +  
+        return nombre +  
                 " " + apellido1 +  
                 " " + apellido2 +  
                 " " + nifnie +  
@@ -157,7 +185,7 @@ public class Trabajadorbbdd  implements java.io.Serializable {
                 " codigoCuenta='" + codigoCuenta   +
                 " iban='" + iban + 
                 " Empresa=" + empresas.getNombre() +
-                " Categoria=" + categorias.getNombreCategoria() 
+                " Categoria=" + categorias.getNombreCategoria()+"\n\n" 
                 ;
     }
     public String toStringHQL() {
@@ -180,51 +208,33 @@ public class Trabajadorbbdd  implements java.io.Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
+            System.out.println("1--");
             return true;
         }
         if (obj == null) {
+            System.out.println("2--");
             return false;
         }
         if (getClass() != obj.getClass()) {
+                System.out.println("3--");
             return false;
         }
         final Trabajadorbbdd other = (Trabajadorbbdd) obj;
         if (!Objects.equals(this.nombre, other.nombre)) {
+            System.out.println("4--");
             return false;
         }
         if (!Objects.equals(this.apellido1, other.apellido1)) {
+            System.out.println("5--");
             return false;
         }
-        if (!Objects.equals(this.apellido2, other.apellido2)) {
-            return false;
-        }
+     
         if (!Objects.equals(this.nifnie, other.nifnie)) {
+            System.out.println("7--");
             return false;
         }
-        if (!Objects.equals(this.email, other.email)) {
-            return false;
-        }
-        if (!Objects.equals(this.codigoCuenta, other.codigoCuenta)) {
-            return false;
-        }
-        if (!Objects.equals(this.iban, other.iban)) {
-            return false;
-        }
-        if (!Objects.equals(this.idTrabajador, other.idTrabajador)) {
-            return false;
-        }
-        if (!Objects.equals(this.categorias, other.categorias)) {
-            return false;
-        }
-        if (!Objects.equals(this.empresas, other.empresas)) {
-            return false;
-        }
-        if (!Objects.equals(this.fechaAlta, other.fechaAlta)) {
-            return false;
-        }
-        if (!Objects.equals(this.nominas, other.nominas)) {
-            return false;
-        }
+       
+    
         return true;
     }
 
@@ -252,6 +262,16 @@ public class Trabajadorbbdd  implements java.io.Serializable {
     public void setExtra(String extra) {
         this.extra = extra;
     }
+    
+    public static ArrayList<Trabajadorbbdd> deepCopia(ArrayList<Trabajadorbbdd> trabajador) throws CloneNotSupportedException{
+        
+        ArrayList<Trabajadorbbdd> clon = new ArrayList<Trabajadorbbdd>(trabajador.size());
+        for(Trabajadorbbdd item: trabajador){
+            clon.add((Trabajadorbbdd) item.clone());
+            
+        }
+         return clon;
+    }  
     
 
 

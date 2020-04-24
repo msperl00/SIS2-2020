@@ -36,12 +36,14 @@ public class ExcelCrud {
     private ArrayList<Categorias> categorias;
     private ArrayList<Empresas> empresas;
 
+
     public ExcelCrud() {
 
         System.out.println("Creacion del excel crud");
         trabajadores = new ArrayList<Trabajadorbbdd>();
         categorias = new ArrayList<Categorias>();
         empresas = new ArrayList<Empresas>();
+       
     }
 
     /**
@@ -70,7 +72,8 @@ public class ExcelCrud {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 int idempresas = 0;
-                System.out.println("Numero de fila: " + row.getRowNum());
+                int numeroFila = row.getRowNum()+1;
+              //  System.out.println("Numero de fila  según excel: " + numeroFila );
                 //Descartamos la fila 0, ya que es en la que se nos presenta el titulo y las filas vacias.
                 if (row.getRowNum() != 0 && !isRowEmpty(row)) {
 
@@ -79,8 +82,10 @@ public class ExcelCrud {
                     categoria = new Categorias();
 
                     TrabajadorDAO.recogidaTrabajadorExel(row, trabajador, empresasDAO, categoriasDAO);
-                    System.out.println(trabajador.toString());
+                  
+                   trabajador.setFilaExcel(numeroFila);
                     trabajadores.add(trabajador);
+                    
                 }
 
             }
@@ -120,14 +125,19 @@ public class ExcelCrud {
      *
      * @param trabajadores
      */
-    public void comprobarNIF_NIE(ArrayList<Trabajadorbbdd> trabajadores) {
+    public void comprobarNIF_NIE(ArrayList<Trabajadorbbdd> trabajadores, ModeloXML modelo) {
+        
         
         CalcularNIFNIE dni = null;
         for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
             Trabajadorbbdd trabajador = iterator.next();
-             dni = new CalcularNIFNIE(trabajador.getNifnie());
-            System.out.println("En validacion -> "+trabajador.getNombre()+ trabajador.getNifnie());
-            System.out.println(dni.validar());
+        System.out.println("Trabajador con numero de fila "+ trabajador.getFilaExcel());
+
+             dni = new CalcularNIFNIE(trabajador, modelo);
+            System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
+                
+            
+            
              
             //TODO 
             //COLECCION Y CORRECION DE ERRORES

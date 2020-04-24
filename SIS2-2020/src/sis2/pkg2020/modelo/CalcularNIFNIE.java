@@ -1,8 +1,10 @@
 package sis2.pkg2020.modelo;
 
+import com.sun.xml.internal.ws.developer.Serialization;
+
 /**
  * Clase que se encarga de la validación y correción de los errores en el nif y
- * en el nie
+ * en el nie del trabajador
  *
  * @author Marco Speranza López
  */
@@ -11,16 +13,31 @@ public class CalcularNIFNIE {
     private final String letrasNie = "XYZ";
     private final String letrasNif = "TRWAGMYFPDXBNJZSQVHLCKE";
     private final String numeros = "0123456789";
-
+    private ModeloXML modelo;
     private String nifnie;
+    private Trabajadorbbdd trabajador;
+    public CalcularNIFNIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
 
-    public CalcularNIFNIE(String nifnie) {
-        this.nifnie = nifnie;
+        this.trabajador = new Trabajadorbbdd(trabajador);
+        this.nifnie = this.trabajador.getNifnie();
+        this.modelo = modelo;
+        validar();
+        
+        
     }
-
+    /**
+     * Validamos el código del trabajador que hemos recibido en el constructor.
+     * Si es vacio -> Añadir a en blanco
+     * Si es duplicado -> Añadimos a duplicados
+     * Si no es ni vacio ni duplicado -> Pasamos a realizar las comporbaciones pertinentes.
+     * @return boolean
+     */
     public boolean validar() {
+        
         if (!nifnie.equals("")) {
-
+            
+            modelo.addListaSinDuplicados(trabajador);
+            
             if (isNieValido(nifnie)) {
                 return true;
             } else if (isDniValido(nifnie)) {
@@ -28,9 +45,9 @@ public class CalcularNIFNIE {
             }
 
         }else{
-            System.out.println("Else");
-            //todo
-            //Recoger los valores e insertarlos en el xml
+            //Si es vacio, lo añado a errores de nif vacios.
+            modelo.addBlanco(trabajador);
+           // System.out.println("Añadiendo vacio en fila "+ trabajador.getFilaExcel());
         }
 
         return false;
@@ -39,14 +56,14 @@ public class CalcularNIFNIE {
     private boolean isDniValido(String dni) {
         String aux;
         aux = calcular(dni);
-        System.out.println(dni+ " VS "+ aux);
+     //   System.out.println(dni+ " VS "+ aux);
         return dni.equals(aux);
     }
 
     private boolean isNieValido(String dni) {
         String aux;
         aux = calcular(dni);
-        System.out.println(dni+ " VS "+ aux);
+      //  System.out.println(dni+ " VS "+ aux);
         return dni.equals(aux);
     }
 
