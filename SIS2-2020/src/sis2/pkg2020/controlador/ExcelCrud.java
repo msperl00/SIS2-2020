@@ -73,9 +73,15 @@ public class ExcelCrud {
         
         
         CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
-     //   System.out.println("Trabajador con numero de fila "+ trabajador.getFilaExcel());
+        System.out.println("Trabajador con numero de fila "+ trabajador.getFilaExcel());
+     
+     //Es false cuando es blanco
+     
         System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
-
+        
+        if(!dni.validar()){
+            
+        }
 
         
 
@@ -121,7 +127,7 @@ public class ExcelCrud {
                    trabajador.setIdTrabajador(numeroFila);
                    //Comprueba si es un duplicado
                    modelo.isDuplicado(trabajador);
-                   //Comprueba si es vacio o esta mal 
+                   //Comprueba si es vacio o esta mal en NIF/NIE
                    comprobarNIF_NIE(trabajador, modelo);
                     
                 }

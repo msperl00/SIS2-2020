@@ -21,7 +21,7 @@ public class CalcularNIFNIE {
         this.trabajador = new Trabajadorbbdd(trabajador);
         this.nifnie = this.trabajador.getNifnie();
         this.modelo = modelo;
-        validar();
+       
         
         
     }
@@ -35,46 +35,40 @@ public class CalcularNIFNIE {
     public boolean validar() {
         
         if (!nifnie.equals("")) {
+            
+            if(isNIE(nifnie.substring(0, 1))) {
+                System.out.println("Es NIE");
+                 String correcto = calcularNIE(nifnie);
+                if(correcto.equals(nifnie)){
+                    System.out.println("Correcto");
+                }else{
+                    System.out.println("Incorrecto");
 
-            if (isNieValido(nifnie)) {
-                return true;
-            } else if (isDniValido(nifnie)) {
-                return true;
+                }
+                
+            }else if(isNIF(nifnie.substring(0, 1))){
+                System.out.println("ES NIF");
+                 String correcto = calcularNIF(nifnie);
+                 if(correcto.equals(nifnie)){
+                    System.out.println("Correcto");
+                }else{
+                    System.out.println("Incorrecto");
+
+                }
+            }else{
+                System.out.println("Ninguno de los dos");
             }
+               
+            
 
         }else{
             //Si es vacio, lo añado a errores de nif vacios.
+            
             modelo.addBlanco(trabajador);
             System.out.println("Añadiendo vacio en fila "+ trabajador.getFilaExcel());
         }
 
         return false;
-    }
-
-    private boolean isDniValido(String dni) {
-        String aux;
-        aux = calcular(dni);
-     //   System.out.println(dni+ " VS "+ aux);
-        return dni.equals(aux);
-    }
-
-    private boolean isNieValido(String dni) {
-        String aux;
-        aux = calcular(dni);
-      //  System.out.println(dni+ " VS "+ aux);
-        return dni.equals(aux);
-    }
-
-    public String calcular(String nifnie) {
-
-        String inicial = nifnie.substring(0, 1);
-        if (isNIF(inicial)) {
-            return calcularNIF(nifnie);
-        } else if (isNIE(inicial)) {
-            return calcularNIE(nifnie);
-        }
-
-        return " ";
     }
 
     private boolean isNIF(String inicial) {
@@ -93,6 +87,7 @@ public class CalcularNIFNIE {
         return false;
     }
 
+
     private String calcularNIF(String nifnie) {
         String prueba = nifnie;
         if (prueba.length() == 9) {
@@ -103,6 +98,7 @@ public class CalcularNIFNIE {
     }
 
     private String calcularNIE(String nifnie) {
+        
         String prueba = null;
         String devolver = null;
         if (nifnie.length() == 9) {
