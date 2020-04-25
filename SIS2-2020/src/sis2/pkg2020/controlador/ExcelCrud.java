@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -81,6 +83,7 @@ public class ExcelCrud {
         
         if(!dni.validar() && !modelo.isDuplicado(trabajador) ){
             //Añadiendo trabajdores
+            
             trabajadores.add(trabajador);
         }
      
@@ -150,5 +153,34 @@ public class ExcelCrud {
         System.out.println("Fichero leido");
        
     }
+    
+    public static void actualizarCelda(String nifnie, Integer row, int col) {
+        
+            FileInputStream file;
+        try {
+            file = new FileInputStream("resources/SistemasInformacionII.xlsx");
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            
+              Cell cell = sheet.getRow(row).getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+              
+              System.out.println("Nuevo valor en la columna"+col);
+              cell.setCellValue(nifnie);
+              
+              file.close();
+              
+            FileOutputStream outFile =new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"));
+            workbook.write(outFile);
+            outFile.close();
+            
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+       
+    }
+
  
 }
