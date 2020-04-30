@@ -11,7 +11,7 @@ import sis2.pkg2020.modelo.Trabajadorbbdd;
  *
  * @author Marco Speranza López
  */
-public class CalcularNIFNIE {
+public class GeneradorNIFNIE {
 
     private final String letrasNie = "XYZ";
     private final String letrasNif = "TRWAGMYFPDXBNJZSQVHLCKE";
@@ -20,7 +20,7 @@ public class CalcularNIFNIE {
     private String nifnie;
     private Trabajadorbbdd trabajador;
 
-    public CalcularNIFNIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
+    public GeneradorNIFNIE(Trabajadorbbdd trabajador) {
 
         this.trabajador = trabajador;
         this.nifnie = this.trabajador.getNifnie();
@@ -40,7 +40,7 @@ public class CalcularNIFNIE {
 
         if (isNIE(nifnie.substring(0, 1))) {
            // System.out.println("Es NIE");
-            String correcto = calcularNIE(nifnie);
+            String correcto = GeneradorNIE(nifnie);
             if (correcto.equals(nifnie)) {
              //   System.out.println("Correcto");
             } else {
@@ -51,12 +51,12 @@ public class CalcularNIFNIE {
 
         } else if (isNIF(nifnie.substring(0, 1))) {
           //  System.out.println("ES NIF");
-            String correcto = calcularNIF(nifnie);
+            String correcto = GeneradorNIF(nifnie);
             if (correcto.equals(nifnie)) {
          //       System.out.println("Correcto");
             } else {
                 System.out.println("Incorrecto");
-                trabajador.setNifnie(calcularNIF(nifnie));
+                trabajador.setNifnie(GeneradorNIF(nifnie));
                 ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, 7);
 
             }
@@ -82,16 +82,16 @@ public class CalcularNIFNIE {
         return false;
     }
 
-    private String calcularNIF(String nifnie) {
+    private String GeneradorNIF(String nifnie) {
         String prueba = nifnie;
         if (prueba.length() == 9) {
             prueba = prueba.substring(0, prueba.length() - 1);
 
         }
-        return prueba + calcularLetra(prueba);
+        return prueba + GeneradorLetra(prueba);
     }
 
-    private String calcularNIE(String nifnie) {
+    private String GeneradorNIE(String nifnie) {
 
         String prueba = null;
         String devolver = null;
@@ -111,7 +111,7 @@ public class CalcularNIFNIE {
             prueba = prueba.replace('Z', '2');
         }
 
-        return devolver + calcularLetra(prueba);
+        return devolver + GeneradorLetra(prueba);
     }
 
     /**
@@ -121,7 +121,7 @@ public class CalcularNIFNIE {
      * @param prueba
      * @return
      */
-    private char calcularLetra(String prueba) {
+    private char GeneradorLetra(String prueba) {
         return letrasNif.charAt(Integer.parseInt(prueba) % 23);
     }
 }

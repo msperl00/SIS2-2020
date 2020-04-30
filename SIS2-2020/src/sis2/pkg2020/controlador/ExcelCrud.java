@@ -9,7 +9,7 @@ import sis2.pkg2020.vista.ModeloXML;
 import sis2.pkg2020.modelo.dao.EmpresasDAO;
 import sis2.pkg2020.modelo.dao.CategoriasDAO;
 import sis2.pkg2020.modelo.dao.TrabajadorDAO;
-import sis2.pkg2020.modelo.operaciones.CalcularNIFNIE;
+import sis2.pkg2020.modelo.operaciones.GeneradorNIFNIE;
 import sis2.pkg2020.modelo.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sis2.pkg2020.modelo.operaciones.GeneradorIBAN;
 
 /**
  * Clase utilizada para las operaciones de las hojas Excel.
@@ -115,17 +116,16 @@ public class ExcelCrud {
                     //Setteamos el id con el valor de la fila
                     trabajador.setIdTrabajador(numeroFila);
                     //Añadimos al hashMap, y si es un duplicado no se añade al hash pero si a duplicados.
-                    if(!trabajadores.add(trabajador)){
+                    if (!trabajadores.add(trabajador)) {
                         duplicados.add(trabajador);
                         System.out.println("Añadiendo a duplicados"
                                 + trabajador.getNombre());
                     }
-                  
 
                 }
 
             }
-         //   System.out.println(trabajadores.toString());
+            //   System.out.println(trabajadores.toString());
 
         } catch (FileNotFoundException e) {
             System.out.println("Fichero no encontrado");
@@ -139,7 +139,8 @@ public class ExcelCrud {
     }
 
     /**
-     * Actualiza el valor de una celda correspodiente asignando fila columna, y el valor a settear.
+     * Actualiza el valor de una celda correspodiente asignando fila columna, y
+     * el valor a settear.
      *
      * @param nifnie
      * @param row
@@ -178,60 +179,51 @@ public class ExcelCrud {
      * errores.
      *
      *
-     * 1º Comprobamos si NIF vacio
-     * 2º Comrpobamos NIF
-     * 3º Exportamos los errores XMLModelo
+     * 1º Comprobamos si NIF vacio 2º Comrpobamos NIF 3º Exportamos los errores
+     * XMLModelo
      *
      * Trabajaremos con el HashSet para evitar repeticiones de objetos.
      */
     public void comprobarNIFNIE() {
-        
+
         String nombrefichero = "Errores.xml";
         ModeloXML modelo = new ModeloXML(nombrefichero);
         for (Trabajadorbbdd trabajador : trabajadores) {
-            if(!trabajador.getNifnie().equals("")){
-                CalcularNIFNIE calculonif = new CalcularNIFNIE(trabajador, modelo);
+            if (!trabajador.getNifnie().equals("")) {
+                GeneradorNIFNIE calculonif = new GeneradorNIFNIE(trabajador);
                 calculonif.validar();
-            }else{
-                 modelo.addBlanco(trabajador);
-                 System.out.println("Añadiendo vacio en fila "+ trabajador.getIdTrabajador());
+            } else {
+                modelo.addBlanco(trabajador);
+                System.out.println("Añadiendo vacio en fila " + trabajador.getIdTrabajador());
             }
 
         }
         modelo.recogerDuplicados(duplicados);
         modelo.exportarErroresXML();
-        //   comprobarNIF_NIE(trabajador, modelo);
+
+    }
+    /**
+     * Metodo que comprueba la validacion de los codigos de cuenta.
+     * Tras su verficacion con la ayuda de la clase GeneradorIBAN,
+     * que recoge de uno en uno los trabajadores. Se continuará
+     * a la exportacion de errores.
+     * 
+     *      1ºComporbacion de CCC por cada trabajador
+     *          1.a Si es valido se deja como esta
+     *          2.b Si no es valido modifica y se setea en el excel.
+     * 
+     *      2º Exportacion de los errores correspodientes a los codigos ccc.
+     *      
+     */
+    public void comprobarCCC() {
+        
+        String nombrefichero = "erroresCCC.xml";
+        ModeloXML modelo = new ModeloXML(nombrefichero);
+        
+        for (Trabajadorbbdd trabajador : trabajadores) {
+            GeneradorIBAN iban = new GeneradorIBAN(trabajador);
+        }
+        
     }
 
-    /**
-     *
-     *
-     * Comprueba si los valores NIE/NIF son correctos, y sino los actualiza.
-     *
-     * @param trabajadores
-     *
-     * public void comprobarNIF_NIE(Trabajadorbbdd trabajador, ModeloXML modelo)
-     * {
-     *
-     *
-     * CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
-     * System.out.println("Trabajador con numero de fila "+
-     * trabajador.getIdTrabajador());
-     *
-     * //Es false cuando es blanco
-     *
-     * System.out.println("En validacion -> "+trabajador.getNombre()+ " "+
-     * trabajador.getNifnie());
-     *
-     * if(!dni.validar() && !modelo.isDuplicado(trabajador) ){ //Añadiendo
-     * trabajdores
-     *
-     * trabajadores.add(trabajador); }
-     *
-     *
-     *
-     *
-     *
-     * }
-     */
 }

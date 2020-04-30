@@ -102,7 +102,12 @@ public class Controlador {
        ExcelCrud excel = new ExcelCrud();
        File excelFile = new File("resources/SistemasInformacionII.xlsx");
        excel.readExcelFile(excelFile);
+       //Práctica 2
        excel.comprobarNIFNIE();
+       //Práctica 3
+       excel.comprobarCCC();
+       
+       
        
     
        
