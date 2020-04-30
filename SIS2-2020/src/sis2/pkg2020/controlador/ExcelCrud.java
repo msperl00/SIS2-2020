@@ -43,18 +43,17 @@ public class ExcelCrud {
     private HashSet<Trabajadorbbdd> trabajadores;
     private ArrayList<Categorias> categorias;
     private ArrayList<Empresas> empresas;
-    
+    private ArrayList<Trabajadorbbdd> duplicados;
 
     public ExcelCrud() {
 
         System.out.println("Creacion del excel crud");
-        trabajadores =  new HashSet<Trabajadorbbdd>();
+        trabajadores = new HashSet<Trabajadorbbdd>();
         categorias = new ArrayList<Categorias>();
         empresas = new ArrayList<Empresas>();
-       
-    }
+        duplicados = new ArrayList<Trabajadorbbdd>();
 
- 
+    }
 
     /**
      * Comporbamos si la fila que estamos recogiendo esta vacia o no
@@ -73,17 +72,19 @@ public class ExcelCrud {
     }
 
     /**
-     * Este metodo recoge lo datos del excel que no sean vacios, y salta el primer valor.
-     * 
-     *      1º Quitamos los los duplicados de manera automatica con el hashSet
-     *      2º No añadimos los elementos nulos a el hash
+     * Este metodo recoge lo datos del excel que no sean vacios, y salta el
+     * primer valor.
+     *
+     * 1º Quitamos los los duplicados de manera automatica con el hashSet 2º No
+     * añadimos los elementos nulos a el hash
+     *
      * @param excelFile
-     * @param modelo 
+     * @param modelo
      */
     public void readExcelFile(File excelFile) {
-        
+
         InputStream excelStream = null;
-        
+
         try {
 
             excelStream = new FileInputStream(excelFile);
@@ -101,38 +102,31 @@ public class ExcelCrud {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 int idempresas = 0;
-                int numeroFila = row.getRowNum()+1;
-              //  System.out.println("Numero de fila  según excel: " + numeroFila );
+                int numeroFila = row.getRowNum() + 1;
+                //  System.out.println("Numero de fila  según excel: " + numeroFila );
                 //Descartamos la fila 0, ya que es en la que se nos presenta el titulo y las filas vacias.
                 if (row.getRowNum() != 0 && !isRowEmpty(row)) {
 
                     trabajador = new Trabajadorbbdd();
                     empresa = new Empresas();
                     categoria = new Categorias();
-
+                    //Recogemos los trabajadores en el hashset
                     TrabajadorDAO.recogidaTrabajadorExel(row, trabajador, empresasDAO, categoriasDAO);
-                    
-                   trabajador.setIdTrabajador(numeroFila);
-                   //Añadimos al hashMap
-                    
+                    //Setteamos el id con el valor de la fila
+                    trabajador.setIdTrabajador(numeroFila);
+                    //Añadimos al hashMap, y si es un duplicado no se añade al hash pero si a duplicados.
                     if(!trabajadores.add(trabajador)){
-                        System.out.println(trabajador.getNombre());
-                    System.out.println("FALSO");
+                        duplicados.add(trabajador);
+                        System.out.println("Añadiendo a duplicados"
+                                + trabajador.getNombre());
                     }
                   
-                    
-                  
+
                 }
-                  
-                
-                        
-                 
-                    
 
             }
-            System.out.println(trabajadores.toString());
-            
-            
+         //   System.out.println(trabajadores.toString());
+
         } catch (FileNotFoundException e) {
             System.out.println("Fichero no encontrado");
             e.printStackTrace();
@@ -141,33 +135,34 @@ public class ExcelCrud {
             e.printStackTrace();
         }
         System.out.println("Fichero leido");
-       
+
     }
+
     /**
-     * Actualiza el valor de una celda correspodiente.
+     * Actualiza el valor de una celda correspodiente asignando fila columna, y el valor a settear.
+     *
      * @param nifnie
      * @param row
-     * @param col 
+     * @param col
      */
     public static void actualizarCelda(String nifnie, Integer row, int col) {
-        
-            FileInputStream file;
+
+        FileInputStream file;
         try {
             file = new FileInputStream("resources/SistemasInformacionII.xlsx");
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             XSSFSheet sheet = workbook.getSheetAt(0);
-            
-              Cell cell = sheet.getRow(row).getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-              
-              System.out.println("Nuevo valor en la columna"+col);
-              cell.setCellValue(nifnie);
-              
-              file.close();
-              
-            FileOutputStream outFile =new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"));
+
+            Cell cell = sheet.getRow(row).getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+
+            System.out.println("Nuevo valor en la columna" + col);
+            cell.setCellValue(nifnie);
+
+            file.close();
+
+            FileOutputStream outFile = new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"));
             workbook.write(outFile);
             outFile.close();
-            
 
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,55 +170,68 @@ public class ExcelCrud {
             Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-       
     }
+
     /**
-     * Metodo por el cual pasar los distintos trabajadores, y se comporbara su NIF/NIE.
-     * Si estos no son validos, se llama al modelo, para exportar sus errores.
-     * 
-     * 
-     * 1º Comprobamos NIF
-     * 2º Exportamos los errores XMLModelo
-     * 
+     * Metodo por el cual pasar los distintos trabajadores, y se comporbara su
+     * NIF/NIE. Si estos no son validos, se llama al modelo, para exportar sus
+     * errores.
+     *
+     *
+     * 1º Comprobamos si NIF vacio
+     * 2º Comrpobamos NIF
+     * 3º Exportamos los errores XMLModelo
+     *
      * Trabajaremos con el HashSet para evitar repeticiones de objetos.
      */
     public void comprobarNIFNIE() {
-                
         
-                //   comprobarNIF_NIE(trabajador, modelo);
-                
-                
+        String nombrefichero = "Errores.xml";
+        ModeloXML modelo = new ModeloXML(nombrefichero);
+        for (Trabajadorbbdd trabajador : trabajadores) {
+            if(!trabajador.getNifnie().equals("")){
+                CalcularNIFNIE calculonif = new CalcularNIFNIE(trabajador, modelo);
+                calculonif.validar();
+            }else{
+                 modelo.addBlanco(trabajador);
+                 System.out.println("Añadiendo vacio en fila "+ trabajador.getIdTrabajador());
+            }
+
+        }
+        modelo.recogerDuplicados(duplicados);
+        modelo.exportarErroresXML();
+        //   comprobarNIF_NIE(trabajador, modelo);
     }
-    
+
     /**
-     * 
-    
+     *
+     *
      * Comprueba si los valores NIE/NIF son correctos, y sino los actualiza.
      *
      * @param trabajadores
-     
-    public void comprobarNIF_NIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
-        
-        
-        CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
-        System.out.println("Trabajador con numero de fila "+ trabajador.getIdTrabajador());
-     
-     //Es false cuando es blanco
-     
-        System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
-        
-        if(!dni.validar() && !modelo.isDuplicado(trabajador) ){
-            //Añadiendo trabajdores
-            
-            trabajadores.add(trabajador);
-        }
-     
-                
-
-        
-
-    }
+     *
+     * public void comprobarNIF_NIE(Trabajadorbbdd trabajador, ModeloXML modelo)
+     * {
+     *
+     *
+     * CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
+     * System.out.println("Trabajador con numero de fila "+
+     * trabajador.getIdTrabajador());
+     *
+     * //Es false cuando es blanco
+     *
+     * System.out.println("En validacion -> "+trabajador.getNombre()+ " "+
+     * trabajador.getNifnie());
+     *
+     * if(!dni.validar() && !modelo.isDuplicado(trabajador) ){ //Añadiendo
+     * trabajdores
+     *
+     * trabajadores.add(trabajador); }
+     *
+     *
+     *
+     *
+     *
+     * }
      */
-
- 
 }

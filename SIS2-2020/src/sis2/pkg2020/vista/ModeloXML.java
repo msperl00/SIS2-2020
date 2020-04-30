@@ -40,20 +40,14 @@ public class ModeloXML {
     private ArrayList<Trabajadorbbdd> erroresduplicados;
     private ArrayList<Trabajadorbbdd> erroresblanco;
     private ArrayList<Trabajadorbbdd> listaTrabajadores;
+    private String nombrefichero;
 
-    public ModeloXML(ArrayList<Trabajadorbbdd> erroresduplicados, ArrayList<Trabajadorbbdd> erroresblanco) {
-
-        this.erroresduplicados = erroresduplicados;
-        this.erroresblanco = erroresblanco;
-
-    }
-
-    public ModeloXML() {
+    public ModeloXML(String nombrefichero) {
 
         this.erroresduplicados = new ArrayList<Trabajadorbbdd>();
         this.erroresblanco = new ArrayList<Trabajadorbbdd>();
         this.listaTrabajadores = new ArrayList<Trabajadorbbdd>();
-
+        this.nombrefichero = nombrefichero;
     }
 
     public void addDuplicados(Trabajadorbbdd trabajador) {
@@ -94,11 +88,11 @@ public class ModeloXML {
             DOMSource source = new DOMSource(doc);
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            StreamResult result = new StreamResult(new File("resources/Errores.xml"));
+            StreamResult result = new StreamResult(new File("resources/"+nombrefichero));
             
             transformer.transform(source, result);
             
-            System.out.println("Fichero Errores.xml creado!");
+            System.out.println("Fichero "+nombrefichero +" creado!");
             
         }  catch (ParserConfigurationException | TransformerException pce) {
                pce.printStackTrace();
@@ -140,6 +134,14 @@ public class ModeloXML {
                 empleado.appendChild(empresa);
             }
     
+    }
+    
+    /**
+     * Metodo que recoge un arraylist de los duplicados.
+     * @param duplicados 
+     */
+    public void recogerDuplicados(ArrayList<Trabajadorbbdd> duplicados) {
+        this.erroresduplicados = duplicados;
     }
 
 }

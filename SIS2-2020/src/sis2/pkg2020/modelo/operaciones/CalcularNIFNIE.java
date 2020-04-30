@@ -19,59 +19,49 @@ public class CalcularNIFNIE {
     private ModeloXML modelo;
     private String nifnie;
     private Trabajadorbbdd trabajador;
+
     public CalcularNIFNIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
 
         this.trabajador = trabajador;
         this.nifnie = this.trabajador.getNifnie();
         this.modelo = modelo;
-       
-        
-        
+
     }
+
     /**
      * Validamos el código del trabajador que hemos recibido en el constructor.
-     * Si es vacio -> Añadir a en blanco
-     * Si es duplicado -> Añadimos a duplicados
-     * Si no es ni vacio ni duplicado -> Pasamos a realizar las comporbaciones pertinentes.
+     * Si es vacio -> Añadir a en blanco Si es duplicado -> Añadimos a
+     * duplicados Si no es ni vacio ni duplicado -> Pasamos a realizar las
+     * comporbaciones pertinentes.
+     *
      * @return boolean
      */
     public boolean validar() {
-        
-        if (!nifnie.equals("")) {
-            
-            if(isNIE(nifnie.substring(0, 1))) {
-                System.out.println("Es NIE");
-                 String correcto = calcularNIE(nifnie);
-                if(correcto.equals(nifnie)){
-                    System.out.println("Correcto");
-                }else{
-                    System.out.println("Incorrecto ->>>>>"+correcto);
-                    trabajador.setNifnie(correcto);
-                     ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador()-1, 7);
-                }
-                
-            }else if(isNIF(nifnie.substring(0, 1))){
-                System.out.println("ES NIF");
-                 String correcto = calcularNIF(nifnie);
-                 if(correcto.equals(nifnie)){
-                    System.out.println("Correcto");
-                }else{
-                    System.out.println("Incorrecto");
-                    trabajador.setNifnie(calcularNIF(nifnie));
-                    ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador()-1, 7);
 
-                }
-            }else{
-                System.out.println("Ninguno de los dos");
+        if (isNIE(nifnie.substring(0, 1))) {
+           // System.out.println("Es NIE");
+            String correcto = calcularNIE(nifnie);
+            if (correcto.equals(nifnie)) {
+             //   System.out.println("Correcto");
+            } else {
+                System.out.println("Incorrecto ->>>>>" + correcto);
+                trabajador.setNifnie(correcto);
+                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, 7);
             }
-               
-            
 
-        }else{
-            //Si es vacio, lo añado a errores de nif vacios.
-            
-            modelo.addBlanco(trabajador);
-            System.out.println("Añadiendo vacio en fila "+ trabajador.getIdTrabajador());
+        } else if (isNIF(nifnie.substring(0, 1))) {
+          //  System.out.println("ES NIF");
+            String correcto = calcularNIF(nifnie);
+            if (correcto.equals(nifnie)) {
+         //       System.out.println("Correcto");
+            } else {
+                System.out.println("Incorrecto");
+                trabajador.setNifnie(calcularNIF(nifnie));
+                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, 7);
+
+            }
+        } else {
+            System.out.println("Ninguno de los dos");
         }
 
         return false;
@@ -86,13 +76,11 @@ public class CalcularNIFNIE {
 
     private boolean isNIE(String inicial) {
 
-
         if (letrasNie.contains(inicial) && nifnie.startsWith(inicial)) {
             return true;
         }
         return false;
     }
-
 
     private String calcularNIF(String nifnie) {
         String prueba = nifnie;
@@ -104,7 +92,7 @@ public class CalcularNIFNIE {
     }
 
     private String calcularNIE(String nifnie) {
-        
+
         String prueba = null;
         String devolver = null;
         if (nifnie.length() == 9) {
