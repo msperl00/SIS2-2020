@@ -73,7 +73,6 @@ public class ModeloXML {
         System.out.println("Errores duplicados " +erroresduplicados.toString());
         System.out.println("Errores blanco " +erroresblanco.toString());
     }
-    
 
     public void exportarErroresXML() {
         

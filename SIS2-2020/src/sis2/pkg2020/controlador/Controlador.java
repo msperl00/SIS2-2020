@@ -90,22 +90,23 @@ public class Controlador {
            
 
     }
+    
+    
+    
     /**
-     * Vamos a recoger el acceso a la hoja excel
+     * Metodo correspodiente a las práctica 2 y 3.
+     * @throws Exception 
      */
-    public void pruebaNIF() throws Exception {
+    public void practicas() throws Exception {
         
        ExcelCrud excel = new ExcelCrud();
        File excelFile = new File("resources/SistemasInformacionII.xlsx");
-       ModeloXML modelo  = new ModeloXML();
        excel.readExcelFile(excelFile);
-       excel.comprobarNIFNIE(modelo);
-       modelo.exportarErroresXML();
-   
-
+       excel.comprobarNIFNIE();
        
-       
+    
        
     }
+    
     
 }

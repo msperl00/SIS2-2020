@@ -15,6 +15,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,15 +40,15 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class ExcelCrud {
 
-    private ArrayList<Trabajadorbbdd> trabajadores;
+    private HashSet<Trabajadorbbdd> trabajadores;
     private ArrayList<Categorias> categorias;
     private ArrayList<Empresas> empresas;
-
+    
 
     public ExcelCrud() {
 
         System.out.println("Creacion del excel crud");
-        trabajadores = new ArrayList<Trabajadorbbdd>();
+        trabajadores =  new HashSet<Trabajadorbbdd>();
         categorias = new ArrayList<Categorias>();
         empresas = new ArrayList<Empresas>();
        
@@ -72,33 +73,10 @@ public class ExcelCrud {
     }
 
     /**
-     * Comprueba si los valores NIE/NIF son correctos, y sino los actualiza.
-     *
-     * @param trabajadores
-     */
-    public void comprobarNIF_NIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
-        
-        
-        CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
-        System.out.println("Trabajador con numero de fila "+ trabajador.getIdTrabajador());
-     
-     //Es false cuando es blanco
-     
-        System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
-        
-        if(!dni.validar() && !modelo.isDuplicado(trabajador) ){
-            //Añadiendo trabajdores
-            
-            trabajadores.add(trabajador);
-        }
-     
-                
-
-        
-
-    }
-    /**
      * Este metodo recoge lo datos del excel que no sean vacios, y salta el primer valor.
+     * 
+     *      1º Quitamos los los duplicados de manera automatica con el hashSet
+     *      2º No añadimos los elementos nulos a el hash
      * @param excelFile
      * @param modelo 
      */
@@ -135,16 +113,26 @@ public class ExcelCrud {
                     TrabajadorDAO.recogidaTrabajadorExel(row, trabajador, empresasDAO, categoriasDAO);
                     
                    trabajador.setIdTrabajador(numeroFila);
-                   trabajadores.add(trabajador);
+                   //Añadimos al hashMap
+                    
+                    if(!trabajadores.add(trabajador)){
+                        System.out.println(trabajador.getNombre());
+                    System.out.println("FALSO");
+                    }
+                  
+                    
                   
                 }
+                  
                 
+                        
                  
                     
 
             }
             System.out.println(trabajadores.toString());
-          
+            
+            
         } catch (FileNotFoundException e) {
             System.out.println("Fichero no encontrado");
             e.printStackTrace();
@@ -180,6 +168,7 @@ public class ExcelCrud {
             workbook.write(outFile);
             outFile.close();
             
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -189,13 +178,52 @@ public class ExcelCrud {
        
     }
     /**
-     * Metetodo por el cual pasar los distintos trabajadores, y se comporbara su NIF/NIE.
+     * Metodo por el cual pasar los distintos trabajadores, y se comporbara su NIF/NIE.
      * Si estos no son validos, se llama al modelo, para exportar sus errores.
+     * 
+     * 
+     * 1º Comprobamos NIF
+     * 2º Exportamos los errores XMLModelo
+     * 
+     * Trabajaremos con el HashSet para evitar repeticiones de objetos.
      */
-    public void comprobarNIFNIE(ModeloXML modelo) {
+    public void comprobarNIFNIE() {
                 
+        
                 //   comprobarNIF_NIE(trabajador, modelo);
+                
+                
     }
+    
+    /**
+     * 
+    
+     * Comprueba si los valores NIE/NIF son correctos, y sino los actualiza.
+     *
+     * @param trabajadores
+     
+    public void comprobarNIF_NIE(Trabajadorbbdd trabajador, ModeloXML modelo) {
+        
+        
+        CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
+        System.out.println("Trabajador con numero de fila "+ trabajador.getIdTrabajador());
+     
+     //Es false cuando es blanco
+     
+        System.out.println("En validacion -> "+trabajador.getNombre()+ " "+ trabajador.getNifnie());
+        
+        if(!dni.validar() && !modelo.isDuplicado(trabajador) ){
+            //Añadiendo trabajdores
+            
+            trabajadores.add(trabajador);
+        }
+     
+                
+
+        
+
+    }
+     */
 
  
 }

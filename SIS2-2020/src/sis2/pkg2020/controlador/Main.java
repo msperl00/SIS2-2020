@@ -16,19 +16,14 @@ public class Main {
     
            Controlador controladorPractica = new Controlador();
           //Correspodiente a la práctica 1 HQL
-         // practicaHQL(controladorPractica);
+         // controladorPractica.pruebaHQL();
            
           //Correspodiente a la práctica 2
-          practicaNIF(controladorPractica);
+          controladorPractica.practicas();
     }
 
-    private static void practicaHQL(Controlador controladorPractica) {
-        controladorPractica.pruebaHQL();
-    }
 
-    private static void practicaNIF(Controlador controladorPractica) throws Exception {
-        controladorPractica.pruebaNIF();
-    }
+
 
     
     

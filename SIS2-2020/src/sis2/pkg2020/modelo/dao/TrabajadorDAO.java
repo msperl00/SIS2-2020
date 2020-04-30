@@ -172,6 +172,9 @@ public class TrabajadorDAO {
             System.err.println("Error en la consulta DELETE de trabajador.");
         }
     }
+    
+        
+  
 
      
 }
