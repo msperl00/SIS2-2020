@@ -1,5 +1,5 @@
 
-package sis2.pkg2020.modelo;
+package sis2.pkg2020.modelo.dao;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,6 +11,9 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.hql.internal.ast.QuerySyntaxException;
 import sis2.pkg2020.controlador.HibernateUtil;
+import sis2.pkg2020.modelo.Categorias;
+import sis2.pkg2020.modelo.Empresas;
+import sis2.pkg2020.modelo.Trabajadorbbdd;
 
 /**
  *

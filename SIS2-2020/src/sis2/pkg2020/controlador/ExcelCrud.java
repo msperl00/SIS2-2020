@@ -5,6 +5,11 @@
  */
 package sis2.pkg2020.controlador;
 
+import sis2.pkg2020.vista.ModeloXML;
+import sis2.pkg2020.modelo.dao.EmpresasDAO;
+import sis2.pkg2020.modelo.dao.CategoriasDAO;
+import sis2.pkg2020.modelo.dao.TrabajadorDAO;
+import sis2.pkg2020.modelo.operaciones.CalcularNIFNIE;
 import sis2.pkg2020.modelo.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -93,7 +98,7 @@ public class ExcelCrud {
 
     }
     /**
-     * Este metodo recoge lo datos del excel, y los envia a validacion
+     * Este metodo recoge lo datos del excel, y los envia a validación
      * @param excelFile
      * @param modelo 
      */

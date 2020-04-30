@@ -4,6 +4,10 @@
  * and open the template in the editor.
  */
 package sis2.pkg2020.controlador;
+import sis2.pkg2020.vista.ModeloXML;
+import sis2.pkg2020.modelo.dao.EmpresasDAO;
+import sis2.pkg2020.modelo.dao.CategoriasDAO;
+import sis2.pkg2020.modelo.dao.TrabajadorDAO;
 import java.util.List;
 import java.util.Scanner;
 import org.hibernate.HibernateException;

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sis2.pkg2020.modelo;
+package sis2.pkg2020.vista;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+import sis2.pkg2020.modelo.Trabajadorbbdd;
 
 
 
@@ -123,7 +124,7 @@ public class ModeloXML {
             
             transformer.transform(source, result);
             
-            System.out.println("Fichero sd Errores.xml creado!");
+            System.out.println("Fichero Errores.xml creado!");
             
         }  catch (ParserConfigurationException | TransformerException pce) {
                pce.printStackTrace();

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sis2.pkg2020.modelo;
+package sis2.pkg2020.modelo.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +14,7 @@ import org.hibernate.Query;
 import org.hibernate.QueryException;
 import org.hibernate.Session;
 import org.hibernate.hql.internal.ast.QuerySyntaxException;
+import sis2.pkg2020.modelo.Categorias;
 
 /**
  *

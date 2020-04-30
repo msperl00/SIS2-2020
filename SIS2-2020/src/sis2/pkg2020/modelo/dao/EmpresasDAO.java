@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sis2.pkg2020.modelo;
+package sis2.pkg2020.modelo.dao;
 
 import org.hibernate.Session;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import sis2.pkg2020.modelo.Empresas;
 /**
  *
  * @author Marco Speranza López
