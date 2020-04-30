@@ -80,7 +80,7 @@ public class ExcelCrud {
         
         
         CalcularNIFNIE dni = new CalcularNIFNIE(trabajador, modelo);
-        System.out.println("Trabajador con numero de fila "+ trabajador.getFilaExcel());
+        System.out.println("Trabajador con numero de fila "+ trabajador.getIdTrabajador());
      
      //Es false cuando es blanco
      
@@ -98,11 +98,11 @@ public class ExcelCrud {
 
     }
     /**
-     * Este metodo recoge lo datos del excel, y los envia a validación
+     * Este metodo recoge lo datos del excel que no sean vacios, y salta el primer valor.
      * @param excelFile
      * @param modelo 
      */
-    public void readExcelFile(File excelFile, ModeloXML modelo) {
+    public void readExcelFile(File excelFile) {
         
         InputStream excelStream = null;
         
@@ -133,12 +133,9 @@ public class ExcelCrud {
                     categoria = new Categorias();
 
                     TrabajadorDAO.recogidaTrabajadorExel(row, trabajador, empresasDAO, categoriasDAO);
-                  
-                   trabajador.setFilaExcel(numeroFila);
+                    
                    trabajador.setIdTrabajador(numeroFila);
-                   
-                   //Comprueba si es vacio o esta mal en NIF/NIE
-                   comprobarNIF_NIE(trabajador, modelo);
+                   trabajadores.add(trabajador);
                   
                 }
                 
@@ -158,7 +155,12 @@ public class ExcelCrud {
         System.out.println("Fichero leido");
        
     }
-    
+    /**
+     * Actualiza el valor de una celda correspodiente.
+     * @param nifnie
+     * @param row
+     * @param col 
+     */
     public static void actualizarCelda(String nifnie, Integer row, int col) {
         
             FileInputStream file;
@@ -185,6 +187,14 @@ public class ExcelCrud {
         }
 
        
+    }
+    /**
+     * Metetodo por el cual pasar los distintos trabajadores, y se comporbara su NIF/NIE.
+     * Si estos no son validos, se llama al modelo, para exportar sus errores.
+     */
+    public void comprobarNIFNIE(ModeloXML modelo) {
+                
+                //   comprobarNIF_NIE(trabajador, modelo);
     }
 
  

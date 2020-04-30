@@ -31,7 +31,7 @@ public class Trabajadorbbdd  implements java.io.Serializable {
      private String prorrata;
      private String paisCCC;
      private String extra;
-     private int filaExcel;
+
 
     public Trabajadorbbdd() {
     }
@@ -75,7 +75,7 @@ public class Trabajadorbbdd  implements java.io.Serializable {
        this.codigoCuenta = trabajador.getCodigoCuenta();
        this.iban = trabajador.getIban();
        this.nominas = trabajador.getNominas();
-       this.filaExcel = trabajador.getFilaExcel();
+
     }
    
     
@@ -164,13 +164,7 @@ public class Trabajadorbbdd  implements java.io.Serializable {
         this.nominas = nominas;
     }
 
-    public int getFilaExcel() {
-        return filaExcel;
-    }
 
-    public void setFilaExcel(int filaExcel) {
-        this.filaExcel = filaExcel;
-    }
     
    
 

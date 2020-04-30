@@ -74,31 +74,6 @@ public class ModeloXML {
         System.out.println("Errores blanco " +erroresblanco.toString());
     }
     
-    /**
-     * Comprueba si el trabajdor pasado es un duplicado.
-     * Si lo es se guarda en la lista de duplicados. y se deuvelve true
-     * Si no lo es, se guarda en la lista de sin duplicar y se devuelve false
-     * @param trabajador
-     * @return 
-     */
-    public boolean isDuplicado(Trabajadorbbdd trabajador){
-        
-        if(listaTrabajadores.isEmpty()){
-            addSinDuplicar(trabajador);
-        }else{
-             for (Trabajadorbbdd trabajadoresunicos : listaTrabajadores){
-                 if(trabajadoresunicos.equals(trabajador)){
-                     addDuplicados(trabajador);
-                     return true;
-                 }
-             }
-             addSinDuplicar(trabajador);
-        }
-        
-        
-        return false;
-    }
-
 
     public void exportarErroresXML() {
         
@@ -138,7 +113,7 @@ public class ModeloXML {
                 rootElement.appendChild(empleado);
                 
                 Attr attr = doc.createAttribute("Fila");
-                attr.setValue(String.valueOf(t.getFilaExcel()));
+                attr.setValue(String.valueOf(t.getIdTrabajador()));
                 empleado.setAttributeNode(attr);
                 
                 Element tipoerror1 = doc.createElement("TipoError");
