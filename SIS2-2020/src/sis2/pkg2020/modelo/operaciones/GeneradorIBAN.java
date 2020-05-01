@@ -1,7 +1,9 @@
 package sis2.pkg2020.modelo.operaciones;
 
 import java.awt.BorderLayout;
+import java.math.BigInteger;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
+import sis2.pkg2020.modelo.enums.LetrasIBAN;
 
 /**
  *
@@ -229,24 +231,109 @@ public class GeneradorIBAN {
     * 
     *           Conclusion: 24 posiciones, solo para la realizacion de cuentas bancarias con 20 digitos.
     * 
+    *   Proceso:
+    * 
+    *       1º Crear codigo
+    *               ES + "00" + CCC
+    *       2º Transfromamos la cadena.
+    *           CCC + ES00
+    *       3º Transofrmamos las letras de los paises en valores numericos.
+    * 
+    *           E = 14 y S = 28
+    * 
+    *       4º n mod 97 -> resto de la division de la cadena en valor numerico
+    * 
+    *       5º Restamos el valor
+    * 
+    *       6ºAsí obtenemos el valor de 2 cifras que seguira al ES.
+    *           
+    *               -Si el valor es de 1 cifra, le anteponemos un 0.
     * 
     * 
     * @return String que contiene el numero IBAN correcto segun la cuenta bancaria.
     */
-    private String generarIBAN(){
+    public String generarIBAN(String codigoCuenta){
         
+        String paisCCC = trabajador.getPaisCCC();
         
-        return null;
+        String transformada = codigoCuenta+ pesoLetra(paisCCC.charAt(0))+pesoLetra(paisCCC.charAt(1))+"00";
+        
+         BigInteger ccc = new BigInteger(transformada);
+        BigInteger valormodulo = new BigInteger("97");
+        ccc = ccc.mod(valormodulo);
+        int calculoresta = 98 - ccc.intValue();
+        
+        String solucion = null;
+        if(calculoresta <= 9){
+            solucion = paisCCC+"0"+Integer.toString(calculoresta)+codigoCuenta;
+        }else{
+            solucion = paisCCC+Integer.toString(calculoresta)+codigoCuenta;
+        }
+        
+        return solucion ;
+    }
+
+    private String pesoLetra(char letra) {
+        System.out.println("La letra es:"+letra);
+        String peso = null;
+      switch(letra){
+          case 'A': peso = "10";
+                break;
+            case 'B': peso = "11";
+                break;
+            case 'C': peso = "12";
+                break;
+            case 'D': peso = "13";
+                break;
+            case 'E': peso = "14";
+                break;
+            case 'F': peso = "15";
+                break;
+            case 'G': peso = "16";
+                break;
+            case 'H': peso = "17";
+                break;
+            case 'I': peso = "18";
+                break;
+            case 'J': peso = "19";
+                break;
+            case 'K': peso = "20";
+                break;
+            case 'L': peso = "21";
+                break;
+            case 'M': peso = "22";
+                break;
+            case 'N': peso = "23";
+                break;
+            case 'O': peso = "24";
+                break;
+            case 'P': peso = "25";
+                break;
+            case 'Q': peso = "26";
+                break;
+            case 'R': peso = "27";
+                break;
+            case 'S': peso = "28";
+                break;
+            case 'T': peso = "29";
+                break;
+            case 'U': peso = "30";
+                break;
+            case 'V': peso = "31";
+                break;
+            case 'W': peso = "32";
+                break;
+            case 'X': peso = "33";
+                break;
+            case 'Y': peso = "34";
+                break;
+            case 'Z': peso = "35";
+      }
+
+        return peso;
     }
     
-    /**
-     * Metodo publico que devuelve el IBAN generado correctamente, tras verificar
-     * previamente que el digito de control es erroneo.
-     * @return 
-     */
-    public String getNewIBAN(){
-        
-        return generarIBAN();
-    }
+
+  
 
 }

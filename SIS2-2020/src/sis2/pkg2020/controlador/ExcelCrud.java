@@ -235,7 +235,7 @@ public class ExcelCrud {
                                );
                //Añadimos el ccc correcto a los trabajadores que no tienen el IBAN vacio.
                String incorrecto = trabajador.getCodigoCuenta();
-               if(!iban.cccIsValida())
+               if(!iban.cccIsValida()){
                    System.out.println("Errores ccc");
                        
                modelo.addErroresCCC(trabajador);
@@ -244,26 +244,18 @@ public class ExcelCrud {
                 ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnas.CODIGO_CUENTA.ordinal());
                 //Exportamos los errores
                 modelo.exportarErroresXML(ModeloErrorXML.IBAN);
-           }else{
-
+               }
            }
-                    
-            
-                   
+                   //Ahora crearemos el codigo IBAN
+                   System.out.println(iban.generarIBAN(trabajador.getCodigoCuenta()));
+                  trabajador.setIban(iban.generarIBAN(trabajador.getCodigoCuenta()));
+                 
+                  ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnas.IBAN.ordinal());
+
         }
-
-
-        
-//       GeneradorIBAN pruebaiban = new GeneradorIBAN("11112223774444444444");
-//       //System.out.println(pruebaiban.cccIsValida());
-//       if(pruebaiban.cccIsValida() && pruebaiban.parControlIsValido()){
-//           System.out.println("true");
-//       }else{
-//           System.out.println("false");
-//           System.out.println(pruebaiban.cccValidado());
-//                   
-//       }
        
     }
+    
+
 
 }

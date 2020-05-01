@@ -56,13 +56,11 @@ public class ModeloXML {
         switch (tipoModelo) {
 
             case IBAN:
-                System.out.println("Parte del IBAN");
                 this.nombrefichero = modelo.IBAN.getNombreFicheroError();
                 this.erroresCCC = new ArrayList<Trabajadorbbdd>();
                 break;
 
             case NIF_NIE:
-                System.out.println("Parte del NIF_NIE");
                 this.nombrefichero = modelo.NIF_NIE.getNombreFicheroError();
                 this.erroresduplicados = new ArrayList<Trabajadorbbdd>();
                 this.erroresblanco = new ArrayList<Trabajadorbbdd>();
@@ -122,7 +120,6 @@ public class ModeloXML {
             StreamResult result = new StreamResult(new File("resources/" + nombrefichero));
 
             transformer.transform(source, result);
-
             System.out.println("Fichero " + nombrefichero + " creado!");
 
         } catch (ParserConfigurationException | TransformerException pce) {
