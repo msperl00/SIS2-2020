@@ -121,10 +121,10 @@ public class GeneradorNIFNIE {
 
     /**
      * Calcula la letra correspodiente a una cadena que se le pasa, segun el
-     * agoritmo de validacion del codigo fiscal
+     * agoritmo de validacion del codigo fiscal.
      *
      * @param prueba
-     * @return
+     * @return Letra generada del nif.
      */
     private char GeneradorLetra(String prueba) {
         return letrasNif.charAt(Integer.parseInt(prueba) % 23);

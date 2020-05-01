@@ -32,6 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sis2.pkg2020.modelo.enums.ModeloErrorXML;
 import sis2.pkg2020.modelo.enums.TipoColumnas;
 import sis2.pkg2020.modelo.operaciones.GeneradorIBAN;
 
@@ -187,8 +188,8 @@ public class ExcelCrud {
      */
     public void comprobarNIFNIE() {
 
-        String nombrefichero = "Errores.xml";
-        ModeloXML modelo = new ModeloXML(nombrefichero);
+        ModeloXML modelo = new ModeloXML(ModeloErrorXML.NIF_NIE);
+        
         for (Trabajadorbbdd trabajador : trabajadores) {
             if (!trabajador.getNifnie().equals("")) {
                 GeneradorNIFNIE calculonif = new GeneradorNIFNIE(trabajador);
@@ -200,7 +201,7 @@ public class ExcelCrud {
 
         }
         modelo.recogerDuplicados(duplicados);
-        modelo.exportarErroresXML();
+        modelo.exportarErroresXML(ModeloErrorXML.NIF_NIE);
 
     }
     /**
@@ -219,7 +220,7 @@ public class ExcelCrud {
     public void comprobarCCC() {
         
         String nombrefichero = "erroresCCC.xml";
-        ModeloXML modelo = new ModeloXML(nombrefichero);
+        ModeloXML modelo = new ModeloXML(ModeloErrorXML.IBAN);
         
         for (Trabajadorbbdd trabajador : trabajadores) {
             GeneradorIBAN iban = new GeneradorIBAN(trabajador);
@@ -233,11 +234,16 @@ public class ExcelCrud {
                        " CCC valido: "+ correcto
                                );
                //Añadimos el ccc correcto a los trabajadores que no tienen el IBAN vacio.
+               String incorrecto = trabajador.getCodigoCuenta();
                if(!iban.cccIsValida())
+                   System.out.println("Errores ccc");
+                       
+               modelo.addErroresCCC(trabajador);
                trabajador.setCodigoCuenta(correcto);
                //9 es el valor correspodiente a la columna en el excel para los ccc.
-             //  ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnas.CODIGO_CUENTA.ordinal());
-           //TODO errores.xml de los correctos y duplicados.
+                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnas.CODIGO_CUENTA.ordinal());
+                //Exportamos los errores
+                modelo.exportarErroresXML(ModeloErrorXML.IBAN);
            }else{
 
            }
