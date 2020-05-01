@@ -27,6 +27,8 @@ public class GeneradorNIFNIE {
         this.modelo = modelo;
 
     }
+    
+   
 
     /**
      * Validamos el código del trabajador que hemos recibido en el constructor.

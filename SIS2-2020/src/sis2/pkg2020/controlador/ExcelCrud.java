@@ -222,8 +222,41 @@ public class ExcelCrud {
         
         for (Trabajadorbbdd trabajador : trabajadores) {
             GeneradorIBAN iban = new GeneradorIBAN(trabajador);
-        }
         
+            
+           if(iban.cccIsValida() && iban.parControlIsValido()){
+                
+                             
+                               
+           }else{
+               System.out.println(iban.toString());
+               System.out.println(iban.getParControlCalculado());
+                       
+                      
+               if(!iban.cccIsValida())
+               trabajador.setCodigoCuenta(iban.cccValidado());
+               
+             
+                       
+
+           }
+                    
+            
+                   
+        }
+
+
+        
+//       GeneradorIBAN pruebaiban = new GeneradorIBAN("11112223774444444444");
+//       //System.out.println(pruebaiban.cccIsValida());
+//       if(pruebaiban.cccIsValida() && pruebaiban.parControlIsValido()){
+//           System.out.println("true");
+//       }else{
+//           System.out.println("false");
+//           System.out.println(pruebaiban.cccValidado());
+//                   
+//       }
+       
     }
 
 }
