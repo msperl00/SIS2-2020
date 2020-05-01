@@ -118,7 +118,7 @@ public class ExcelCrud {
                     //Añadimos al hashMap, y si es un duplicado no se añade al hash pero si a duplicados.
                     if (!trabajadores.add(trabajador)) {
                         duplicados.add(trabajador);
-                        System.out.println("Añadiendo a duplicados"
+                        System.out.println("Añadiendo a duplicados "
                                 + trabajador.getNombre());
                     }
 
@@ -224,20 +224,19 @@ public class ExcelCrud {
             GeneradorIBAN iban = new GeneradorIBAN(trabajador);
         
             
-           if(iban.cccIsValida() && iban.parControlIsValido()){
+           if(!(iban.cccIsValida() && iban.parControlIsValido())){
                 
-                             
-                               
-           }else{
-               System.out.println(iban.toString());
-               System.out.println(iban.getParControlCalculado());
-                       
-                      
+               String correcto = iban.cccValidado();
+               System.out.println("En la fila: "+ trabajador.getIdTrabajador()+
+                       " CCC erroneo:" + trabajador.getCodigoCuenta()+
+                       " CCC valido: "+ correcto
+                               );
+               //Añadimos el ccc correcto a los trabajadores que no tienen el IBAN vacio.
                if(!iban.cccIsValida())
-               trabajador.setCodigoCuenta(iban.cccValidado());
-               
-             
-                       
+               trabajador.setCodigoCuenta(correcto);
+                  
+           //TODO errores.xml de los correctos y duplicados.
+           }else{
 
            }
                     

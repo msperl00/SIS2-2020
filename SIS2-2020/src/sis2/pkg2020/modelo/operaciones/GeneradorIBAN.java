@@ -219,5 +219,21 @@ public class GeneradorIBAN {
         return compararParCtrl(parControlcalculado, parControl);
 
     }
+   
+    private String generarIBAN(){
+        
+        
+        return null;
+    }
+    
+    /**
+     * Metodo publico que devuelve el IBAN generado correctamente, tras verificar
+     * previamente que el digito de control es erroneo.
+     * @return 
+     */
+    public String getNewIBAN(){
+        
+        return generarIBAN();
+    }
 
 }
