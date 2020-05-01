@@ -219,7 +219,20 @@ public class GeneradorIBAN {
         return compararParCtrl(parControlcalculado, parControl);
 
     }
-   
+   /**
+    * Este metodo reproduce la operacion del calculo del IBAN, el cual se obtiene
+    * con la cuenta bancaria del trabajador, y con el pais de origen de la misma.
+    * 
+    *           1º El codigo IBAN comienza por 2 letras segun -> PAIS de origen
+    *           2º Le sigue el par de digitos de control calculado anteriormente.
+    *           3º Le siguenn los 20 digitos del ccc de la cuenta bancaria.
+    * 
+    *           Conclusion: 24 posiciones, solo para la realizacion de cuentas bancarias con 20 digitos.
+    * 
+    * 
+    * 
+    * @return String que contiene el numero IBAN correcto segun la cuenta bancaria.
+    */
     private String generarIBAN(){
         
         

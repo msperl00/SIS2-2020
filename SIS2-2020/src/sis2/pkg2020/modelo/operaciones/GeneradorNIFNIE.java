@@ -4,6 +4,7 @@ import com.sun.xml.internal.ws.developer.Serialization;
 import sis2.pkg2020.controlador.ExcelCrud;
 import sis2.pkg2020.vista.ModeloXML;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
+import sis2.pkg2020.modelo.enums.TipoColumnas;
 
 /**
  * Clase que se encarga de la validación y correción de los errores en el nif y
@@ -45,10 +46,12 @@ public class GeneradorNIFNIE {
             String correcto = GeneradorNIE(nifnie);
             if (correcto.equals(nifnie)) {
              //   System.out.println("Correcto");
+        
             } else {
                 System.out.println("Incorrecto ->>>>>" + correcto);
                 trabajador.setNifnie(correcto);
-                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, 7);
+                
+                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() -1, TipoColumnas.NIF_NIE.ordinal());
             }
 
         } else if (isNIF(nifnie.substring(0, 1))) {

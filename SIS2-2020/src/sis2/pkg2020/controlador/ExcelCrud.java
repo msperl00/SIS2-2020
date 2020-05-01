@@ -32,6 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sis2.pkg2020.modelo.enums.TipoColumnas;
 import sis2.pkg2020.modelo.operaciones.GeneradorIBAN;
 
 /**
@@ -234,7 +235,8 @@ public class ExcelCrud {
                //Añadimos el ccc correcto a los trabajadores que no tienen el IBAN vacio.
                if(!iban.cccIsValida())
                trabajador.setCodigoCuenta(correcto);
-                  
+               //9 es el valor correspodiente a la columna en el excel para los ccc.
+             //  ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnas.CODIGO_CUENTA.ordinal());
            //TODO errores.xml de los correctos y duplicados.
            }else{
 
