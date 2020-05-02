@@ -105,7 +105,11 @@ public class Controlador {
        //Práctica 2
        excel.comprobarNIFNIE();
        //Práctica 3
+                    //Primera parte CCC e IBAN
        excel.comprobarCCC();
+                    //Segunda parte correoElectronico.
+       excel.crearCorreoElectronico();
+                
        
        
        

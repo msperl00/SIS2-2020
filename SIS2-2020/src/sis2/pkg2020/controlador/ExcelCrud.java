@@ -9,7 +9,7 @@ import sis2.pkg2020.vista.ModeloXML;
 import sis2.pkg2020.modelo.dao.EmpresasDAO;
 import sis2.pkg2020.modelo.dao.CategoriasDAO;
 import sis2.pkg2020.modelo.dao.TrabajadorDAO;
-import sis2.pkg2020.modelo.operaciones.GeneradorNIFNIE;
+import sis2.pkg2020.modelo.generadores.GeneradorNIFNIE;
 import sis2.pkg2020.modelo.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -34,7 +34,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import sis2.pkg2020.modelo.enums.ModeloErrorXML;
 import sis2.pkg2020.modelo.enums.TipoColumnas;
-import sis2.pkg2020.modelo.operaciones.GeneradorIBAN;
+import sis2.pkg2020.modelo.generadores.GeneradorCorreoElectronico;
+import sis2.pkg2020.modelo.generadores.GeneradorIBAN;
 
 /**
  * Clase utilizada para las operaciones de las hojas Excel.
@@ -47,6 +48,7 @@ public class ExcelCrud {
     private ArrayList<Categorias> categorias;
     private ArrayList<Empresas> empresas;
     private ArrayList<Trabajadorbbdd> duplicados;
+    private ArrayList<Trabajadorbbdd> lista;
 
     private static FileInputStream file;
     private static XSSFWorkbook workbook;
@@ -58,6 +60,7 @@ public class ExcelCrud {
         categorias = new ArrayList<Categorias>();
         empresas = new ArrayList<Empresas>();
         duplicados = new ArrayList<Trabajadorbbdd>();
+        lista = new ArrayList<Trabajadorbbdd>();
 
     }
 
@@ -120,6 +123,8 @@ public class ExcelCrud {
                     TrabajadorDAO.recogidaTrabajadorExel(row, trabajador, empresasDAO, categoriasDAO);
                     //Setteamos el id con el valor de la fila
                     trabajador.setIdTrabajador(numeroFila);
+                    //ArrayList de todos los trabajadores.
+                    lista.add(trabajador);
                     //Añadimos al hashMap, y si es un duplicado no se añade al hash pero si a duplicados.
                     if (!trabajadores.add(trabajador)) {
                         duplicados.add(trabajador);
@@ -289,6 +294,23 @@ public class ExcelCrud {
         }
         modelo.exportarErroresXML(ModeloErrorXML.IBAN);
         cerrarConexionExcel();
+    }
+
+  /**
+   * Este metodo cumplira la tarea de asignar a los trabajadores el correo electroonico.
+   * 
+   *    -1º Comprobaremos si tiene o no correo electronico.
+   *    -2º Si no tiene lo generaremos según unas directrices que están indicados en la clase generadora de correo Electronico
+   *    -3º Finalmente asignaremos los valores correspodientes a las celdas del Excel.
+   */
+   public void crearCorreoElectronico() {
+       
+        ArrayList<Trabajadorbbdd> auxiliar = new ArrayList<>();
+        for (Trabajadorbbdd trabajador : lista) {
+            auxiliar.add(trabajador);
+            GeneradorCorreoElectronico correo = new GeneradorCorreoElectronico(trabajador,auxiliar);
+            System.out.println(correo.generarCorreo());
+        }
     }
 
 }

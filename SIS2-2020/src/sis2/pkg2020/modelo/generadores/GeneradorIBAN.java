@@ -1,4 +1,4 @@
-package sis2.pkg2020.modelo.operaciones;
+package sis2.pkg2020.modelo.generadores;
 
 import java.awt.BorderLayout;
 import java.math.BigInteger;

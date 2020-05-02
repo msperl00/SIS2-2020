@@ -49,11 +49,9 @@ Contributor(s):
     <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/importarddbb</property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">0000</property>
-  
     <mapping resource="sis2/pkg2020/modelo/Nomina.hbm.xml"/>
     <mapping resource="sis2/pkg2020/modelo/Empresas.hbm.xml"/>
     <mapping resource="sis2/pkg2020/modelo/Trabajadorbbdd.hbm.xml"/>
     <mapping resource="sis2/pkg2020/modelo/Categorias.hbm.xml"/>
- 
   </session-factory>
 </hibernate-configuration>
