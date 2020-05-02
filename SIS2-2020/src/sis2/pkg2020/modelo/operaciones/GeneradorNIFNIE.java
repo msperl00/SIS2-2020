@@ -32,44 +32,33 @@ public class GeneradorNIFNIE {
    
 
     /**
-     * Validamos el código del trabajador que hemos recibido en el constructor.
-     * Si es vacio -> Añadir a en blanco Si es duplicado -> Añadimos a
-     * duplicados Si no es ni vacio ni duplicado -> Pasamos a realizar las
-     * comporbaciones pertinentes.
+     * Metodo que devulve la cadena correcta calculada segun si es nif o nie
+     * y que llama a los metodos que relizan dichas operaciones.
      *
      * @return boolean
      */
-    public boolean validar() {
+    public String validar() {
 
         if (isNIE(nifnie.substring(0, 1))) {
            // System.out.println("Es NIE");
             String correcto = GeneradorNIE(nifnie);
-            if (correcto.equals(nifnie)) {
-             //   System.out.println("Correcto");
-        
-            } else {
-                System.out.println("Incorrecto ->>>>>" + correcto);
-                trabajador.setNifnie(correcto);
+            if (!correcto.equals(nifnie)) {
+             
+                return correcto;
                 
-                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() -1, TipoColumnas.NIF_NIE.ordinal());
             }
 
         } else if (isNIF(nifnie.substring(0, 1))) {
           //  System.out.println("ES NIF");
             String correcto = GeneradorNIF(nifnie);
-            if (correcto.equals(nifnie)) {
-         //       System.out.println("Correcto");
-            } else {
-                System.out.println("Incorrecto");
-                trabajador.setNifnie(GeneradorNIF(nifnie));
-                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, 7);
+            if (!correcto.equals(nifnie)) {
+        
+               return correcto;
 
             }
-        } else {
-            System.out.println("Ninguno de los dos");
         }
 
-        return false;
+        return nifnie;
     }
 
     private boolean isNIF(String inicial) {

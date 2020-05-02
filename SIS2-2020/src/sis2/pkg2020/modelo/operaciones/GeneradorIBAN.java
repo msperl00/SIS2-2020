@@ -194,7 +194,6 @@ public class GeneradorIBAN {
      */
     private boolean compararParCtrl(String parCalculado, String parSinCalcular) {
 
-        //System.out.println(parCalculado + " VS " + parSinCalcular);
 
         if (parCalculado.equals(parSinCalcular)) {
             return true;
@@ -208,7 +207,6 @@ public class GeneradorIBAN {
      * @return el ccc con los digitos de control correctos.
      */
     public String cccValidado() {
-       // System.out.println("Antiguo: "+ccc+" VS "+ "Nuevo: "+entidad + idOficina + parControlcalculado + cuenta);
                 
         return entidad + idOficina + parControlcalculado + cuenta;
     }
@@ -274,7 +272,6 @@ public class GeneradorIBAN {
     }
 
     private String pesoLetra(char letra) {
-        System.out.println("La letra es:"+letra);
         String peso = null;
       switch(letra){
           case 'A': peso = "10";

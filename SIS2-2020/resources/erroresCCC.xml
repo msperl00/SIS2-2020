@@ -1,21 +1,2 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Trabajadores>
-    <Cuentas>
-        <Fila>2</Fila>
-        <TipoError>CCC</TipoError>
-        <Nombre>Mohamed</Nombre>
-        <PrimerApellido>Ahmed</PrimerApellido>
-        <SegundoApellido/>
-        <Categoria>Analista</Categoria>
-        <Empresa>TecnoLeonSL</Empresa>
-    </Cuentas>
-    <Cuentas>
-        <Fila>4</Fila>
-        <TipoError>CCC</TipoError>
-        <Nombre>Bonifacio</Nombre>
-        <PrimerApellido>Alcoba</PrimerApellido>
-        <SegundoApellido>Alonso</SegundoApellido>
-        <Categoria>Ordenanza</Categoria>
-        <Empresa>Asoftware</Empresa>
-    </Cuentas>
-</Trabajadores>
+<Trabajadores/>
