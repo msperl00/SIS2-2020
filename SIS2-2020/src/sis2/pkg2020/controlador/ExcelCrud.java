@@ -47,6 +47,9 @@ public class ExcelCrud {
     private ArrayList<Categorias> categorias;
     private ArrayList<Empresas> empresas;
     private ArrayList<Trabajadorbbdd> duplicados;
+    
+    private static FileInputStream file;
+    private static XSSFWorkbook workbook;
 
     public ExcelCrud() {
 
@@ -139,7 +142,52 @@ public class ExcelCrud {
         System.out.println("Fichero leido");
 
     }
-
+    /**
+     * Metodo estatico que permite la apertura de la conexion del excel,
+     * teniendo como valores prinicpales el fichero de entrada, y el "libro de trabajo"
+     * el cual contendrá el fichero. 
+     * 
+     * Este metodo es creado de esta manera, para recoger distintas hojas según la necesidad de ese momento.
+     * 
+     *          - Este tipo de file que es FileInputStreamReader, leer el fichero de forma binaria.
+     *          - El fichero XSSFWorkbook es libro de trabajo sobre el que podremos jugar/trabajar
+     *          - Elemento basico perteneciente al libro del trabajo, sobre el que se recogeran los datos.
+     * 
+     * @param hoja
+     * @return devolvemos la hoja de excel.
+     */
+    public static XSSFSheet abrirConexionExcel(int hoja){
+        
+        try {
+            ExcelCrud.file = new FileInputStream("resources/SistemasInformacionII.xlsx");
+            ExcelCrud.workbook = new XSSFWorkbook(file);
+            XSSFSheet sheet = workbook.getSheetAt(hoja);
+            return sheet;
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
+        }
+          return null;
+    }
+    
+    /**
+     * Metodo complemetario al abrir fichero, el cual cierra todas las conexiones posibles.
+     * 
+     * EL fichero de entrada es cerrada, y el libro de trabajo es escrito por los valores que
+     * hayamos acutalizado en ese momento.
+     * 
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
+    public static void cerrarConexionExcel() throws FileNotFoundException, IOException{
+        
+            file.close();
+            FileOutputStream outFile = new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"));
+            workbook.write(outFile);
+            outFile.close();
+    }
+    
     /**
      * Actualiza el valor de una celda correspodiente asignando fila columna, y
      * el valor a settear.
@@ -148,30 +196,11 @@ public class ExcelCrud {
      * @param row
      * @param col
      */
-    public static void actualizarCelda(String nifnie, Integer row, int col) {
+    public static void actualizarCelda(String nifnie, Integer row, int col,XSSFSheet sheet) {
 
-        FileInputStream file;
-        try {
-            file = new FileInputStream("resources/SistemasInformacionII.xlsx");
-            XSSFWorkbook workbook = new XSSFWorkbook(file);
-            XSSFSheet sheet = workbook.getSheetAt(0);
-
+        
             Cell cell = sheet.getRow(row).getCell(col, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-
-            System.out.println("Nuevo valor en la columna" + col);
             cell.setCellValue(nifnie);
-
-            file.close();
-
-            FileOutputStream outFile = new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"));
-            workbook.write(outFile);
-            outFile.close();
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
     }
 
@@ -217,11 +246,12 @@ public class ExcelCrud {
      *      2º Exportacion de los errores correspodientes a los codigos ccc.
      *      
      */
-    public void comprobarCCC() {
+    public void comprobarCCC() throws IOException {
         
         String nombrefichero = "erroresCCC.xml";
         ModeloXML modelo = new ModeloXML(ModeloErrorXML.IBAN);
-        
+        //Abrimos conexion
+        XSSFSheet sheet = abrirConexionExcel(0);
         for (Trabajadorbbdd trabajador : trabajadores) {
             GeneradorIBAN iban = new GeneradorIBAN(trabajador);
         
@@ -241,7 +271,7 @@ public class ExcelCrud {
                modelo.addErroresCCC(trabajador);
                trabajador.setCodigoCuenta(correcto);
                //9 es el valor correspodiente a la columna en el excel para los ccc.
-                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnas.CODIGO_CUENTA.ordinal());
+                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnas.CODIGO_CUENTA.ordinal(),sheet);
                 //Exportamos los errores
                 modelo.exportarErroresXML(ModeloErrorXML.IBAN);
                }
@@ -250,10 +280,10 @@ public class ExcelCrud {
                    System.out.println(iban.generarIBAN(trabajador.getCodigoCuenta()));
                   trabajador.setIban(iban.generarIBAN(trabajador.getCodigoCuenta()));
                  
-                  ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnas.IBAN.ordinal());
+                  ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnas.IBAN.ordinal(),sheet);
 
         }
-       
+        cerrarConexionExcel();
     }
     
 
