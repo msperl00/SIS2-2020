@@ -37,7 +37,7 @@ public class WrapperCategoria {
 
     @Override
     public String toString() {
-        return  "salarioBase= " + salarioBase + ", complementos= " + complementos;
+        return   "salarioBase= " + salarioBase + ", complementos= " + complementos + "\n";
     }
     
 }

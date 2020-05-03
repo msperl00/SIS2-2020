@@ -32,10 +32,12 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sis2.pkg2020.modelo.Wrapper.WrapperBrutoRetencion;
 import sis2.pkg2020.modelo.Wrapper.WrapperCategoria;
 import sis2.pkg2020.modelo.enums.ModeloErrorXML;
 import sis2.pkg2020.modelo.enums.TipoColumnasHoja1;
 import sis2.pkg2020.modelo.enums.TipoColumnasHoja2;
+import sis2.pkg2020.modelo.enums.TipoColumnasHoja3;
 import sis2.pkg2020.modelo.generadores.GeneradorCorreoElectronico;
 import sis2.pkg2020.modelo.generadores.GeneradorIBAN;
 
@@ -332,7 +334,7 @@ public class ExcelCrud {
         }
 
         cerrarConexionExcel();
-        System.out.println("Terminada la generación de correos!");
+        System.out.println("Terminada la generación de correos!\n");
 
     }
 
@@ -347,10 +349,10 @@ public class ExcelCrud {
 
         try {
             cargarHoja2();
-            
-            //  cargarHoja3();
-            //cargarHoja4();
-            //cargarHoja5();
+
+            cargarHoja3();
+            cargarHoja4();
+            cargarHoja5();
         } catch (IOException ex) {
             Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -365,7 +367,7 @@ public class ExcelCrud {
      * pertenecientes a ella.
      */
     private HashMap<?, ?> cargarHoja2() throws IOException {
-        
+
         HashMap<String, WrapperCategoria> map = new HashMap<>();
         XSSFSheet sheet = abrirConexionExcel(1);
         Iterator<Row> rowIterator = sheet.iterator();
@@ -383,21 +385,20 @@ public class ExcelCrud {
                     Double aux;
                     switch (tipoColumna) {
                         case CATEGORIA:
-                              nombreCategoria = cell.getStringCellValue();
+                            nombreCategoria = cell.getStringCellValue();
                             break;
                         case SALARIOBASE:
-                             aux = cell.getNumericCellValue();
+                            aux = cell.getNumericCellValue();
                             salarioBase = aux.intValue();
-                            
-                                    break;
+
+                            break;
                         case COMPLEMENTOS:
-                             aux = cell.getNumericCellValue();
+                            aux = cell.getNumericCellValue();
                             complementos = aux.intValue();
                             break;
 
                     }
-                    
-                    
+
                 }
                 categoria = new WrapperCategoria(salarioBase, complementos);
                 map.put(nombreCategoria, categoria);
@@ -405,20 +406,127 @@ public class ExcelCrud {
         }
         System.out.println(map.toString());
         cerrarConexionExcel();
-        System.out.println("Realizada carga de la hoja 2!");
+        System.out.println("\nRealizada carga de la hoja 2!\n\n");
         return map;
     }
 
-    private HashMap<?, ?> cargarHoja3() {
-        
+    /**
+     * carga el bruto anual y su retencion.
+     *
+     * @return
+     * @throws IOException
+     */
+    private HashMap<?, ?> cargarHoja3() throws IOException {
+        HashMap<String, WrapperBrutoRetencion> map = new HashMap<>();
+        XSSFSheet sheet = abrirConexionExcel(2);
+        Iterator<Row> rowIterator = sheet.iterator();
+        String nombreBruto = null;
+        WrapperBrutoRetencion brutoAnualRetencion;
+        Integer brutoAnual = null;
+        Integer retencion = null;
+        Cell cell;
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            if (row.getRowNum() != 0 && !isRowEmpty(row)) {
+                for (TipoColumnasHoja3 tipoColumna : TipoColumnasHoja3.values()) {
+                    cell = row.getCell(tipoColumna.ordinal(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                    Double aux;
+                    switch (tipoColumna) {
+                        case BRUTOANUAL:
+                            aux = cell.getNumericCellValue();
+                            brutoAnual = aux.intValue();
+                            break;
+                        case RETENCIONES:
+
+                            aux = cell.getNumericCellValue();
+                            retencion = aux.intValue();
+                            break;
+                    }
+
+                }
+                brutoAnualRetencion = new WrapperBrutoRetencion(brutoAnual, retencion);
+                nombreBruto = String.valueOf(brutoAnual);
+                map.put(nombreBruto, brutoAnualRetencion);
+            }
+        }
+        System.out.println(map.toString());
+        cerrarConexionExcel();
+        System.out.println("\nRealizada carga de la hoja 3!\n\n");
+        return map;
     }
 
-    private HashMap<?, ?> cargarHoja4() {
-        
+    /**
+     * Metodo que carga:
+     *
+     * CUOTA_OBRERA_GENERAL_TRABAJADOR("Cuota obrera generaltrabajador"),
+     * CUOTA_DESEMPLEO_TRABAJADOR("Cuota desemplo trabajador"),
+     * CUOTA_FORMACION_TRABAJADOR("Cuota formacion trabajador"),
+     * CONTINGENICIAS_COMUNES_EMPRESARIO(" CONTINGENCIAS COMUNES empresario"),
+     * FOGASA_EMPRESARIO("FOGASA empresario"), DESEMPLO_EMPRESARIO("DESEMPLEO
+     * empresario"), FORMACION_EMPRESARIO("FORMACION empresario"),
+     * ACCIDENTES_TRABAJO_EMPRESARIO("ACCIDENTES TRABAJO empresario");
+     *
+     * @return
+     * @throws IOException
+     */
+    private HashMap<?, ?> cargarHoja4() throws IOException {
+        HashMap<String, Double> map = new HashMap<>();
+        XSSFSheet sheet = abrirConexionExcel(3);
+        Iterator<Row> rowIterator = sheet.iterator();
+        String nombre = null;
+        Double valor = null;
+
+        Cell cell;
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            if (!isRowEmpty(row)) {
+                cell = row.getCell(0, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                nombre = cell.getStringCellValue();
+
+                cell = row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+               valor = cell.getNumericCellValue();
+               map.put(nombre, valor);
+            }
+            
+        }
+        System.out.println(map.toString());
+        System.out.println("\nRealizada la carga dela hoja 4ª\n\n");
+        cerrarConexionExcel();
+
+        return map;
     }
 
+    /**
+     * Metodo que carga el numero de trienios y el importe bruto.
+     *
+     * @return HasMap con los valores del numero de trienios y su correspodiente
+     * importe.
+     */
     private HashMap<?, ?> cargarHoja5() {
-        
-    }
+        HashMap<String, Integer> map = new HashMap<>();
+        XSSFSheet sheet = abrirConexionExcel(4);
+        Iterator<Row> rowIterator = sheet.iterator();
+        String numeroTrienio = null;
+        Integer valor = null;
+        Cell cell;
 
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            if (row.getRowNum() != 0 && !isRowEmpty(row)) {
+                
+                cell = row.getCell(0, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                Double aux = cell.getNumericCellValue();
+                numeroTrienio = aux.toString();
+                cell = row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
+                aux = cell.getNumericCellValue();
+                valor = aux.intValue();
+                map.put(numeroTrienio, valor);
+            }
+            
+
+        }
+        System.out.println(map.toString());
+        System.out.println("\nRealizada la carga de la hoja 5!\n\n");
+        return map;
+    }
 }
