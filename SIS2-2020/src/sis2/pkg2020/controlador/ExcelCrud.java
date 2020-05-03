@@ -32,8 +32,10 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import sis2.pkg2020.modelo.Wrapper.WrapperCategoria;
 import sis2.pkg2020.modelo.enums.ModeloErrorXML;
-import sis2.pkg2020.modelo.enums.TipoColumnas;
+import sis2.pkg2020.modelo.enums.TipoColumnasHoja1;
+import sis2.pkg2020.modelo.enums.TipoColumnasHoja2;
 import sis2.pkg2020.modelo.generadores.GeneradorCorreoElectronico;
 import sis2.pkg2020.modelo.generadores.GeneradorIBAN;
 
@@ -222,8 +224,8 @@ public class ExcelCrud {
      * XMLModelo
      *
      * TRABAJAMOS CON EL HASH, PARA EVITAR RECOGER TRABAJADORES REPETIDOS.
-     * 
-     * 
+     *
+     *
      */
     public void comprobarNIFNIE() throws IOException {
 
@@ -233,14 +235,14 @@ public class ExcelCrud {
             if (!trabajador.getNifnie().equals("")) {
                 GeneradorNIFNIE calculonif = new GeneradorNIFNIE(trabajador);
                 String correcto = calculonif.validar();
-                if(!correcto.equals(trabajador.getNifnie())){
-                    System.out.println("Incorrecto NIF en trabajador: "+ trabajador.getIdTrabajador());
-                trabajador.setNifnie(correcto);
+                if (!correcto.equals(trabajador.getNifnie())) {
+                    System.out.println("Incorrecto NIF en trabajador: " + trabajador.getIdTrabajador());
+                    trabajador.setNifnie(correcto);
                     System.out.println(correcto);
-                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() -1, TipoColumnas.NIF_NIE.ordinal(),sheet);
+                    ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnasHoja1.NIF_NIE.ordinal(), sheet);
 
                 }
-                
+
             } else {
                 modelo.addBlanco(trabajador);
                 System.out.println("Añadiendo vacio en fila " + trabajador.getIdTrabajador());
@@ -262,9 +264,10 @@ public class ExcelCrud {
      * esta 2.b Si no es valido modifica y se setea en el excel.
      *
      * 2º Exportacion de los errores correspodientes a los codigos ccc.
-     * 
-     * 
-     *  EN ESTE CASO UTILIZAMOS EL ARRAY LIST QUE CONTIENE TODOS MENOS LOS VACIOS.
+     *
+     *
+     * EN ESTE CASO UTILIZAMOS EL ARRAY LIST QUE CONTIENE TODOS MENOS LOS
+     * VACIOS.
      *
      */
     public void comprobarCCC() throws IOException {
@@ -287,47 +290,135 @@ public class ExcelCrud {
                 String incorrecto = trabajador.getCodigoCuenta();
                 modelo.addErroresCCC(trabajador);
                 trabajador.setCodigoCuenta(correcto);
-                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnas.CODIGO_CUENTA.ordinal(), sheet);
+                ExcelCrud.actualizarCelda(correcto, trabajador.getIdTrabajador() - 1, TipoColumnasHoja1.CODIGO_CUENTA.ordinal(), sheet);
                 //Exportamos los errores
 
             }
             //Ahora crearemos el codigo IBAN parar todos los trabajadores que esten en la lista -> Incluso los repetidos.
-            if(trabajador.getIban().equals("")){
+            if (trabajador.getIban().equals("")) {
                 System.out.println("VACIO");
-                        
-            trabajador.setIban(iban.generarIBAN(trabajador.getCodigoCuenta()));
-            ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnas.IBAN.ordinal(), sheet);
+
+                trabajador.setIban(iban.generarIBAN(trabajador.getCodigoCuenta()));
+                ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnasHoja1.IBAN.ordinal(), sheet);
             }
         }
         modelo.exportarErroresXML(ModeloErrorXML.IBAN);
         cerrarConexionExcel();
     }
 
-  /**
-   * Este metodo cumplira la tarea de asignar a los trabajadores el correo electroonico.
-   * 
-   *    -1º Comprobaremos si tiene o no correo electronico.
-   *    -2º Si no tiene lo generaremos según unas directrices que están indicados en la clase generadora de correo Electronico
-   *    -3º Finalmente asignaremos los valores correspodientes a las celdas del Excel.
-   * 
-   * 
-   *    EN ESTE CASO UTILIZAMOS EL ARRAY LIST QUE CONTIENE TODOS MENOS LOS VACIOS.
-   */
-   public void crearCorreoElectronico() throws IOException {
-       
+    /**
+     * Este metodo cumplira la tarea de asignar a los trabajadores el correo
+     * electroonico.
+     *
+     * -1º Comprobaremos si tiene o no correo electronico. -2º Si no tiene lo
+     * generaremos según unas directrices que están indicados en la clase
+     * generadora de correo Electronico -3º Finalmente asignaremos los valores
+     * correspodientes a las celdas del Excel.
+     *
+     *
+     * EN ESTE CASO UTILIZAMOS EL ARRAY LIST QUE CONTIENE TODOS MENOS LOS
+     * VACIOS.
+     */
+    public void crearCorreoElectronico() throws IOException {
+
         ArrayList<Trabajadorbbdd> auxiliar = new ArrayList<>();
         String correoTrabajador;
         XSSFSheet sheet = abrirConexionExcel(0);
         for (Trabajadorbbdd trabajador : lista) {
             auxiliar.add(trabajador);
-            GeneradorCorreoElectronico correo = new GeneradorCorreoElectronico(trabajador,auxiliar);
-             correoTrabajador = correo.generarCorreo();
-             ExcelCrud.actualizarCelda(correoTrabajador, trabajador.getIdTrabajador() - 1, TipoColumnas.EMAIL.ordinal(), sheet);
+            GeneradorCorreoElectronico correo = new GeneradorCorreoElectronico(trabajador, auxiliar);
+            correoTrabajador = correo.generarCorreo();
+            ExcelCrud.actualizarCelda(correoTrabajador, trabajador.getIdTrabajador() - 1, TipoColumnasHoja1.EMAIL.ordinal(), sheet);
         }
-        
-                cerrarConexionExcel();
-                System.out.println("Terminada la generación de correos!");
 
+        cerrarConexionExcel();
+        System.out.println("Terminada la generación de correos!");
+
+    }
+
+    /**
+     * Este metodo contendrá las llamadas necesarias para la carga de los datos
+     * contenidos en las hojas 2,3,4 y 5.
+     *
+     * Para ello, necesito crear una serie de clases de carga de los datos de
+     * manera Wrapper para los diferentes datos de cada hoja.
+     */
+    public void cargarDatosHojas(File excelFile) {
+
+        try {
+            cargarHoja2();
+            
+            //  cargarHoja3();
+            //cargarHoja4();
+            //cargarHoja5();
+        } catch (IOException ex) {
+            Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    /**
+     * Metodo que devuelve un HashMap de manera que utilizamos la interrogacion
+     * para que se observe que es de cualquier tipo.
+     *
+     * @return HashMap que contiene el nombre de la categoria, y los atributos
+     * pertenecientes a ella.
+     */
+    private HashMap<?, ?> cargarHoja2() throws IOException {
+        
+        HashMap<String, WrapperCategoria> map = new HashMap<>();
+        XSSFSheet sheet = abrirConexionExcel(1);
+        Iterator<Row> rowIterator = sheet.iterator();
+        String nombreCategoria = null;
+        WrapperCategoria categoria;
+        Integer salarioBase = null;
+        Integer complementos = null;
+        Cell cell;
+        while (rowIterator.hasNext()) {
+            Row row = rowIterator.next();
+            if (row.getRowNum() != 0 && !isRowEmpty(row)) {
+                //Iteramos según el numero de atributos que tengan la fila.
+                for (TipoColumnasHoja2 tipoColumna : TipoColumnasHoja2.values()) {
+                    cell = row.getCell(tipoColumna.ordinal(), Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                    Double aux;
+                    switch (tipoColumna) {
+                        case CATEGORIA:
+                              nombreCategoria = cell.getStringCellValue();
+                            break;
+                        case SALARIOBASE:
+                             aux = cell.getNumericCellValue();
+                            salarioBase = aux.intValue();
+                            
+                                    break;
+                        case COMPLEMENTOS:
+                             aux = cell.getNumericCellValue();
+                            complementos = aux.intValue();
+                            break;
+
+                    }
+                    
+                    
+                }
+                categoria = new WrapperCategoria(salarioBase, complementos);
+                map.put(nombreCategoria, categoria);
+            }
+        }
+        System.out.println(map.toString());
+        cerrarConexionExcel();
+        System.out.println("Realizada carga de la hoja 2!");
+        return map;
+    }
+
+    private HashMap<?, ?> cargarHoja3() {
+        
+    }
+
+    private HashMap<?, ?> cargarHoja4() {
+        
+    }
+
+    private HashMap<?, ?> cargarHoja5() {
+        
     }
 
 }

@@ -110,7 +110,8 @@ public class Controlador {
                     //Segunda parte correoElectronico.
        excel.crearCorreoElectronico();
                 
-       
+                    //Tercera parte Carga de las demás estructuras de datos.
+       excel.cargarDatosHojas(excelFile);
        
        
     

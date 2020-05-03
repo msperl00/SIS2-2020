@@ -13,7 +13,7 @@ package sis2.pkg2020.modelo.enums;
  *
  * @author Marco Speranza López
  */
-public enum TipoColumnas {
+public enum TipoColumnasHoja1 {
     
     CIF_EMPRESA, NOMBRE_EMPRESA, CATEGORIA, FECHA_ALTA_EMPRESA, NOMBRE
     ,APELLIDO1, APELLIDO2,NIF_NIE, EMAIL, CODIGO_CUENTA, PAIS, IBAN,
