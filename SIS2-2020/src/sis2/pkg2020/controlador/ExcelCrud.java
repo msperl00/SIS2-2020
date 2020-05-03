@@ -221,7 +221,9 @@ public class ExcelCrud {
      * 1º Comprobamos si NIF vacio 2º Comrpobamos NIF 3º Exportamos los errores
      * XMLModelo
      *
-     * Trabajaremos con el HashSet para evitar repeticiones de objetos.
+     * TRABAJAMOS CON EL HASH, PARA EVITAR RECOGER TRABAJADORES REPETIDOS.
+     * 
+     * 
      */
     public void comprobarNIFNIE() throws IOException {
 
@@ -260,6 +262,9 @@ public class ExcelCrud {
      * esta 2.b Si no es valido modifica y se setea en el excel.
      *
      * 2º Exportacion de los errores correspodientes a los codigos ccc.
+     * 
+     * 
+     *  EN ESTE CASO UTILIZAMOS EL ARRAY LIST QUE CONTIENE TODOS MENOS LOS VACIOS.
      *
      */
     public void comprobarCCC() throws IOException {
@@ -268,7 +273,7 @@ public class ExcelCrud {
         ModeloXML modelo = new ModeloXML(ModeloErrorXML.IBAN);
         //Abrimos conexion
         XSSFSheet sheet = abrirConexionExcel(0);
-        for (Trabajadorbbdd trabajador : trabajadores) {
+        for (Trabajadorbbdd trabajador : lista) {
             GeneradorIBAN iban = new GeneradorIBAN(trabajador);
 
             if (!(iban.cccIsValida() && iban.parControlIsValido())) {
@@ -286,8 +291,10 @@ public class ExcelCrud {
                 //Exportamos los errores
 
             }
-            //Ahora crearemos el codigo IBAN
-            if(trabajador.getIban().equals(null)){
+            //Ahora crearemos el codigo IBAN parar todos los trabajadores que esten en la lista -> Incluso los repetidos.
+            if(trabajador.getIban().equals("")){
+                System.out.println("VACIO");
+                        
             trabajador.setIban(iban.generarIBAN(trabajador.getCodigoCuenta()));
             ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnas.IBAN.ordinal(), sheet);
             }
@@ -302,15 +309,25 @@ public class ExcelCrud {
    *    -1º Comprobaremos si tiene o no correo electronico.
    *    -2º Si no tiene lo generaremos según unas directrices que están indicados en la clase generadora de correo Electronico
    *    -3º Finalmente asignaremos los valores correspodientes a las celdas del Excel.
+   * 
+   * 
+   *    EN ESTE CASO UTILIZAMOS EL ARRAY LIST QUE CONTIENE TODOS MENOS LOS VACIOS.
    */
-   public void crearCorreoElectronico() {
+   public void crearCorreoElectronico() throws IOException {
        
         ArrayList<Trabajadorbbdd> auxiliar = new ArrayList<>();
+        String correoTrabajador;
+        XSSFSheet sheet = abrirConexionExcel(0);
         for (Trabajadorbbdd trabajador : lista) {
             auxiliar.add(trabajador);
             GeneradorCorreoElectronico correo = new GeneradorCorreoElectronico(trabajador,auxiliar);
-            System.out.println(correo.generarCorreo());
+             correoTrabajador = correo.generarCorreo();
+             ExcelCrud.actualizarCelda(correoTrabajador, trabajador.getIdTrabajador() - 1, TipoColumnas.EMAIL.ordinal(), sheet);
         }
+        
+                cerrarConexionExcel();
+                System.out.println("Terminada la generación de correos!");
+
     }
 
 }

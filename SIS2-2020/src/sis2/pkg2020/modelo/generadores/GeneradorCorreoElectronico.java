@@ -38,7 +38,9 @@ public class GeneradorCorreoElectronico {
     }
     /**
      * Metodo principal del correo, por el cual se genera este.
+     * 
      *          -Recoge el metodo numeroDeIguales que devuelve cuantos correos son igual al que estoy generando.
+     * 
      * @return email
      */
     public String generarCorreo() {
@@ -78,7 +80,6 @@ public class GeneradorCorreoElectronico {
                 contador++;
             }
         }
-        System.out.println(contador);
         if (contador <= 9) {
             return "0" + String.valueOf(contador);
         }
