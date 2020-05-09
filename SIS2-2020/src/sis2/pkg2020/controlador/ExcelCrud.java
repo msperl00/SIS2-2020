@@ -56,6 +56,10 @@ public class ExcelCrud {
 
     private static FileInputStream file;
     private static XSSFWorkbook workbook;
+    private HashMap<?, ?> mapCategorias;
+    private HashMap<?, ?> mapBrutoRetencion;
+    private HashMap<?, ?> mapCuotas;
+    private HashMap<?, ?> mapTrienios;
 
     public ExcelCrud() {
 
@@ -298,7 +302,7 @@ public class ExcelCrud {
             }
             //Ahora crearemos el codigo IBAN parar todos los trabajadores que esten en la lista -> Incluso los repetidos.
             if (trabajador.getIban().equals("")) {
-                System.out.println("VACIO");
+              //  System.out.println("VACIO");
 
                 trabajador.setIban(iban.generarIBAN(trabajador.getCodigoCuenta()));
                 ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnasHoja1.IBAN.ordinal(), sheet);
@@ -348,11 +352,10 @@ public class ExcelCrud {
     public void cargarDatosHojas(File excelFile) {
 
         try {
-            cargarHoja2();
-
-            cargarHoja3();
-            cargarHoja4();
-            cargarHoja5();
+            mapCategorias = cargarHoja2();
+            mapBrutoRetencion =  cargarHoja3();
+            mapCuotas = cargarHoja4();
+            mapTrienios = cargarHoja5();
         } catch (IOException ex) {
             Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -466,7 +469,7 @@ public class ExcelCrud {
      * empresario"), FORMACION_EMPRESARIO("FORMACION empresario"),
      * ACCIDENTES_TRABAJO_EMPRESARIO("ACCIDENTES TRABAJO empresario");
      *
-     * @return
+     * @return hashMap con los valores pertenecientes a cutoras, contigencias, etc.
      * @throws IOException
      */
     private HashMap<?, ?> cargarHoja4() throws IOException {
