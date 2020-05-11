@@ -8,7 +8,6 @@ import sis2.pkg2020.modelo.Categorias;
 import sis2.pkg2020.modelo.Nomina;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
 
-
 /**
  *
  * Clase que generará en particular cada nomina del trabajador correspodiente.
@@ -26,7 +25,7 @@ public class GenerarNomina {
 
     //Nomina
     Nomina nomina = new Nomina();
-
+    // Nomina básci,a luego asignaremos más nominas si fuesen sin prorratear.
     private Trabajadorbbdd trabajador;
     private String fechaNomina;
     private Date fechaContratacion;
@@ -37,11 +36,13 @@ public class GenerarNomina {
     private int trienios;
     private Categorias categoria;
     private double brutoAnual;
+    private double brutoMensual;
 
-    public GenerarNomina(Trabajadorbbdd trabajador, String fechaNomina, ExcelCrud excel) {
+    public GenerarNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
         this.trabajador = trabajador;
         this.fechaNomina = fechaNomina;
+
         //Parte trabajador
         this.fechaContratacion = this.trabajador.getFechaAlta();
 
@@ -61,7 +62,8 @@ public class GenerarNomina {
         if (!siGenerarNomina()) {
             return false;
         }
-        this.brutoAnual = calcularBrutoAnual();
+        this.brutoMensual = calcularBrutoMensual();
+        // this.brutoAnual = calcularBrutoAnual();
 
         return true;
     }
@@ -110,7 +112,7 @@ public class GenerarNomina {
 
         nomina.setMes(getMesNomina(mesNomina));
         nomina.setAnio(Integer.valueOf(anioNomina));
-
+        nomina.setNumeroTrienios(trienios);
         return true;
     }
 
@@ -125,7 +127,27 @@ public class GenerarNomina {
      *
      * @return Devolver el bruto anual.
      */
-    private double calcularBrutoAnual() {
+    private double calcularBrutoMensual() {
+
+        double salarioBaseMes = trabajador.getCategorias().getSalarioBaseCategoria();
+        salarioBaseMes /= 14;
+        double complementoMes = trabajador.getCategorias().getComplementoCategoria();
+        complementoMes /= 14;
+        double antiguedad = 0.0;
+        // Si no tiene trienios, no lo vamos a buscar al excel, ya que no tiene valor de antiguedad sin trienios.
+        if (trienios != 0) {
+            antiguedad = (Double) ExcelCrud.getMapTrienios().get(trienios);
+        }
+
+        nomina.setImporteComplementoMes(complementoMes);
+        nomina.setImporteSalarioMes(salarioBaseMes);
+        nomina.setImporteTrienios(antiguedad);
+        brutoMensual = salarioBaseMes + complementoMes + antiguedad;
+        
+        System.out.printf("Salario base mes: %.2f \n",  salarioBaseMes);
+        System.out.printf("Complemento mes: %.2f \n",   complementoMes);
+        System.out.printf("Antiguedad mes: %.2f \n",   antiguedad);
+        System.out.printf("Bruto mensual: %.2f \n",  brutoMensual);
 
         return 0;
     }

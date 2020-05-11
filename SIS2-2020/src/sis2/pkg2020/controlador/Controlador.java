@@ -106,10 +106,10 @@ public class Controlador {
         
        ExcelCrud excel = new ExcelCrud();
        File excelFile = new File("resources/SistemasInformacionII.xlsx");
-       System.out.println("\nSolicitando la fecha de las nominas que se quieren generar");
-       System.out.println("\nContinue con el siguiente formato mm/aaaa\n");
-       System.out.println(ANSI_GREEN+"\tExiste una expresión regular que comprueba la expresion..."+ANSI_RESET+"\n");
-       System.out.println(ANSI_GREEN+"\tTampoco se recogerá ninguna expresion con meses menores que  0 ó mayores que 12 y con años fuera del un rango entre 1990 y 2050 "+ANSI_RESET+"\n\n");
+       System.out.println("\n\t\tSolicitando la fecha de las nominas que se quieren generar");
+       System.out.println("\n\t\tContinue con el siguiente formato mm/aaaa\n");
+       System.out.println(ANSI_GREEN+"(Existe una expresión regular que comprueba la expresion...)"+ANSI_RESET+"\n");
+       System.out.println(ANSI_GREEN+"Tampoco se recogerá ninguna expresion con meses menores que  0 ó mayores que 12 y con años fuera del un rango entre 1990 y 2050 "+ANSI_RESET+"\n\n");
        
 
        String fechaNomina = recogerFechaConExpresionRegular();
@@ -147,7 +147,7 @@ public class Controlador {
     }
 
     private void practica4(ExcelCrud excel, String fechaNomina) {
-         HashSet<Trabajadorbbdd> trabajadores =  excel.getCleanTrabajadores();
+        HashSet<Trabajadorbbdd> trabajadores =  excel.getCleanTrabajadores();
         Iterator<Trabajadorbbdd> iterator = trabajadores.iterator();
         Trabajadorbbdd nxt = iterator.next();
         System.out.println(nxt.toString());
@@ -156,7 +156,7 @@ public class Controlador {
 //            Trabajadorbbdd next = iterator.next();
 //            System.out.println(next.toString());
 //        }
-        GenerarNomina nominaT  = new GenerarNomina(nxt, fechaNomina, excel);
+        GenerarNomina nominaT  = new GenerarNomina(nxt, fechaNomina);
         System.out.println(nxt.getNombre());
         System.out.println("Nomina generada: "+ nominaT.generarNomina());
     }

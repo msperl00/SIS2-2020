@@ -60,9 +60,9 @@ public class ExcelCrud {
     private static FileInputStream file;
     private static XSSFWorkbook workbook;
     private HashMap<?, ?> mapCategorias;
-    private HashMap<?, ?> mapBrutoRetencion;
-    private HashMap<?, ?> mapCuotas;
-    private HashMap<?, ?> mapTrienios;
+    private static HashMap<?, ?> mapBrutoRetencion;
+    private static HashMap<?, ?> mapCuotas;
+    private static HashMap<?, ?> mapTrienios;
 
     public ExcelCrud() {
 
@@ -305,7 +305,7 @@ public class ExcelCrud {
             }
             //Ahora crearemos el codigo IBAN parar todos los trabajadores que esten en la lista -> Incluso los repetidos.
             if (trabajador.getIban().equals("")) {
-              //  System.out.println("VACIO");
+                //  System.out.println("VACIO");
 
                 trabajador.setIban(iban.generarIBAN(trabajador.getCodigoCuenta()));
                 ExcelCrud.actualizarCelda(trabajador.getIban(), trabajador.getIdTrabajador() - 1, TipoColumnasHoja1.IBAN.ordinal(), sheet);
@@ -356,10 +356,10 @@ public class ExcelCrud {
 
         try {
             mapCategorias = cargarHoja2();
-            cargarDatosCategoriaTrabajadores();
-            mapBrutoRetencion =  cargarHoja3();
+            mapBrutoRetencion = cargarHoja3();
             mapCuotas = cargarHoja4();
             mapTrienios = cargarHoja5();
+            cargarDatosTrabajadores();
         } catch (IOException ex) {
             Logger.getLogger(ExcelCrud.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -411,9 +411,9 @@ public class ExcelCrud {
                 map.put(nombreCategoria, categoria);
             }
         }
-     //   System.out.println(map.toString());
+        //   System.out.println(map.toString());
         cerrarConexionExcel();
-      //  System.out.println("\nRealizada carga de la hoja 2!\n\n");
+          System.out.println("\nRealizada carga de la hoja 2!\n");
         return map;
     }
 
@@ -458,7 +458,7 @@ public class ExcelCrud {
         }
         //System.out.println(map.toString());
         cerrarConexionExcel();
-        System.out.println("\nRealizada carga de la hoja 3!\n\n");
+        System.out.println("\nRealizada carga de la hoja 3!\n");
         return map;
     }
 
@@ -473,7 +473,8 @@ public class ExcelCrud {
      * empresario"), FORMACION_EMPRESARIO("FORMACION empresario"),
      * ACCIDENTES_TRABAJO_EMPRESARIO("ACCIDENTES TRABAJO empresario");
      *
-     * @return hashMap con los valores pertenecientes a cutoras, contigencias, etc.
+     * @return hashMap con los valores pertenecientes a cutoras, contigencias,
+     * etc.
      * @throws IOException
      */
     private HashMap<?, ?> cargarHoja4() throws IOException {
@@ -491,13 +492,13 @@ public class ExcelCrud {
                 nombre = cell.getStringCellValue();
 
                 cell = row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-               valor = cell.getNumericCellValue();
-               map.put(nombre, valor);
+                valor = cell.getNumericCellValue();
+                map.put(nombre, valor);
             }
-            
+
         }
         //System.out.println(map.toString());
-        //System.out.println("\nRealizada la carga de la hoja 4ª\n\n");
+        System.out.println("\nRealizada la carga de la hoja 4ª\n");
         cerrarConexionExcel();
 
         return map;
@@ -510,54 +511,67 @@ public class ExcelCrud {
      * importe.
      */
     private HashMap<?, ?> cargarHoja5() {
-        HashMap<String, Integer> map = new HashMap<>();
+        HashMap<Integer, Double> map = new HashMap<>();
         XSSFSheet sheet = abrirConexionExcel(4);
         Iterator<Row> rowIterator = sheet.iterator();
-        String numeroTrienio = null;
-        Integer valor = null;
+        Integer numeroTrienio = null;
+        Double valor = null;
         Cell cell;
 
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
             if (row.getRowNum() != 0 && !isRowEmpty(row)) {
-                
+
                 cell = row.getCell(0, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                 Double aux = cell.getNumericCellValue();
-                numeroTrienio = aux.toString();
+                numeroTrienio = aux.intValue();
                 cell = row.getCell(1, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-                aux = cell.getNumericCellValue();
-                valor = aux.intValue();
+                valor = cell.getNumericCellValue();
+                
                 map.put(numeroTrienio, valor);
             }
-            
 
         }
-      //  System.out.println(map.toString());
-      //  System.out.println("\nRealizada la carga de la hoja 5!\n\n");
+         // System.out.println(map.toString());
+          System.out.println("\nRealizada la carga de la hoja 5!\n");
         return map;
     }
 
     public HashSet<Trabajadorbbdd> getCleanTrabajadores() {
-        
+
         return this.trabajadores;
     }
 
     /**
-     * Carga los datos pertenecientes al objeto categoria de cada trabajador.
+     * Cargar los datos pertenecientes a cada trabajador, según el valor que se
+     * requiera para la solicitud de las nominas.
      */
-    private void cargarDatosCategoriaTrabajadores() {
-        
+    private void cargarDatosTrabajadores() {
+
         for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
             Trabajadorbbdd next = iterator.next();
-            System.out.println(next.getNombre());
+            
+            //Categorias
             WrapperCategoria caux = (WrapperCategoria) this.mapCategorias.get(next.getCategorias().getNombreCategoria());
             Categorias categoria = next.getCategorias();
             categoria.setSalarioBaseCategoria(caux.getSalarioBase());
             categoria.setComplementoCategoria(caux.getComplementos());
-            System.out.println(next.getCategorias().toString());
+           
 
         }
-        
+
+    }
+
+    public static HashMap<?, ?> getMapBrutoRetencion() {
+        return mapBrutoRetencion;
+    }
+
+    public static HashMap<?, ?> getMapCuotas() {
+        return mapCuotas;
+    }
+
+    public static HashMap<?, ?> getMapTrienios() {
+        return mapTrienios;
     }
 
 }
