@@ -107,10 +107,13 @@ public class Controlador {
        ExcelCrud excel = new ExcelCrud();
        File excelFile = new File("resources/SistemasInformacionII.xlsx");
        System.out.println("\nSolicitando la fecha de las nominas que se quieren generar");
-       System.out.println("\nContinue con el siguiente formato mm/aaaa \n\n");
+       System.out.println("\nContinue con el siguiente formato mm/aaaa\n");
+       System.out.println(ANSI_GREEN+"\tExiste una expresión regular que comprueba la expresion..."+ANSI_RESET+"\n");
+       System.out.println(ANSI_GREEN+"\tTampoco se recogerá ninguna expresion con meses menores que  0 ó mayores que 12 y con años fuera del un rango entre 1990 y 2050 "+ANSI_RESET+"\n\n");
        
+
        String fechaNomina = recogerFechaConExpresionRegular();
-        System.out.println("\n\n\n");
+       System.out.println("\n\n\n");
        //practica1();
        practica2y3(excelFile, excel);
        practica4(excel,fechaNomina);
@@ -165,18 +168,23 @@ public class Controlador {
      * @return Fecha en la que queremos realizar la nomina.
      */
     private String recogerFechaConExpresionRegular() {
-        System.out.println(ANSI_GREEN+"\tExiste una expresión regular que comprueba la expresion..."+ANSI_RESET+"\n");
         boolean bandera = false;
         String fechaNomina = null;
         while(!bandera){
             fechaNomina  = teclado.nextLine();
             Pattern pat = Pattern.compile("\\d{2}/\\d{4}");
             Matcher mat = pat.matcher(fechaNomina);
-            if(mat.matches())
-                bandera = true;
+            if(mat.matches()){
+                int mes = Integer.valueOf(fechaNomina.substring(0, 2));
+                int anio = Integer.valueOf(fechaNomina.substring(3, 7));
+                if( (mes >12 || mes < 1) || (anio < 1990 || anio > 2050) ){
+                    return recogerFechaConExpresionRegular();
+                }
+                 bandera = true;
+            }
+               
         }
-        
-        
+
         return fechaNomina;
     }
     

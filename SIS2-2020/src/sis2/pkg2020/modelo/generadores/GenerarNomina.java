@@ -19,28 +19,60 @@ public class GenerarNomina {
     private Trabajadorbbdd trabajador;
     private String fechaNomina;
     private Date fechaContratacion;
+    private String mesContratacion;
+    private String anioContratacion;
+    private String mesNomina;
+    private String anioNomina;
     public GenerarNomina(Trabajadorbbdd trabajador, String fechaNomina) {
         this.trabajador = trabajador;
         this.fechaNomina = fechaNomina;
         //Parte trabajador
         this.fechaContratacion = this.trabajador.getFechaAlta();
-        siGenerarNomina();
+                
+        System.out.println(siGenerarNomina());
     }
     
     /**
      * Metodo inicial sobre la nomina del trabajador, que calcula, si este trabajador
      * se ha dado de alta en el valor temporal que se ha seleccionado.
+     *      1º Comprobaremos el año
+     *      2º El mes
      * @return 
      */
     private boolean siGenerarNomina(){
         DateFormat date = new SimpleDateFormat("MM/yyyy");
         String strDate = date.format(fechaContratacion);
-        System.out.println("Fecha de contratación: "+strDate);
-        System.out.println("Fecha de recogida: "+fechaNomina);
-
+        this.mesContratacion = strDate.substring(0, 2);
+        this.anioContratacion = strDate.substring(3, 7);
+        this.mesNomina = this.fechaNomina.substring(0, 2);
+        this.anioNomina = this.fechaNomina.substring(3, 7);
         
-       
-        return false;
+        System.out.println("Fecha de contratación: "+strDate);
+        System.out.println("Fecha de recogida de nomina: "+fechaNomina);
+        //Año nomina siempre tiene que ser mayor o igual
+        int intanioContratacion = Integer.valueOf(anioContratacion);
+        int intanioNomina = Integer.valueOf(anioNomina);
+        
+        int intmesContratacion = Integer.valueOf(mesContratacion);
+        int intmesNomina = Integer.valueOf(mesNomina);
+        
+        int aniosEmpresa = intanioNomina-intanioContratacion;
+        int mesEmpresa = intmesNomina - intmesContratacion;
+        //Falso
+        if(aniosEmpresa < 0){
+            return false;
+         
+            //Valido parcial
+        }else if(aniosEmpresa == 0){
+            //Falso mensual
+            if(mesEmpresa <= 0){
+                return false;
+            //Valido mensual
+            }
+         //Valido total
+        }
+ 
+        return true;
     }
     
 }
