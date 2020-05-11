@@ -156,8 +156,9 @@ public class Controlador {
 //            Trabajadorbbdd next = iterator.next();
 //            System.out.println(next.toString());
 //        }
-        GenerarNomina nominaT  = new GenerarNomina(nxt, fechaNomina);
-        
+        GenerarNomina nominaT  = new GenerarNomina(nxt, fechaNomina, excel);
+        System.out.println(nxt.getNombre());
+        System.out.println("Nomina generada: "+ nominaT.generarNomina());
     }
 
     /**

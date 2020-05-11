@@ -356,6 +356,7 @@ public class ExcelCrud {
 
         try {
             mapCategorias = cargarHoja2();
+            cargarDatosCategoriaTrabajadores();
             mapBrutoRetencion =  cargarHoja3();
             mapCuotas = cargarHoja4();
             mapTrienios = cargarHoja5();
@@ -541,20 +542,22 @@ public class ExcelCrud {
         return this.trabajadores;
     }
 
-    public HashMap<?, ?> getMapCategorias() {
-        return mapCategorias;
-    }
+    /**
+     * Carga los datos pertenecientes al objeto categoria de cada trabajador.
+     */
+    private void cargarDatosCategoriaTrabajadores() {
+        
+        for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
+            Trabajadorbbdd next = iterator.next();
+            System.out.println(next.getNombre());
+            WrapperCategoria caux = (WrapperCategoria) this.mapCategorias.get(next.getCategorias().getNombreCategoria());
+            Categorias categoria = next.getCategorias();
+            categoria.setSalarioBaseCategoria(caux.getSalarioBase());
+            categoria.setComplementoCategoria(caux.getComplementos());
+            System.out.println(next.getCategorias().toString());
 
-    public HashMap<?, ?> getMapBrutoRetencion() {
-        return mapBrutoRetencion;
-    }
-
-    public HashMap<?, ?> getMapCuotas() {
-        return mapCuotas;
-    }
-
-    public HashMap<?, ?> getMapTrienios() {
-        return mapTrienios;
+        }
+        
     }
 
 }
