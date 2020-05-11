@@ -16,7 +16,8 @@ import sis2.pkg2020.modelo.Empresas;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
 
 /**
- *
+ * Clase utilizada para realizar todas las acciones correspodientes con una 
+ * bbdd.
  * @author Marco Speranza López
  */
 public class TrabajadorDAO {

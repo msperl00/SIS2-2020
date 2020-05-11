@@ -25,13 +25,13 @@ public class Trabajadorbbdd  implements java.io.Serializable {
      private Date fechaAlta;
      private String codigoCuenta;
      private String iban;
-     private Set nominas = new HashSet(0);
+     
      
      /****NO PERSISTIDOS ****/
      private String prorrata;
      private String paisCCC;
      private String extra;
-
+    private Set nominas = new HashSet(0);
 
     public Trabajadorbbdd() {
     }
@@ -175,11 +175,12 @@ public class Trabajadorbbdd  implements java.io.Serializable {
                 " " + apellido2 +  
                 " " + nifnie +  
                 " " + email +  
-                "fechaAlta=" + fechaAlta +
-                " codigoCuenta='" + codigoCuenta   +
-                " iban='" + iban + 
-                " Empresa=" + empresas.getNombre() +
-                " Categoria=" + categorias.getNombreCategoria()+"\n\n" 
+                " fechaAlta= " + fechaAlta +
+                " codigoCuenta=' " + codigoCuenta   +
+                " iban=' " + iban + 
+                " Empresa= " + empresas.getNombre() +
+                " Categoria= " + categorias.getNombreCategoria()+
+                 ", Prorrateo " + prorrata +"\n\n" 
                 ;
     }
     public String toStringHQL() {
@@ -188,8 +189,8 @@ public class Trabajadorbbdd  implements java.io.Serializable {
                 "Nombre='" + nombre + '\'' +
                 ", apellidos" +apellido1 +" "+ apellido2 + '\'' +
                 ", nifnie='" + nifnie + '\'' +
-                ", Empresa=" + empresas.getNombre() +
-                ", Categoria=" + categorias.getNombreCategoria() 
+                ", Empresa=" + empresas.getNombre() +'\''+
+                ", Categoria=" + categorias.getNombreCategoria()
                 ;
     }
 

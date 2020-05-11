@@ -48,10 +48,13 @@ import sis2.pkg2020.modelo.generadores.GeneradorIBAN;
  */
 public class ExcelCrud {
 
+    //Todos los de la hoja excel.
     private HashSet<Trabajadorbbdd> trabajadores;
     private ArrayList<Categorias> categorias;
     private ArrayList<Empresas> empresas;
+    //Trabajadores duplicados
     private ArrayList<Trabajadorbbdd> duplicados;
+    //Trabajadores
     private ArrayList<Trabajadorbbdd> lista;
 
     private static FileInputStream file;
@@ -349,7 +352,7 @@ public class ExcelCrud {
      * Para ello, necesito crear una serie de clases de carga de los datos de
      * manera Wrapper para los diferentes datos de cada hoja.
      */
-    public void cargarDatosHojas(File excelFile) {
+    public void cargarDatosHojas() {
 
         try {
             mapCategorias = cargarHoja2();
@@ -407,9 +410,9 @@ public class ExcelCrud {
                 map.put(nombreCategoria, categoria);
             }
         }
-        System.out.println(map.toString());
+     //   System.out.println(map.toString());
         cerrarConexionExcel();
-        System.out.println("\nRealizada carga de la hoja 2!\n\n");
+      //  System.out.println("\nRealizada carga de la hoja 2!\n\n");
         return map;
     }
 
@@ -452,7 +455,7 @@ public class ExcelCrud {
                 map.put(nombreBruto, brutoAnualRetencion);
             }
         }
-        System.out.println(map.toString());
+        //System.out.println(map.toString());
         cerrarConexionExcel();
         System.out.println("\nRealizada carga de la hoja 3!\n\n");
         return map;
@@ -492,8 +495,8 @@ public class ExcelCrud {
             }
             
         }
-        System.out.println(map.toString());
-        System.out.println("\nRealizada la carga dela hoja 4ª\n\n");
+        //System.out.println(map.toString());
+        //System.out.println("\nRealizada la carga de la hoja 4ª\n\n");
         cerrarConexionExcel();
 
         return map;
@@ -528,8 +531,30 @@ public class ExcelCrud {
             
 
         }
-        System.out.println(map.toString());
-        System.out.println("\nRealizada la carga de la hoja 5!\n\n");
+      //  System.out.println(map.toString());
+      //  System.out.println("\nRealizada la carga de la hoja 5!\n\n");
         return map;
     }
+
+    public HashSet<Trabajadorbbdd> getCleanTrabajadores() {
+        
+        return this.trabajadores;
+    }
+
+    public HashMap<?, ?> getMapCategorias() {
+        return mapCategorias;
+    }
+
+    public HashMap<?, ?> getMapBrutoRetencion() {
+        return mapBrutoRetencion;
+    }
+
+    public HashMap<?, ?> getMapCuotas() {
+        return mapCuotas;
+    }
+
+    public HashMap<?, ?> getMapTrienios() {
+        return mapTrienios;
+    }
+
 }

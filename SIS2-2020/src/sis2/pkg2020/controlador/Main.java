@@ -16,7 +16,7 @@ public class Main {
     
            Controlador controladorPractica = new Controlador();
           //Correspodiente a la práctica 1 HQL
-         // controladorPractica.pruebaHQL();
+         // controladorPractica.practica1();
            
           //Correspodiente a la práctica 2
           controladorPractica.practicas();
