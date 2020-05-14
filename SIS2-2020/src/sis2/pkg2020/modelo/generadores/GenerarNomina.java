@@ -24,7 +24,7 @@ import sis2.pkg2020.modelo.Trabajadorbbdd;
 public class GenerarNomina {
 
     //Nomina
-    Nomina nomina = new Nomina();
+    Nomina nomina;
     // Nomina básci,a luego asignaremos más nominas si fuesen sin prorratear.
     private Trabajadorbbdd trabajador;
     private String fechaNomina;
@@ -37,6 +37,8 @@ public class GenerarNomina {
     private Categorias categoria;
     private double brutoAnual;
     private double brutoMensual;
+    private double deducciones;
+    private double devengos;
 
     public GenerarNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
@@ -62,8 +64,12 @@ public class GenerarNomina {
         if (!siGenerarNomina()) {
             return false;
         }
-        this.brutoMensual = calcularBrutoMensual();
-        // this.brutoAnual = calcularBrutoAnual();
+       
+        this.devengos = calcularDevengos();
+        this.brutoAnual = calcularBrutoAnual();
+        //  Para calcular las deducciones debemos saber el bruto anual.
+        this.deducciones = cacularDeduciones();
+          
 
         return true;
     }
@@ -83,7 +89,7 @@ public class GenerarNomina {
         this.mesNomina = this.fechaNomina.substring(0, 2);
         this.anioNomina = this.fechaNomina.substring(3, 7);
 
-        System.out.println("Fecha de contratación: " + strDate);
+        System.out.println("Fecha de contratación del trabajador: " + strDate);
         System.out.println("Fecha de recogida de nomina: " + fechaNomina);
         //Año nomina siempre tiene que ser mayor o igual
         int intanioContratacion = Integer.valueOf(anioContratacion);
@@ -109,7 +115,7 @@ public class GenerarNomina {
         }
         trienios = aniosEmpresa / 3;
         //Recogemos datos calculados de la nomina.
-
+        nomina = new Nomina();
         nomina.setMes(getMesNomina(mesNomina));
         nomina.setAnio(Integer.valueOf(anioNomina));
         nomina.setNumeroTrienios(trienios);
@@ -117,42 +123,60 @@ public class GenerarNomina {
     }
 
     /**
-     * El bruto anual es la suma de los valores que tiene la categoria que
-     * representa en la empresa, más su complemento.
-     *
-     * A este se la sumará valores como la antiguedad.
+     *Cacula el bruto mensual mediante el calculo de los devengos, pertenecientes a valores como:
+     * 
+     *Salario base + prorrateo + complemento + antiguedad.
      *
      * El bruto mensual: -Sin prorrateo será su division entre 14. -Con
      * prorrateo será entre 12
      *
-     * @return Devolver el bruto anual.
+     * @return Devolver el bruto mensual == devengos
      */
-    private double calcularBrutoMensual() {
-
+    private double calcularDevengos() {
+        
+        double devengos;
+        double prorrateoextra;
         double salarioBaseMes = trabajador.getCategorias().getSalarioBaseCategoria();
         salarioBaseMes /= 14;
         double complementoMes = trabajador.getCategorias().getComplementoCategoria();
         complementoMes /= 14;
         double antiguedad = 0.0;
+        
+        //TODO PRORRATEO O NO
+        //SIn prorrateo 14 nominas y prorrateo extra = 0
+        if(isProrrateo())
+        
         // Si no tiene trienios, no lo vamos a buscar al excel, ya que no tiene valor de antiguedad sin trienios.
         if (trienios != 0) {
             antiguedad = (Double) ExcelCrud.getMapTrienios().get(trienios);
         }
-
+        
         nomina.setImporteComplementoMes(complementoMes);
         nomina.setImporteSalarioMes(salarioBaseMes);
         nomina.setImporteTrienios(antiguedad);
-        brutoMensual = salarioBaseMes + complementoMes + antiguedad;
+        devengos = salarioBaseMes + complementoMes + antiguedad;
         
         System.out.printf("Salario base mes: %.2f \n",  salarioBaseMes);
         System.out.printf("Complemento mes: %.2f \n",   complementoMes);
         System.out.printf("Antiguedad mes: %.2f \n",   antiguedad);
-        System.out.printf("Bruto mensual: %.2f \n",  brutoMensual);
+        System.out.printf("Bruto mensual: %.2f \n",  devengos);
 
-        return 0;
+        return devengos;
     }
 
-    private int getMesNomina(String mesNomina) {
+    
+
+    private double cacularDeduciones() {
+        
+        
+        double contingenciasGenerales;
+        double desempleo;
+        double cuotaFormacion;
+        double IRPF = calcularIRPF();
+        
+        return 0;
+    }
+private int getMesNomina(String mesNomina) {
 
         int valor = 0;
         switch (mesNomina) {
@@ -210,4 +234,63 @@ public class GenerarNomina {
 
     }
 
+    /**
+     * Metodo que calcula el bruto anual según su prorrateo o no.
+     * 
+     *      Existen diversas casuisticas:
+     * 
+     *      1º Que el año sea completo, por lo tanto, el bruto anual sera:
+     * 
+     *                  *El prorrateo no es relevante en este cuadro
+     *  
+     *              1.1 Completo sin ningun cambio
+     *                       - SalarioBase + complementos + antiguedadTrienios
+     *              2.2 Completo pero con cambio de trienio
+     *                      - Nº Meses correspodientes a trienioviejo * valorViejotrienio
+     *                                                      +
+     *                              Nº de meses nuevo trienio * valorNuevotrienio
+     * 
+     *      2º Que el año este partido(Alta en año).
+     *                  -2.1 Con prorrateo: 
+     * 
+     *                          2.1.1. (SalarioBase + complementos)/ Nº meses restantes
+     *                                  
+     *                  -2.2 Sin prorrateo: 
+     *                                      
+     *                          2.2.1. Nomina de los meses pertenecites  de los primeros 6 meses restantes (Si los hubiese)
+     *                              más la extra de Junio dividida en el mismo numero de meses
+     *                                                          +
+     *                                Nomina perteneciente a los siguientes 6 meses restantes más
+     *                                la extra de Diciembre dividida por el mismo numero de meses.
+     *                                  (La extra en este caso, podria ser completa, si se dio de alta en febrero)
+     * 
+     *                          
+     * @return 
+     */
+    private double calcularBrutoAnual() {
+        
+        return 0;
+    }
+    /**
+     * Se calcula según el bruto anual de dicho trabajador.
+     * @return 
+     */
+    private double calcularIRPF() {
+        
+        double irpf = 0;
+        
+        
+        
+        
+        return irpf;
+    }
+    /**
+     * Devuelve el boolean corespodiente al si o no del prorrateo.
+     * @return true -> SI | false -> NO
+     */
+    private boolean isProrrateo() {
+        
+        String valor = trabajador.getProrrata();
+        return valor.equals("SI");
+    }
 }

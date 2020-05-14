@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Trabajadores>
-    <Trabajador Fila="85">
+    <Trabajador Fila="83">
         <TipoError>blanco</TipoError>
         <Nombre>Paulina</Nombre>
         <PrimerApellido>Orejas</PrimerApellido>
@@ -8,7 +8,7 @@
         <Categoria>Auxiliar</Categoria>
         <Empresa>PBlankSA</Empresa>
     </Trabajador>
-    <Trabajador Fila="80">
+    <Trabajador Fila="78">
         <TipoError>blanco</TipoError>
         <Nombre>Pilar</Nombre>
         <PrimerApellido>Molina</PrimerApellido>
@@ -16,15 +16,7 @@
         <Categoria>Analista</Categoria>
         <Empresa>TecnoProyectSL</Empresa>
     </Trabajador>
-    <Trabajador Fila="3">
-        <TipoError>duplicado</TipoError>
-        <Nombre>Mohamed</Nombre>
-        <PrimerApellido>Ahmed</PrimerApellido>
-        <SegundoApellido>Ahmed</SegundoApellido>
-        <Categoria>Analista</Categoria>
-        <Empresa>TecnoProyectSL</Empresa>
-    </Trabajador>
-    <Trabajador Fila="13">
+    <Trabajador Fila="11">
         <TipoError>duplicado</TipoError>
         <Nombre>Alencar</Nombre>
         <PrimerApellido>Alves</PrimerApellido>
@@ -32,7 +24,7 @@
         <Categoria>Programador</Categoria>
         <Empresa>TecnoProyectSL</Empresa>
     </Trabajador>
-    <Trabajador Fila="17">
+    <Trabajador Fila="15">
         <TipoError>duplicado</TipoError>
         <Nombre>Vittorio</Nombre>
         <PrimerApellido>Baglione</PrimerApellido>

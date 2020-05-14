@@ -157,7 +157,7 @@ public class Controlador {
 //            System.out.println(next.toString());
 //        }
         GenerarNomina nominaT  = new GenerarNomina(nxt, fechaNomina);
-        System.out.println(nxt.getNombre());
+       
         System.out.println("Nomina generada: "+ nominaT.generarNomina());
     }
 
