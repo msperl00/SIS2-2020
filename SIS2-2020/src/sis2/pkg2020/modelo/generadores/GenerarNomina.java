@@ -109,13 +109,12 @@ public class GenerarNomina {
             if (mesEmpresa <= 0) {
                 return false;
                 //Valido mensual
-        }
+            }
             //Valido total
         }
-       
-        
+
         //Este trienio solo vale si esta comprendido en un rango que no cruce con otro trienio
-         trienios = getTrienios(intmesNomina, intmesContratacion, aniosEmpresa);
+        trienios = getTrienios(intmesNomina, intmesContratacion, aniosEmpresa);
         //Recogemos datos calculados de la nomina.
         nomina = new Nomina();
         nomina.setMes(getMesNomina(mesNomina));
@@ -154,11 +153,12 @@ public class GenerarNomina {
         if (trienios != 0) {
             antiguedad = (Double) ExcelCrud.getMapTrienios().get(trienios);
         }
-         System.out.println("PRORRATEO"+ isProrrateo());
+        System.out.println("PRORRATEO" + isProrrateo());
         //Suma a los devengos del prorrateo de la extra, que en cualquier mes será 1/6.
         if (isProrrateo()) {
-           
-            System.out.println("trienios "+trienios);
+
+            System.out.println("trienios " + trienios);
+            System.out.println(siCambioTrienioProrrateo());
             if (siCambioTrienioProrrateo()) { //Existe cambio de trienio en la extra que tiene que recibir.
                 antiguedad = (Double) ExcelCrud.getMapTrienios().get(trienios + 1);
             }
@@ -289,7 +289,7 @@ public class GenerarNomina {
         if (siAnioCompleto()) {
             System.out.println("Cambio de trienio" + siCambioTrienio());
             if (siCambioTrienio()) {
-                    
+
             } else {
                 brutoanual = this.brutoAnual;
             }
@@ -316,10 +316,12 @@ public class GenerarNomina {
      * @return true -> SI | false -> NO
      */
     private boolean isProrrateo() {
-/*************************************************************************/
+        /**
+         * **********************************************************************
+         */
         String valor = trabajador.getProrrata();
-       // return valor.equals("SI");
-       return true;
+        // return valor.equals("SI");
+        return true;
     }
 
     /**
@@ -370,22 +372,19 @@ public class GenerarNomina {
         System.out.println("CAMBIO DE TRIENIO?");
         //Compruba si esta en el año del trienio.
         if ((anioNomina - anioContratacion) % 3 == 0) {
-
-            //Comprueba si es de la primera o seguna extra.
-            if (mesNomina >= 6 && mesNomina <= 11) {
-
-                for (int i : segundoExtra) {
-
-                    if (i == mesCambio) 
+            //Si el mes del cambio y el de la nomina coinciden signficia que ya puede empezar a cobrar el trienio.
+            if (mesCambio <= mesNomina) {
+                //Comprueba si es de la primera o seguna extra.
+                if (siPrimerExtra(mesNomina)) {
+                    //Comprueba si es un mes de cambio
+                    if (dentroSemestre(segundoExtra, mesCambio)) {
                         return true;
-                    
-                }
-            } else {
-                for (int i : primerExtra) {
+                    }
+                } else {
 
-                    if (i == mesCambio) 
+                    if (dentroSemestre(primerExtra, mesCambio)) {
                         return true;
-                    
+                    }
                 }
             }
 
@@ -393,22 +392,38 @@ public class GenerarNomina {
 
         return false;
     }
-    
+
     /**
      * Devuelve el número de trienios reales de un trabajador.
+     *
      * @param mesNomina
      * @param mesContratacion
      * @param aniosEmpresa
-     * @return 
+     * @return
      */
     private int getTrienios(int mesNomina, int mesContratacion, int aniosEmpresa) {
 
         int trienios = aniosEmpresa / 3;
-        if(mesNomina <= mesContratacion && trienios != 0){
+        if (mesNomina <= mesContratacion && trienios != 0) {
             trienios -= 1;
         }
-        
+
         return trienios;
+    }
+
+    private boolean siPrimerExtra(int mesNomina) {
+        return mesNomina >= 6 && mesNomina <= 11;
+    }
+
+    private boolean dentroSemestre(int[] semestre, int mesCambio) {
+        for (int i : semestre) {
+
+            if (i == mesCambio) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
 }
