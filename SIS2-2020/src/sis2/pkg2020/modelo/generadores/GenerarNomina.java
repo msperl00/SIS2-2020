@@ -39,6 +39,10 @@ public class GenerarNomina {
     private double brutoMensual;
     private double deducciones;
     private double devengos;
+    private double salarioBase;
+    private double complemento;
+    private double prorrateoextra;
+    private double antiguedad;
 
     public GenerarNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
@@ -47,7 +51,10 @@ public class GenerarNomina {
 
         //Parte trabajador
         this.fechaContratacion = this.trabajador.getFechaAlta();
-
+        this.salarioBase = trabajador.getCategorias().getSalarioBaseCategoria();
+        this.complemento = trabajador.getCategorias().getComplementoCategoria();
+        this.prorrateoextra = 0.0;
+        this.antiguedad = 0.0;
     }
 
     /**
@@ -142,25 +149,20 @@ public class GenerarNomina {
     private double calcularDevengos() {
 
         double devengos = 0.0;
-        double prorrateoextra = 0.0;
-        double salarioBaseMes = trabajador.getCategorias().getSalarioBaseCategoria();
-        double complementoMes = trabajador.getCategorias().getComplementoCategoria();
-        double antiguedad = 0.0;
-
+        double salarioBaseMes = this.salarioBase;
+        double complementoMes = this.complemento;
         complementoMes /= 14;
         salarioBaseMes /= 14;
 
         if (trienios != 0) {
             antiguedad = (Double) ExcelCrud.getMapTrienios().get(trienios);
         }
-        System.out.println("PRORRATEO" + isProrrateo());
+
         //Suma a los devengos del prorrateo de la extra, que en cualquier mes será 1/6.
         if (isProrrateo()) {
-
-            System.out.println("trienios " + trienios);
-            System.out.println(siCambioTrienioProrrateo());
-            if (siCambioTrienioProrrateo()) { //Existe cambio de trienio en la extra que tiene que recibir.
-                antiguedad = (Double) ExcelCrud.getMapTrienios().get(trienios + 1);
+            //Comprueba si existe cambio de trienio en la extra que tiene que recibir.
+            if (siCambioTrienioProrrata()) {
+                antiguedad = getValorTrienio(trienios+1);
             }
             prorrateoextra = salarioBaseMes / 6 + complementoMes / 6 + antiguedad / 6;
             devengos += prorrateoextra;
@@ -170,12 +172,14 @@ public class GenerarNomina {
         nomina.setImporteComplementoMes(complementoMes);
         nomina.setImporteSalarioMes(salarioBaseMes);
         nomina.setImporteTrienios(antiguedad);
+        nomina.setValorProrrateo(prorrateoextra);
+        nomina.setNumeroTrienios(trienios);
 
         System.out.printf("Salario base mes: %.2f \n", salarioBaseMes);
         System.out.printf("Complemento mes: %.2f \n", complementoMes);
         System.out.printf("Antiguedad mes: %.2f \n", antiguedad);
         System.out.printf("Prorrateo extra: %.2f \n", prorrateoextra);
-        System.out.printf("Bruto mensual: %.2f \n", devengos);
+        System.out.printf("Devengos/Bruto mensual: %.2f \n", devengos);
 
         return devengos;
     }
@@ -258,8 +262,9 @@ public class GenerarNomina {
      *
      *                  *El prorrateo no es relevante en este cuadro
      *
-     * 1.1 Completo sin ningun cambio - SalarioBase + complementos + trienios si
-     * lo tuviese-
+     * 1.1 Completo sin ningun cambio - SalarioBase + complementos + trienios
+     * (Si lo tuviese)
+     *
      *
      * 2.2 Completo pero con cambio de trienio - Nº Meses correspodientes a
      * trienioviejo * valorViejotrienio + Nº de meses nuevo trienio *
@@ -284,18 +289,28 @@ public class GenerarNomina {
      */
     private double calcularBrutoAnual() {
 
-        double brutoanual;
+        //Caso base -> Año completo sin cambio de trienio.
+        double brutoanual = salarioBase + complemento + (antiguedad)*14;
         System.out.println("Año completo: " + siAnioCompleto());
+        System.out.println(brutoanual);
+        //Caso 1 -> Año completo pero con cambio de trienio.
         if (siAnioCompleto()) {
-            System.out.println("Cambio de trienio" + siCambioTrienio());
-            if (siCambioTrienio()) {
-
-            } else {
-                brutoanual = this.brutoAnual;
+            System.out.println("Si cambio trienio: "+ siCambioTrienioBruto());
+            if (siCambioTrienioBruto()) {
+                int nMesesViejos = Integer.valueOf(this.mesContratacion) + 1;
+                int mesNomina = Integer.valueOf(this.mesNomina);
+                double antiguedadNueva = getValorTrienio(trienios+1);
+                int aux = 12 - nMesesViejos;
+                brutoanual = salarioBase + complemento + (antiguedad*nMesesViejos) + (antiguedadNueva*aux) ;
+                
             }
-        }
 
-        return 0;
+        } else {
+            //Trabajador recien contratado.
+            //todo
+        }
+        System.out.println("Bruto anual: "+brutoanual);
+        return brutoanual;
     }
 
     /**
@@ -316,12 +331,10 @@ public class GenerarNomina {
      * @return true -> SI | false -> NO
      */
     private boolean isProrrateo() {
-        /**
-         * **********************************************************************
-         */
+
         String valor = trabajador.getProrrata();
-        // return valor.equals("SI");
-        return true;
+        return valor.equals("SI");
+
     }
 
     /**
@@ -340,17 +353,6 @@ public class GenerarNomina {
     }
 
     /**
-     * Calcula si el año en el que se solicita la nomina, tiene el cambio de
-     * trienio.
-     *
-     * @return
-     */
-    private boolean siCambioTrienio() {
-
-        return true;
-    }
-
-    /**
      * Busca si existe en una nomina prorrateada un cambio de trienio. Esto
      * quiere decir, que si yo cobro la nomina en Octubre, y en noviembre hay un
      * cambio de trienio, se cobre la prorrata extra con la nueva antiguedad.
@@ -361,7 +363,7 @@ public class GenerarNomina {
      *
      * @return
      */
-    private boolean siCambioTrienioProrrateo() {
+    private boolean siCambioTrienioProrrata() {
 
         int mesCambio = Integer.valueOf(mesContratacion) + 1;
         int mesNomina = Integer.valueOf(this.mesNomina);
@@ -374,7 +376,7 @@ public class GenerarNomina {
         if ((anioNomina - anioContratacion) % 3 == 0) {
             //Si el mes del cambio y el de la nomina coinciden signficia que ya puede empezar a cobrar el trienio.
             if (mesCambio <= mesNomina) {
-                //Comprueba si es de la primera o seguna extra.
+                //Comprueba si es de la primera o segunda extra.
                 if (siPrimerExtra(mesNomina)) {
                     //Comprueba si es un mes de cambio
                     if (dentroSemestre(segundoExtra, mesCambio)) {
@@ -424,6 +426,24 @@ public class GenerarNomina {
 
         }
         return false;
+    }
+
+    /**
+     * Comprueba si dentro del año del bruto, hay un cambio de trienio.
+     *
+     * @return
+     */
+    private boolean siCambioTrienioBruto() {
+
+        int anioNomina = Integer.valueOf(this.anioNomina);
+        int anioContratacion = Integer.valueOf(this.anioContratacion);
+
+        return (anioNomina - anioContratacion) % 3 == 0;
+    }
+
+    private double getValorTrienio(int trienios) {
+        
+        return (Double) ExcelCrud.getMapTrienios().get(trienios);
     }
 
 }
