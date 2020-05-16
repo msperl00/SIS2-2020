@@ -424,13 +424,13 @@ public class ExcelCrud {
      * @throws IOException
      */
     private HashMap<?, ?> cargarHoja3() throws IOException {
-        HashMap<String, WrapperBrutoRetencion> map = new HashMap<>();
+        HashMap<Double, Double> map = new HashMap<>();
         XSSFSheet sheet = abrirConexionExcel(2);
         Iterator<Row> rowIterator = sheet.iterator();
         String nombreBruto = null;
         WrapperBrutoRetencion brutoAnualRetencion;
-        Integer brutoAnual = null;
-        Integer retencion = null;
+        double brutoAnual = 0.0;
+        double retencion = 0.0;
         Cell cell;
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
@@ -440,20 +440,19 @@ public class ExcelCrud {
                     Double aux;
                     switch (tipoColumna) {
                         case BRUTOANUAL:
-                            aux = cell.getNumericCellValue();
-                            brutoAnual = aux.intValue();
+                          brutoAnual = cell.getNumericCellValue();
+                             
                             break;
                         case RETENCIONES:
 
-                            aux = cell.getNumericCellValue();
-                            retencion = aux.intValue();
+                           retencion = cell.getNumericCellValue();
+                            
                             break;
                     }
 
                 }
                 brutoAnualRetencion = new WrapperBrutoRetencion(brutoAnual, retencion);
-                nombreBruto = String.valueOf(brutoAnual);
-                map.put(nombreBruto, brutoAnualRetencion);
+                map.put(brutoAnual, retencion);
             }
         }
         //System.out.println(map.toString());

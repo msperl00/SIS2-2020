@@ -6,27 +6,27 @@ package sis2.pkg2020.modelo.Wrapper;
  * @author Marco Speranza López
  */
 public class WrapperBrutoRetencion {
-   private Integer brutoAnual;
-   private Integer retencion;
+   private double brutoAnual;
+   private double retencion;
 
-    public WrapperBrutoRetencion(Integer brutoAnual, Integer retencion) {
+    public WrapperBrutoRetencion(double brutoAnual, double retencion) {
         this.brutoAnual = brutoAnual;
         this.retencion = retencion;
     }
 
-    public Integer getBrutoAnual() {
+    public double getBrutoAnual() {
         return brutoAnual;
     }
 
-    public void setBrutoAnual(Integer brutoAnual) {
+    public void setBrutoAnual(double brutoAnual) {
         this.brutoAnual = brutoAnual;
     }
 
-    public Integer getRetencion() {
+    public double getRetencion() {
         return retencion;
     }
 
-    public void setRetencion(Integer retencion) {
+    public void setRetencion(double retencion) {
         this.retencion = retencion;
     }
 

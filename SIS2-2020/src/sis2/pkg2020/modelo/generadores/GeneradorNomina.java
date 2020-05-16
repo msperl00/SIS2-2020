@@ -3,10 +3,14 @@ package sis2.pkg2020.modelo.generadores;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import sis2.pkg2020.controlador.ExcelCrud;
 import sis2.pkg2020.modelo.Categorias;
 import sis2.pkg2020.modelo.Nomina;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
+import sis2.pkg2020.modelo.Wrapper.WrapperBrutoRetencion;
 
 /**
  *
@@ -75,7 +79,7 @@ public class GeneradorNomina {
         this.devengos = calcularDevengos();
         this.brutoAnual = calcularBrutoAnual();
         //  Para calcular las deducciones debemos saber el bruto anual -> IRPF.
-        this.deducciones = cacularDeduciones();
+        this.deducciones = calcularDeduciones();
 
         return true;
     }
@@ -164,7 +168,7 @@ public class GeneradorNomina {
             //Comprobación del mes de diciembre.
             if (siCambioTrienioProrrata()) {
                 antiguedad = getValorTrienio(trienios + 1);
-            
+
             }
             prorrateoextra = salarioBaseMes / 6 + complementoMes / 6 + antiguedad / 6;
             devengos += prorrateoextra;
@@ -187,20 +191,44 @@ public class GeneradorNomina {
     }
 
     //TODO
-    private double cacularDeduciones() {
+    private double calcularDeduciones() {
 
-        double contingenciasGenerales;
-        double desempleo;
-        double cuotaFormacion;
+        double aux;
+        double baseGeneral = salarioBase + complemento + antiguedad;
+        baseGeneral /= 12;
+
+        double contingenciasGenerales = baseGeneral;
+
+        System.out.println(ExcelCrud.getMapCuotas().get("Cuota obrera general TRABAJADOR"));
+        aux = (Double) ExcelCrud.getMapCuotas().get("Cuota obrera general TRABAJADOR");
+        aux /= 100;
+        contingenciasGenerales *= aux;
+        double desempleo = baseGeneral;
+
+        aux = (Double) ExcelCrud.getMapCuotas().get("Cuota desempleo TRABAJADOR");
+        aux /= 100;
+        desempleo *= aux;
+        double cuotaFormacion = baseGeneral;
+        aux = (Double) ExcelCrud.getMapCuotas().get("Cuota formación TRABAJADOR");
+        aux /= 100;
+        cuotaFormacion *= aux;
+
         double IRPF = calcularIRPF();
+
+        System.out.printf("\t\tContingencias Generales:  %.2f \n", contingenciasGenerales);
+        System.out.printf("\t\tCuota desempleo:  %.2f \n", desempleo);
+        System.out.printf("\t\tCuota formación:  %.2f \n", cuotaFormacion);
+        System.out.printf("\t\tIRPF:  %.2f \n", IRPF);
 
         return 0;
     }
+
     /**
-     * Devuelve el valor del mes de la nomina correspondeinte a como es la entrada
-     * del mes según la expresion regular mm/aaaa.
+     * Devuelve el valor del mes de la nomina correspondeinte a como es la
+     * entrada del mes según la expresion regular mm/aaaa.
+     *
      * @param mesNomina
-     * @return 
+     * @return
      */
     private int getMesNomina(String mesNomina) {
 
@@ -314,27 +342,27 @@ public class GeneradorNomina {
                 double antiguedadNueva = getValorTrienio(trienios + 1);
                 int aux = 12 - nMesesViejos;
                 brutoanual = salarioBase + complemento + (antiguedad * nMesesViejos) + (antiguedadNueva * aux);
-             
-            //Caso 1.2 Prorrata de diciembre -> SI existe un cambio de trienio en el año siguiente, la nomina de diciembre incluirá 1/6 de la nomina extra de Junio.
-            }else if(siCambioTrienioAnioSiguiente() && siProrrateo()){
-                
-               brutoanual += getValorTrienio(trienios+1)/6;
-                
+
+                //Caso 1.2 Prorrata de diciembre -> SI existe un cambio de trienio en el año siguiente, la nomina de diciembre incluirá 1/6 de la nomina extra de Junio.
+            } else if (siCambioTrienioAnioSiguiente() && siProrrateo()) {
+
+                brutoanual += getValorTrienio(trienios + 1) / 6;
+
             }
             //Caso 2 -> Trabajador recien contratado -> No influye la antiguedad.
         } else {
-                int nNominas = 12 - (getNumeroMesContratacion()-1);
-                //Con prorrateo, indica que la nomina se divide en el nº de meses que este el trabajador ese año en la empresa.
+            int nNominas = 12 - (getNumeroMesContratacion() - 1);
+            //Con prorrateo, indica que la nomina se divide en el nº de meses que este el trabajador ese año en la empresa.
             if (siProrrateo()) {
-                
-                        brutoanual = salarioBase + complemento;
-                        brutoanual /= 12;
-                        // Lo multiplicamos por el nº de meses que esta en la empresa ese año.
-                        brutoanual *=nNominas;
-                       System.out.printf("Bruto anual con prorrateo: %.2f \n", brutoanual);
+
+                brutoanual = salarioBase + complemento;
+                brutoanual /= 12;
+                // Lo multiplicamos por el nº de meses que esta en la empresa ese año.
+                brutoanual *= nNominas;
+                System.out.printf("Bruto anual con prorrateo: %.2f \n", brutoanual);
 
             } else {
-                
+
                 //Si tiene más de 6 meses de nomina, implica que l nomina de diciembre se cobra integra.
                 int nExtrasCompletas = (nNominas >= 6) ? 1 : 0;
                 //Si es 0 tendremos que calcular el valor  de nomina que le corresponde.
@@ -342,15 +370,14 @@ public class GeneradorNomina {
                 //EXTRA DE JUNIO O DE DICIEMBRE.
                 if (nExtrasCompletas == 0) {
                     nExtrasIncompletas = nNominas / 6;
-                } 
+                }
 
                 //14 Nominas en total -> Vamos restando.
                 int nNominasCompletas = (nNominas + nExtrasCompletas);
-                
+
                 //Suma de nominas completas
                 brutoanual = (salarioBase + complemento) / 14;
                 brutoanual *= nNominasCompletas;
-                
 
                 //Suma de nominas parciales
                 brutoanual += ((salarioBase + complemento) / 14) * (nExtrasIncompletas);
@@ -358,7 +385,7 @@ public class GeneradorNomina {
             System.out.println("Año no completo");
 
         }
-       System.out.printf("Bruto anual sin prorrateo: %.2f \n", brutoanual);
+        System.out.printf("Bruto anual sin prorrateo: %.2f \n", brutoanual);
         return brutoanual;
     }
 
@@ -369,9 +396,30 @@ public class GeneradorNomina {
      */
     private double calcularIRPF() {
 
-        double irpf = 0;
+        double solucion = 0.0;
+        System.out.println("Bruto anual "+this.brutoAnual);
+        HashMap<Double, Double> brutoretencion = (HashMap<Double, Double>) ExcelCrud.getMapBrutoRetencion();
+        
+        if(brutoAnual <= 12000){
+            return solucion;
+        }
+        
+        for (Map.Entry<Double, Double> entry : brutoretencion.entrySet()) {
+            Double bruto = entry.getKey();
+            Double retencion = entry.getValue();
+            
+            if(bruto <= brutoAnual){
+                solucion = retencion;
+            }else{
+                return retencion;
+            }
+            
+               
+        }
+        
+       return solucion;
+        
 
-        return irpf;
     }
 
     /**
@@ -404,7 +452,7 @@ public class GeneradorNomina {
         int anioContratacion = Integer.valueOf(this.anioContratacion);
 
         if (anioNomina > anioContratacion) {
-            
+
             return true;
 
         } else if (anioNomina == anioContratacion) {
@@ -453,9 +501,9 @@ public class GeneradorNomina {
                     }
                 }
             }
-        }else if(siCambioTrienioAnioSiguiente()){
+        } else if (siCambioTrienioAnioSiguiente()) {
             System.out.println("Cambio de trienio al año suguiente.");
-                    return true;
+            return true;
         }
 
         return false;
@@ -551,13 +599,13 @@ public class GeneradorNomina {
     }
 
     private boolean siCambioTrienioAnioSiguiente() {
-         int anioNomina = Integer.valueOf(this.anioNomina);
+        int anioNomina = Integer.valueOf(this.anioNomina);
         int anioContratacion = Integer.valueOf(this.anioContratacion);
 
-       anioNomina++;
-       
+        anioNomina++;
+
         return (anioNomina - anioContratacion) % 3 == 0;
-        
+
     }
 
 }
