@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import sis2.pkg2020.modelo.generadores.GenerarNomina;
+import sis2.pkg2020.modelo.generadores.GeneradorNomina;
 
 
 /**
@@ -156,7 +156,7 @@ public class Controlador {
 //            Trabajadorbbdd next = iterator.next();
 //            System.out.println(next.toString());
 //        }
-        GenerarNomina nominaT  = new GenerarNomina(nxt, fechaNomina);
+        GeneradorNomina nominaT  = new GeneradorNomina(nxt, fechaNomina);
        
         System.out.println("Nomina generada: "+ nominaT.generarNomina());
     }
@@ -176,7 +176,7 @@ public class Controlador {
             Pattern pat = Pattern.compile("\\d{2}/\\d{4}");
             Matcher mat = pat.matcher(fechaNomina);
             if(mat.matches()){
-                int mes = Integer.valueOf(fechaNomina.substring(0, 2));
+                    int mes = Integer.valueOf(fechaNomina.substring(0, 2));
                 int anio = Integer.valueOf(fechaNomina.substring(3, 7));
                 if( (mes >12 || mes < 1) || (anio < 1990 || anio > 2050) ){
                     return recogerFechaConExpresionRegular();

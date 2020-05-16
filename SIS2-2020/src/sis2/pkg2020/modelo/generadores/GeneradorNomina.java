@@ -21,7 +21,7 @@ import sis2.pkg2020.modelo.Trabajadorbbdd;
  *
  * @author Marco Speranza López
  */
-public class GenerarNomina {
+public class GeneradorNomina {
 
     //Nomina
     Nomina nomina;
@@ -44,7 +44,7 @@ public class GenerarNomina {
     private double prorrateoextra;
     private double antiguedad;
 
-    public GenerarNomina(Trabajadorbbdd trabajador, String fechaNomina) {
+    public GeneradorNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
         this.trabajador = trabajador;
         this.fechaNomina = fechaNomina;
@@ -159,10 +159,12 @@ public class GenerarNomina {
         }
 
         //Suma a los devengos del prorrateo de la extra, que en cualquier mes será 1/6.
-        if (isProrrateo()) {
+        if (siProrrateo()) {
             //Comprueba si existe cambio de trienio en la extra que tiene que recibir.
+            //Comprobación del mes de diciembre.
             if (siCambioTrienioProrrata()) {
-                antiguedad = getValorTrienio(trienios+1);
+                antiguedad = getValorTrienio(trienios + 1);
+            
             }
             prorrateoextra = salarioBaseMes / 6 + complementoMes / 6 + antiguedad / 6;
             devengos += prorrateoextra;
@@ -194,7 +196,12 @@ public class GenerarNomina {
 
         return 0;
     }
-
+    /**
+     * Devuelve el valor del mes de la nomina correspondeinte a como es la entrada
+     * del mes según la expresion regular mm/aaaa.
+     * @param mesNomina
+     * @return 
+     */
     private int getMesNomina(String mesNomina) {
 
         int valor = 0;
@@ -266,13 +273,16 @@ public class GenerarNomina {
      * (Si lo tuviese)
      *
      *
-     * 2.2 Completo pero con cambio de trienio - Nº Meses correspodientes a
-     * trienioviejo * valorViejotrienio + Nº de meses nuevo trienio *
-     * valorNuevotrienio
+     * 2.2 Completo pero con cambio de trienio
      *
-     * 2º Que el año este partido(Alta en año). -2.1 Con prorrateo:
+     * - Nº Meses correspodientes trienioviejo * valorViejotrienio + Nº de meses
+     * nuevo trienio valorNuevotrienio
      *
-     * 2.1.1. Sin cambio de trienio. (Ni en ese año, ni hasta mayor del año
+     * 2º Que el año este partido(Alta en año).
+     *
+     * -2.1 Con prorrateo:
+     *
+     * 2.1.1. Sin extra añadido (Ni en ese año, ni hasta mayor del año
      * siguiente, incluido) ((SalarioBase + complementos+trienios)/ 12) * Nºde
      * meses restantes
      *
@@ -290,26 +300,65 @@ public class GenerarNomina {
     private double calcularBrutoAnual() {
 
         //Caso base -> Año completo sin cambio de trienio.
-        double brutoanual = salarioBase + complemento + (antiguedad)*14;
+        double brutoanual = salarioBase + complemento + (antiguedad) * 14;
         System.out.println("Año completo: " + siAnioCompleto());
         System.out.println(brutoanual);
         //Caso 1 -> Año completo pero con cambio de trienio.
+
         if (siAnioCompleto()) {
-            System.out.println("Si cambio trienio: "+ siCambioTrienioBruto());
-            if (siCambioTrienioBruto()) {
-                int nMesesViejos = Integer.valueOf(this.mesContratacion) + 1;
-                int mesNomina = Integer.valueOf(this.mesNomina);
-                double antiguedadNueva = getValorTrienio(trienios+1);
+            System.out.println("Si cambio trienio: " + siCambioTrienioEseAnio());
+            //Caso 1.1 Cambio de trienio durante el año.
+            if (siCambioTrienioEseAnio()) {
+                int nMesesViejos = getNumeroMesContratacion();
+                int mesNomina = getValorMesNomina();
+                double antiguedadNueva = getValorTrienio(trienios + 1);
                 int aux = 12 - nMesesViejos;
-                brutoanual = salarioBase + complemento + (antiguedad*nMesesViejos) + (antiguedadNueva*aux) ;
+                brutoanual = salarioBase + complemento + (antiguedad * nMesesViejos) + (antiguedadNueva * aux);
+             
+            //Caso 1.2 Prorrata de diciembre -> SI existe un cambio de trienio en el año siguiente, la nomina de diciembre incluirá 1/6 de la nomina extra de Junio.
+            }else if(siCambioTrienioAnioSiguiente() && siProrrateo()){
+                
+               brutoanual += getValorTrienio(trienios+1)/6;
                 
             }
-
+            //Caso 2 -> Trabajador recien contratado -> No influye la antiguedad.
         } else {
-            //Trabajador recien contratado.
-            //todo
+                int nNominas = 12 - (getNumeroMesContratacion()-1);
+                //Con prorrateo, indica que la nomina se divide en el nº de meses que este el trabajador ese año en la empresa.
+            if (siProrrateo()) {
+                
+                        brutoanual = salarioBase + complemento;
+                        brutoanual /= 12;
+                        // Lo multiplicamos por el nº de meses que esta en la empresa ese año.
+                        brutoanual *=nNominas;
+                       System.out.printf("Bruto anual con prorrateo: %.2f \n", brutoanual);
+
+            } else {
+                
+                //Si tiene más de 6 meses de nomina, implica que l nomina de diciembre se cobra integra.
+                int nExtrasCompletas = (nNominas >= 6) ? 1 : 0;
+                //Si es 0 tendremos que calcular el valor  de nomina que le corresponde.
+                double nExtrasIncompletas = 0;
+                //EXTRA DE JUNIO O DE DICIEMBRE.
+                if (nExtrasCompletas == 0) {
+                    nExtrasIncompletas = nNominas / 6;
+                } 
+
+                //14 Nominas en total -> Vamos restando.
+                int nNominasCompletas = (nNominas + nExtrasCompletas);
+                
+                //Suma de nominas completas
+                brutoanual = (salarioBase + complemento) / 14;
+                brutoanual *= nNominasCompletas;
+                
+
+                //Suma de nominas parciales
+                brutoanual += ((salarioBase + complemento) / 14) * (nExtrasIncompletas);
+            }
+            System.out.println("Año no completo");
+
         }
-        System.out.println("Bruto anual: "+brutoanual);
+       System.out.printf("Bruto anual sin prorrateo: %.2f \n", brutoanual);
         return brutoanual;
     }
 
@@ -330,7 +379,7 @@ public class GenerarNomina {
      *
      * @return true -> SI | false -> NO
      */
-    private boolean isProrrateo() {
+    private boolean siProrrateo() {
 
         String valor = trabajador.getProrrata();
         return valor.equals("SI");
@@ -341,6 +390,11 @@ public class GenerarNomina {
      * Devuelve true o false según pertenezca la nomina al año en el que el
      * trabajador es dado de alta o no.
      *
+     * 1. Existe la posibilidad, de que esten en distitnos años, pero que el
+     * valor de el mes de nomina requerido sea 12, por lo tanto, se valorará
+     * como si no fuese el año completo, ya que ese mes contará para el valor de
+     * la prorrata del extra del año siguiente.
+     *
      * @return true -> nomina en otro año | false -> nomina en mismo año que
      * dado de alta.
      */
@@ -349,7 +403,17 @@ public class GenerarNomina {
         int anioNomina = Integer.valueOf(this.anioNomina);
         int anioContratacion = Integer.valueOf(this.anioContratacion);
 
-        return anioNomina > anioContratacion;
+        if (anioNomina > anioContratacion) {
+            
+            return true;
+
+        } else if (anioNomina == anioContratacion) {
+            if (getNumeroMesContratacion() == 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -389,7 +453,9 @@ public class GenerarNomina {
                     }
                 }
             }
-
+        }else if(siCambioTrienioAnioSiguiente()){
+            System.out.println("Cambio de trienio al año suguiente.");
+                    return true;
         }
 
         return false;
@@ -413,10 +479,24 @@ public class GenerarNomina {
         return trienios;
     }
 
+    /**
+     * Comprubea si esta dentro del primer semestre o no, y por ende dentro del
+     * segundo
+     *
+     * @param mesNomina
+     * @return
+     */
     private boolean siPrimerExtra(int mesNomina) {
         return mesNomina >= 6 && mesNomina <= 11;
     }
 
+    /**
+     * Comlemento la comprobación del semestra.
+     *
+     * @param semestre
+     * @param mesCambio
+     * @return
+     */
     private boolean dentroSemestre(int[] semestre, int mesCambio) {
         for (int i : semestre) {
 
@@ -433,7 +513,7 @@ public class GenerarNomina {
      *
      * @return
      */
-    private boolean siCambioTrienioBruto() {
+    private boolean siCambioTrienioEseAnio() {
 
         int anioNomina = Integer.valueOf(this.anioNomina);
         int anioContratacion = Integer.valueOf(this.anioContratacion);
@@ -441,9 +521,43 @@ public class GenerarNomina {
         return (anioNomina - anioContratacion) % 3 == 0;
     }
 
+    /**
+     * Devuelve del excel el valor del trienio con respecto al del trabajador.
+     *
+     * @param trienios
+     * @return
+     */
     private double getValorTrienio(int trienios) {
-        
+
         return (Double) ExcelCrud.getMapTrienios().get(trienios);
+    }
+
+    /**
+     * Devuelve en forma de integer el valor de la nomina.
+     *
+     * @return
+     */
+    private int getValorMesNomina() {
+        return Integer.valueOf(this.mesNomina);
+    }
+
+    /**
+     * Devuelve como integer el mes de contratación del trabajador.
+     *
+     * @return
+     */
+    private int getNumeroMesContratacion() {
+        return Integer.valueOf(this.mesContratacion);
+    }
+
+    private boolean siCambioTrienioAnioSiguiente() {
+         int anioNomina = Integer.valueOf(this.anioNomina);
+        int anioContratacion = Integer.valueOf(this.anioContratacion);
+
+       anioNomina++;
+       
+        return (anioNomina - anioContratacion) % 3 == 0;
+        
     }
 
 }

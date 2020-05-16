@@ -11,13 +11,14 @@ import sis2.pkg2020.modelo.*;
  * @author Marco Speranza López
  */
 public class Main {
-    
+   
     public static void main (String [ ] args) throws Exception {
     
            Controlador controladorPractica = new Controlador();
           //Correspodiente a la práctica 1 HQL
          // controladorPractica.practica1();
            
+            System.out.println("\n\n\n");
           //Correspodiente a la práctica 2
           controladorPractica.practicas();
     }
