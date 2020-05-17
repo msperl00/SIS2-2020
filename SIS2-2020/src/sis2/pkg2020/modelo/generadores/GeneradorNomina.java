@@ -397,28 +397,25 @@ public class GeneradorNomina {
     private double calcularIRPF() {
 
         double solucion = 0.0;
-        System.out.println("Bruto anual "+this.brutoAnual);
+        System.out.println("Bruto anual " + this.brutoAnual);
         HashMap<Double, Double> brutoretencion = (HashMap<Double, Double>) ExcelCrud.getMapBrutoRetencion();
-        
-        if(brutoAnual <= 12000){
+
+        if (brutoAnual <= 12000) {
             return solucion;
         }
-        
+
         for (Map.Entry<Double, Double> entry : brutoretencion.entrySet()) {
             Double bruto = entry.getKey();
             Double retencion = entry.getValue();
-            
-            if(bruto <= brutoAnual){
+
+            if (bruto <= brutoAnual) {
                 solucion = retencion;
-            }else{
+            } else {
                 return retencion;
             }
-            
-               
         }
-        
-       return solucion;
-        
+
+        return solucion;
 
     }
 
