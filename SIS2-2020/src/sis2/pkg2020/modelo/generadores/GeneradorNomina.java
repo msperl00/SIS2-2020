@@ -1,5 +1,6 @@
 package sis2.pkg2020.modelo.generadores;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,7 +48,8 @@ public class GeneradorNomina {
     private double complemento;
     private double prorrateoextra;
     private double antiguedad;
-
+    private double liquidoMensual;
+    private double costeTotalEmpresario;
     public GeneradorNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
         this.trabajador = trabajador;
@@ -78,9 +80,25 @@ public class GeneradorNomina {
 
         this.devengos = calcularDevengos();
         this.brutoAnual = calcularBrutoAnual();
-        //  Para calcular las deducciones debemos saber el bruto anual -> IRPF.
         this.deducciones = calcularDeduciones();
-
+        this.liquidoMensual = devengos - deducciones;
+        
+        System.out.println("\n****************************************************************");
+        System.out.printf("\t\tDevengos        :    %.2f\n", devengos);
+        System.out.printf("\t\tDeducciones     :    %.2f\n", deducciones);
+        System.out.println("****************************************************************");
+        System.out.printf("\t\tLiquido mensual :    %.2f\n", liquidoMensual);
+        System.out.println("****************************************************************\n");
+        
+        nomina.setBrutoAnual(brutoAnual);
+        nomina.setBrutoNomina(devengos);
+        nomina.setLiquidoNomina(liquidoMensual);
+         System.out.println("\n****************************************************************");
+        System.out.println("\n                        EMPRESARIO                              ");
+        System.out.println("\n****************************************************************");
+        
+        this. costeTotalEmpresario = calculoBaseEmpresario();
+                
         return true;
     }
 
@@ -180,12 +198,16 @@ public class GeneradorNomina {
         nomina.setImporteTrienios(antiguedad);
         nomina.setValorProrrateo(prorrateoextra);
         nomina.setNumeroTrienios(trienios);
+        System.out.println("\n****************************************************************");
+        System.out.println("\n                        TRABAJADOR                              ");
+        System.out.println("\n****************************************************************");
 
-        System.out.printf("Salario base mes: %.2f \n", salarioBaseMes);
-        System.out.printf("Complemento mes: %.2f \n", complementoMes);
-        System.out.printf("Antiguedad mes: %.2f \n", antiguedad);
-        System.out.printf("Prorrateo extra: %.2f \n", prorrateoextra);
-        System.out.printf("Devengos/Bruto mensual: %.2f \n", devengos);
+        System.out.printf("\t\tSalario base mes:        %.2f \n", salarioBaseMes);
+        System.out.printf("\t\tComplemento mes:         %.2f \n", complementoMes);
+        System.out.printf("\t\tAntiguedad mes:          %.2f \n", antiguedad);
+        System.out.printf("\t\tProrrateo extra:         %.2f \n", prorrateoextra);
+        System.out.printf("\t\tDevengos/Bruto mensual:  %.2f \n", devengos);
+        System.out.println("****************************************************************\n");
 
         return devengos;
     }
@@ -194,33 +216,51 @@ public class GeneradorNomina {
     private double calcularDeduciones() {
 
         double aux;
-        double baseGeneral = salarioBase + complemento + antiguedad;
-        baseGeneral /= 12;
+        BigDecimal baseGeneral = new BigDecimal(salarioBase + complemento + antiguedad);
+        baseGeneral = baseGeneral.divide(new BigDecimal(12));
+        System.out.println(baseGeneral);
 
-        double contingenciasGenerales = baseGeneral;
+        BigDecimal contingenciasGenerales = baseGeneral;
 
-        System.out.println(ExcelCrud.getMapCuotas().get("Cuota obrera general TRABAJADOR"));
         aux = (Double) ExcelCrud.getMapCuotas().get("Cuota obrera general TRABAJADOR");
         aux /= 100;
-        contingenciasGenerales *= aux;
-        double desempleo = baseGeneral;
+        contingenciasGenerales = contingenciasGenerales.multiply(new BigDecimal(aux));
 
+        BigDecimal desempleo = baseGeneral;
         aux = (Double) ExcelCrud.getMapCuotas().get("Cuota desempleo TRABAJADOR");
         aux /= 100;
-        desempleo *= aux;
-        double cuotaFormacion = baseGeneral;
+        desempleo = desempleo.multiply(new BigDecimal(aux));
+
+        BigDecimal cuotaFormacion = baseGeneral;
         aux = (Double) ExcelCrud.getMapCuotas().get("Cuota formación TRABAJADOR");
         aux /= 100;
-        cuotaFormacion *= aux;
+        cuotaFormacion = cuotaFormacion.multiply(new BigDecimal(aux));
 
         double IRPF = calcularIRPF();
+        nomina.setIrpf(IRPF);
+        
+        double baseIRPF = salarioBase + complemento + antiguedad;
+        baseIRPF /= 14;
+        IRPF /= 100;
+        
+        IRPF *= baseIRPF;
+        
+        System.out.println("\n****************************************************************");
+        System.out.printf("\t\tContingencias Generales:  %.2f de %.2f \n", contingenciasGenerales, baseGeneral);
+        System.out.printf("\t\tCuota desempleo:          %.2f de %.2f \n", desempleo, baseGeneral);
+        System.out.printf("\t\tCuota formación:          %.2f de %.2f \n", cuotaFormacion, baseGeneral);
+        System.out.printf("\t\tIRPF:                     %.2f de %.2f \n", IRPF, baseIRPF);
+        System.out.println("****************************************************************\n");
 
-        System.out.printf("\t\tContingencias Generales:  %.2f \n", contingenciasGenerales);
-        System.out.printf("\t\tCuota desempleo:  %.2f \n", desempleo);
-        System.out.printf("\t\tCuota formación:  %.2f \n", cuotaFormacion);
-        System.out.printf("\t\tIRPF:  %.2f \n", IRPF);
+        BigDecimal suma = new BigDecimal(IRPF);
+        suma = suma.add(contingenciasGenerales).add(desempleo).add(cuotaFormacion);
+        
+        nomina.setImporteIrpf(IRPF);
+        nomina.setImporteDesempleoTrabajador(desempleo.doubleValue());
+        nomina.setImporteFormacionTrabajador(cuotaFormacion.doubleValue());
+        nomina.setImporteSeguridadSocialTrabajador(contingenciasGenerales.doubleValue());
 
-        return 0;
+        return suma.doubleValue();
     }
 
     /**
@@ -603,6 +643,10 @@ public class GeneradorNomina {
 
         return (anioNomina - anioContratacion) % 3 == 0;
 
+    }
+
+    private double calculoBaseEmpresario() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
