@@ -59,14 +59,13 @@ public class ExcelCrud {
 
     private static FileInputStream file;
     private static XSSFWorkbook workbook;
-    private HashMap<?, ?> mapCategorias;
+    private static HashMap<?, ?> mapCategorias;
     private static HashMap<?, ?> mapBrutoRetencion;
     private static HashMap<?, ?> mapCuotas;
     private static HashMap<?, ?> mapTrienios;
 
     public ExcelCrud() {
 
-        System.out.println("Creacion del excel crud");
         trabajadores = new HashSet<Trabajadorbbdd>();
         categorias = new ArrayList<Categorias>();
         empresas = new ArrayList<Empresas>();
@@ -413,7 +412,7 @@ public class ExcelCrud {
         }
         //   System.out.println(map.toString());
         cerrarConexionExcel();
-          System.out.println("\nRealizada carga de la hoja 2!\n");
+          System.out.println("Realizada carga de la hoja 2!");
         return map;
     }
 
@@ -457,7 +456,7 @@ public class ExcelCrud {
         }
         //System.out.println(map.toString());
         cerrarConexionExcel();
-        System.out.println("\nRealizada carga de la hoja 3!\n");
+        System.out.println("Realizada carga de la hoja 3!");
         return map;
     }
 
@@ -497,7 +496,7 @@ public class ExcelCrud {
 
         }
         //System.out.println(map.toString());
-        System.out.println("\nRealizada la carga de la hoja 4ª\n");
+        System.out.println("Realizada la carga de la hoja 4ª");
         cerrarConexionExcel();
 
         return map;
@@ -532,7 +531,7 @@ public class ExcelCrud {
 
         }
          // System.out.println(map.toString());
-          System.out.println("\nRealizada la carga de la hoja 5!\n");
+          System.out.println("Realizada la carga de la hoja 5!");
         return map;
     }
 
@@ -572,5 +571,6 @@ public class ExcelCrud {
     public static HashMap<?, ?> getMapTrienios() {
         return mapTrienios;
     }
-
+     
+    
 }

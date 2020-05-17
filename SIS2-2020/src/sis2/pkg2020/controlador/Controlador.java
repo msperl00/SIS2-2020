@@ -97,10 +97,12 @@ public class Controlador {
 
         ExcelCrud excel = new ExcelCrud();
         File excelFile = new File("resources/SistemasInformacionII.xlsx");
-        System.out.println("\nSolicitando la fecha de las nominas que se quieren generar");
-        System.out.println("\nContinue con el siguiente formato mm/aaaa\n");
-        System.out.println(ANSI_GREEN + "(Existe una expresión regular que comprueba la expresion...)" + ANSI_RESET + "\n");
-        System.out.println(ANSI_GREEN + "Tampoco se recogerá ninguna expresion con meses menores que  0 ó mayores que 12 y con años fuera del un rango entre 1990 y 2050 " + ANSI_RESET + "\n\n");
+                System.out.println("\n\t\t\t----------------BIENVENIDO AL PROGRAMA DE GENERADOR DE NOMINA--------------------\n");
+
+        System.out.println("\n\t\t\t1. Solicitando la fecha de las nominas que se quieren generar");
+        System.out.println("\n\t\t\t1.1. Continue con el siguiente formato mm/aaaa");
+        System.out.println(ANSI_GREEN + "\t\t\t(Existe una expresión regular que comprueba la expresion...)" + ANSI_RESET);
+        System.out.println(ANSI_GREEN + "\t\t\t(Tampoco se recogerá ninguna expresion con meses menores que  0 ó mayores que 12 y con años fuera del un rango entre 1990 y 2070)" + ANSI_RESET+"\n\n");
 
         String fechaNomina = recogerFechaConExpresionRegular();
         System.out.println("\n\n\n");
@@ -167,7 +169,7 @@ public class Controlador {
             if (mat.matches()) {
                 int mes = Integer.valueOf(fechaNomina.substring(0, 2));
                 int anio = Integer.valueOf(fechaNomina.substring(3, 7));
-                if ((mes > 12 || mes < 1) || (anio < 1990 || anio > 2050)) {
+                if ((mes > 12 || mes < 1) || (anio < 1990 || anio > 2070)) {
                     System.out.println(ANSI_RED + "Intentelo de nuevo..." + ANSI_RESET);
                     return recogerFechaConExpresionRegular();
 
