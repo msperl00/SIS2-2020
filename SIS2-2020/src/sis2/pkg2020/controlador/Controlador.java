@@ -139,17 +139,14 @@ public class Controlador {
 
     private void practica4(ExcelCrud excel, String fechaNomina) {
         HashSet<Trabajadorbbdd> trabajadores = excel.getCleanTrabajadores();
-        Iterator<Trabajadorbbdd> iterator = trabajadores.iterator();
-        Trabajadorbbdd nxt = iterator.next();
-        System.out.println(nxt.toString());
 
-//        for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
-//            Trabajadorbbdd next = iterator.next();
-//            System.out.println(next.toString());
-//        }
-        GeneradorNomina nominaT = new GeneradorNomina(nxt, fechaNomina);
-
-        System.out.println("Nomina generada: " + nominaT.generarNomina());
+        for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
+            Trabajadorbbdd next = iterator.next();
+            System.out.println(next.toString());
+           GeneradorNomina nominaT = new GeneradorNomina(next, fechaNomina);
+           System.out.println("Nomina generada: " + nominaT.generarNomina());
+       }
+        System.out.println("FIN DE LA EJECUCCION.");
     }
 
     /**

@@ -84,32 +84,32 @@ public class GeneradorNomina {
 
         this.devengos = calcularDevengos();
         this.brutoAnual = calcularBrutoAnual();
-        this.deducciones = calcularDeduciones();
+        System.out.println("****************************************************************");
+        System.out.printf("\u001B[34m" + "\t\tBruto Anual :    %.2f\n" + "\u001B[0m", brutoAnual);
+        System.out.println("****************************************************************\n");
+        this.deducciones = calcularDeduciones(salarioBase + complemento + (antiguedad) * 14);
         this.liquidoMensual = devengos - deducciones;
-        
-        
+
         System.out.printf("\t\tDevengos        :    %.2f\n", devengos);
         System.out.printf("\t\tDeducciones     :    %.2f\n", deducciones);
         System.out.println("****************************************************************");
-        System.out.printf("\u001B[34m"+"\t\tLiquido mensual :    %.2f\n"+ "\u001B[0m", liquidoMensual);
+        System.out.printf("\u001B[34m" + "\t\tLiquido mensual :    %.2f\n" + "\u001B[0m", liquidoMensual);
         System.out.println("****************************************************************\n");
-        
-        if(siNominaExtra()){
-            liquidoExtra  = calculoExtra();
+
+        if (siNominaExtra()) {
+            liquidoExtra = calculoExtra();
             System.out.println("****************************************************************");
-            System.out.printf("\u001B[34m"+"\t\tLiquido extra :    %.2f\n"+ "\u001B[0m", liquidoExtra);
+            System.out.printf("\u001B[34m" + "\t\tLiquido extra :    %.2f\n" + "\u001B[0m", liquidoExtra);
             System.out.println("****************************************************************\n");
 
-            
         }
         nomina.setBrutoAnual(brutoAnual);
         nomina.setBrutoNomina(devengos);
         nomina.setLiquidoNomina(liquidoMensual);
-       
 
-        this.costeTotalEmpresario = calculoBaseEmpresario();
+        this.costeTotalEmpresario = calculoBaseEmpresario(devengos);
         this.costeTotalTrabajador = devengos + costeTotalEmpresario;
-        System.out.printf("\u001B[31m"+"\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", costeTotalTrabajador);
+        System.out.printf("\u001B[31m" + "\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", costeTotalTrabajador);
         return true;
     }
 
@@ -128,8 +128,8 @@ public class GeneradorNomina {
         this.mesNomina = this.fechaNomina.substring(0, 2);
         this.anioNomina = this.fechaNomina.substring(3, 7);
 
-        System.out.println("Fecha de contratación del trabajador: " + strDate);
-        System.out.println("Fecha de recogida de nomina: " + fechaNomina);
+        System.out.println("Fecha de contratación del trabajador: " + "\u001B[33m" + strDate + "\u001B[0m");
+        System.out.println("Fecha de recogida de nomina: " + "\u001B[33m" + fechaNomina + "\u001B[0m");
         //Año nomina siempre tiene que ser mayor o igual
         int intanioContratacion = Integer.valueOf(anioContratacion);
         int intanioNomina = Integer.valueOf(anioNomina);
@@ -224,43 +224,50 @@ public class GeneradorNomina {
     }
 
     //TODO
-    private double calcularDeduciones() {
-
+    private double calcularDeduciones(double baseGeneral) {
+        
+        baseGeneral /= 12;
         double aux;
-        BigDecimal baseGeneral = new BigDecimal(salarioBase + complemento + antiguedad);
-        baseGeneral = baseGeneral.divide(new BigDecimal(12.0));
-        System.out.println(baseGeneral);
-
-        BigDecimal contingenciasGenerales = baseGeneral;
-
+       double porcentajeContigencias =0.0;
+       double porcentajeDesempleo=0.0;
+       double porcentajeFormacion=0.0;
+       double porcentajeIRPF=0.0;
+       
+        BigDecimal contingenciasGenerales = BigDecimal.valueOf(baseGeneral);
         aux = (Double) ExcelCrud.getMapCuotas().get("Cuota obrera general TRABAJADOR");
+        porcentajeContigencias = aux;
         aux /= 100;
+        
         contingenciasGenerales = contingenciasGenerales.multiply(new BigDecimal(aux));
-
-        BigDecimal desempleo = baseGeneral;
+        
+        
+        BigDecimal desempleo = BigDecimal.valueOf(baseGeneral);
         aux = (Double) ExcelCrud.getMapCuotas().get("Cuota desempleo TRABAJADOR");
+        porcentajeDesempleo = aux;
         aux /= 100;
         desempleo = desempleo.multiply(new BigDecimal(aux));
 
-        BigDecimal cuotaFormacion = baseGeneral;
+        BigDecimal cuotaFormacion = BigDecimal.valueOf(baseGeneral);
         aux = (Double) ExcelCrud.getMapCuotas().get("Cuota formación TRABAJADOR");
+        porcentajeFormacion = aux;
         aux /= 100;
         cuotaFormacion = cuotaFormacion.multiply(new BigDecimal(aux));
 
         double IRPF = calcularIRPF();
         nomina.setIrpf(IRPF);
-
-        double baseIRPF = salarioBase + complemento + antiguedad;
-        baseIRPF /= 14;
+        porcentajeIRPF = IRPF;
+        double baseIRPF = devengos;
+        if(!siProrrateo()){
+            baseIRPF = brutoAnual/14;
+        }
+         
         IRPF /= 100;
-
         IRPF *= baseIRPF;
 
-        
-        System.out.printf("\t\tContingencias Generales:  %.2f de %.2f \n", contingenciasGenerales, baseGeneral);
-        System.out.printf("\t\tCuota desempleo:          %.2f de %.2f \n", desempleo, baseGeneral);
-        System.out.printf("\t\tCuota formación:          %.2f de %.2f \n", cuotaFormacion, baseGeneral);
-        System.out.printf("\t\tIRPF:                     %.2f de %.2f \n", IRPF, baseIRPF);
+        System.out.printf("\t\tContingencias Generales:  %.2f -> %.2f de %.2f \n",porcentajeContigencias, contingenciasGenerales, baseGeneral);
+        System.out.printf("\t\tCuota desempleo:          %.2f -> %.2f de %.2f \n",porcentajeDesempleo, desempleo, baseGeneral);
+        System.out.printf("\t\tCuota formación:          %.2f -> %.2f de %.2f \n",porcentajeFormacion, cuotaFormacion, baseGeneral);
+        System.out.printf("\t\tIRPF:                     %.2f -> %.2f de %.2f \n",porcentajeIRPF, IRPF, baseIRPF);
         System.out.println("****************************************************************\n");
 
         BigDecimal suma = new BigDecimal(IRPF);
@@ -380,23 +387,38 @@ public class GeneradorNomina {
 
         //Caso base -> Año completo sin cambio de trienio.
         double brutoanual = salarioBase + complemento + (antiguedad) * 14;
-      // System.out.println("Año completo: " + siAnioCompleto());
-       
-        //Caso 1 -> Año completo pero con cambio de trienio.
+        // System.out.println("Año completo: " + siAnioCompleto());
 
+        //Caso 1 -> Año completo pero con cambio de trienio.
         if (siAnioCompleto()) {
             System.out.println("Cambio trienio? : " + siCambioTrienioEseAnio());
-            //Caso 1.1 Cambio de trienio durante el año.
-            if (siCambioTrienioEseAnio()) {
+            //Caso 1.1 Cambio de trienio durante el año, pero sin que sea el 12, ya que no influiria para el año.
+            if (siCambioTrienioEseAnio() && getNumeroMesContratacion()!=12) {
                 int nMesesViejos = getNumeroMesContratacion();
                 int mesNomina = getValorMesNomina();
-                double antiguedadNueva = getValorTrienio(trienios + 1);
-                int aux = 12 - nMesesViejos;
-                brutoanual = salarioBase + complemento + (antiguedad * nMesesViejos) + (antiguedadNueva * aux);
+                System.out.println("MES contratacion"+ mesContratacion);
+                System.out.println("TrRIENIOS"+trienios);
+                double antiguedadNueva = getValorTrienio(trienios);
+                double antiguedadVieja = getValorTrienio(trienios-1);
+                System.out.println("Antiguedad Nueva"+ antiguedadNueva);
+                System.out.println("Antiguedad Vieja"+ antiguedadVieja);
+                //Uno más por la extra si pasa de 6 meses.
+                if(getNumeroMesContratacion()>6)
+                    nMesesViejos++;
+                
+                int aux = 14 - nMesesViejos;
+                System.out.println("Meses nuevos" + aux);
+                System.out.println("Meses viejos"+ nMesesViejos);
+                System.out.println(antiguedadNueva * aux);
+                System.out.println(antiguedadNueva * nMesesViejos);
+                        
+                brutoanual = salarioBase + complemento + (antiguedadVieja * nMesesViejos) + (antiguedadNueva * aux);
 
                 //Caso 1.2 Prorrata de diciembre -> SI existe un cambio de trienio en el año siguiente, la nomina de diciembre incluirá 1/6 de la nomina extra de Junio.
             } else if (siCambioTrienioAnioSiguiente() && siProrrateo()) {
-
+                brutoanual = salarioBase + complemento + antiguedad*13;
+                System.out.println(trienios);
+                 System.out.println("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK");
                 brutoanual += getValorTrienio(trienios + 1) / 6;
 
             }
@@ -432,11 +454,12 @@ public class GeneradorNomina {
 
                 //Suma de nominas parciales
                 brutoanual += ((salarioBase + complemento) / 14) * (nExtrasIncompletas);
+                System.out.printf("Bruto anual sin prorrateo: %.2f \n", brutoanual);
+
             }
-           // System.out.println("Año no completo");
+            // System.out.println("Año no completo");
 
         }
-        System.out.printf("Bruto anual sin prorrateo: %.2f \n", brutoanual);
         return brutoanual;
     }
 
@@ -448,7 +471,7 @@ public class GeneradorNomina {
     private double calcularIRPF() {
 
         double solucion = 0.0;
-        
+
         HashMap<Double, Double> brutoretencion = (HashMap<Double, Double>) ExcelCrud.getMapBrutoRetencion();
 
         if (brutoAnual <= 12000) {
@@ -624,7 +647,8 @@ public class GeneradorNomina {
      * @return
      */
     private double getValorTrienio(int trienios) {
-
+        if(trienios <= 0)
+            return 0;
         return (Double) ExcelCrud.getMapTrienios().get(trienios);
     }
 
@@ -672,11 +696,11 @@ public class GeneradorNomina {
      *
      * @return
      */
-    private double calculoBaseEmpresario() {
+    private double calculoBaseEmpresario(double base) {
 
         double costeTotalEmpresario;
-        double base = salarioBase + complemento + antiguedad;
-        base /= 12;
+        System.out.printf("\t\tBase empresario:    %.2f  \n",base);
+
         double aux;
 
         double contingenciasComunes = (Double) ExcelCrud.getMapCuotas().get("Contingencias comunes EMPRESARIO");
@@ -712,7 +736,7 @@ public class GeneradorNomina {
         System.out.printf("\t\tFOGASA:                   %.2f  \n", fogasa);
         System.out.println("****************************************************************\n");
         double suma = contingenciasComunes + desempleo + formacion + accidentes + fogasa;
-        System.out.printf("\u001B[36m"+"\t\tCoste TOTAL empresario:   %.2f  \n"+ "\u001B[0m", suma);
+        System.out.printf("\u001B[36m" + "\t\tCoste TOTAL empresario:   %.2f  \n" + "\u001B[0m", suma);
         System.out.println("****************************************************************\n");
 
         nomina.setAccidentesTrabajoEmpresario(accidentes);
@@ -725,28 +749,29 @@ public class GeneradorNomina {
         return suma;
 
     }
+
     /**
      * Devuelve true si es un mes crrespodeinte con un extra en la nomina.
-     *  -Comprueba si no hay prorrateo.
-     *  -Que el mes solicitado lleva un extra.
-     * @return 
+     * -Comprueba si no hay prorrateo. -Que el mes solicitado lleva un extra.
+     *
+     * @return
      */
     private boolean siNominaExtra() {
-        if(!siProrrateo())
-            if(getValorMesNomina() == 6 || getValorMesNomina() == 12)
+        if (!siProrrateo()) {
+            if (getValorMesNomina() == 6 || getValorMesNomina() == 12) {
                 return true;
-        
+            }
+        }
+
         return false;
     }
 
     private double calculoExtra() {
-        
+
         double extra = salarioBase + complemento + antiguedad;
         extra /= 14;
         extra -= nomina.getImporteIrpf();
         return extra;
     }
-
-   
 
 }
