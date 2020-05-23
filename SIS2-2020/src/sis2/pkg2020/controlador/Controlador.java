@@ -145,6 +145,7 @@ public class Controlador {
             System.out.println(next.toString());
            GeneradorNomina nominaT = new GeneradorNomina(next, fechaNomina);
            System.out.println("Nomina generada: " + nominaT.generarNomina());
+           break;
        }
         System.out.println("FIN DE LA EJECUCCION.");
     }
@@ -159,6 +160,8 @@ public class Controlador {
     private String recogerFechaConExpresionRegular() {
         boolean bandera = false;
         String fechaNomina = null;
+        return "12/2019";
+        
         while (!bandera) {
             fechaNomina = teclado.nextLine();
             Pattern pat = Pattern.compile("\\d{2}/\\d{4}");

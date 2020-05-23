@@ -41,16 +41,25 @@ public class Nomina  implements java.io.Serializable {
      private Double brutoNomina;
      private Double liquidoNomina;
      private Double costeTotalEmpresario;
+     
+     //Valores no persistidos
+     
+     private double porcentajeContigencias;
+     private double porcentajeDesempleo;
+     private double porcentajeFormacion;
+     private double porcentajeIRPF;
+     private double deducciones;
+     
 
     public Nomina() {
     }
 
 	
-    public Nomina(Trabajadorbbdd trabajadorbbdd, int mes, int anio, int numeroTrienios) {
+    public Nomina(Trabajadorbbdd trabajadorbbdd) {
         this.trabajadorbbdd = trabajadorbbdd;
-        this.mes = mes;
-        this.anio = anio;
-        this.numeroTrienios = numeroTrienios;
+        
+                
+        
     }
     public Nomina(Trabajadorbbdd trabajadorbbdd, int mes, int anio, int numeroTrienios, Double importeTrienios, Double importeSalarioMes, Double importeComplementoMes, Double valorProrrateo, Double brutoAnual, Double irpf, Double importeIrpf, Double baseEmpresario, Double seguridadSocialEmpresario, Double importeSeguridadSocialEmpresario, Double desempleoEmpresario, Double importeDesempleoEmpresario, Double formacionEmpresario, Double importeFormacionEmpresario, Double accidentesTrabajoEmpresario, Double importeAccidentesTrabajoEmpresario, Double fogasaempresario, Double importeFogasaempresario, Double seguridadSocialTrabajador, Double importeSeguridadSocialTrabajador, Double desempleoTrabajador, Double importeDesempleoTrabajador, Double formacionTrabajador, Double importeFormacionTrabajador, Double brutoNomina, Double liquidoNomina, Double costeTotalEmpresario) {
        this.trabajadorbbdd = trabajadorbbdd;
@@ -311,9 +320,50 @@ public class Nomina  implements java.io.Serializable {
         this.costeTotalEmpresario = costeTotalEmpresario;
     }
 
+    public double getPorcentajeContigencias() {
+        return porcentajeContigencias;
+    }
+
+    public void setPorcentajeContigencias(double porcentajeContigencias) {
+        this.porcentajeContigencias = porcentajeContigencias;
+    }
+
+    public double getPorcentajeDesempleo() {
+        return porcentajeDesempleo;
+    }
+
+    public void setPorcentajeDesempleo(double porcentajeDesemplo) {
+        this.porcentajeDesempleo = porcentajeDesemplo;
+    }
+
+    public double getPorcentajeFormacion() {
+        return porcentajeFormacion;
+    }
+
+    public void setPorcentajeFormacion(double porcentajeFormacion) {
+        this.porcentajeFormacion = porcentajeFormacion;
+    }
+
+    public double getPorcentajeIRPF() {
+        return porcentajeIRPF;
+    }
+
+    public void setPorcentajeIRPF(double porcentajeIRPF) {
+        this.porcentajeIRPF = porcentajeIRPF;
+    }
+
+    public double getDeducciones() {
+        return deducciones;
+    }
+
+    public void setDeducciones(double deducciones) {
+        this.deducciones = deducciones;
+    }
+
     @Override
     public String toString() {
-        return "Nomina{" + "idNomina=" + idNomina + ", trabajadorbbdd=" + trabajadorbbdd.toString() + ", mes=" + mes + ", anio=" + anio + ", numeroTrienios=" + numeroTrienios + ", importeTrienios=" + importeTrienios + ", importeSalarioMes=" + importeSalarioMes + ", importeComplementoMes=" + importeComplementoMes + ", valorProrrateo=" + valorProrrateo + ", brutoAnual=" + brutoAnual + ", irpf=" + irpf + ", importeIrpf=" + importeIrpf + ", baseEmpresario=" + baseEmpresario + ", seguridadSocialEmpresario=" + seguridadSocialEmpresario + ", importeSeguridadSocialEmpresario=" + importeSeguridadSocialEmpresario + ", desempleoEmpresario=" + desempleoEmpresario + ", importeDesempleoEmpresario=" + importeDesempleoEmpresario + ", formacionEmpresario=" + formacionEmpresario + ", importeFormacionEmpresario=" + importeFormacionEmpresario + ", accidentesTrabajoEmpresario=" + accidentesTrabajoEmpresario + ", importeAccidentesTrabajoEmpresario=" + importeAccidentesTrabajoEmpresario + ", fogasaempresario=" + fogasaempresario + ", importeFogasaempresario=" + importeFogasaempresario + ", seguridadSocialTrabajador=" + seguridadSocialTrabajador + ", importeSeguridadSocialTrabajador=" + importeSeguridadSocialTrabajador + ", desempleoTrabajador=" + desempleoTrabajador + ", importeDesempleoTrabajador=" + importeDesempleoTrabajador + ", formacionTrabajador=" + formacionTrabajador + ", importeFormacionTrabajador=" + importeFormacionTrabajador + ", brutoNomina=" + brutoNomina + ", liquidoNomina=" + liquidoNomina + ", costeTotalEmpresario=" + costeTotalEmpresario + '}';
+       // return "Nomina{"+ trabajadorbbdd.getNombre() + " "+ trabajadorbbdd.getApellido1() + " "+ trabajadorbbdd.getApellido2() + ", mes=" + mes + ", anio=" + anio + ", numeroTrienios=" + numeroTrienios + ", importeTrienios=" + importeTrienios + ", importeSalarioMes=" + importeSalarioMes + ", importeComplementoMes=" + importeComplementoMes + ", valorProrrateo=" + valorProrrateo + ", brutoAnual=" + brutoAnual + ", irpf=" + irpf + ", importeIrpf=" + importeIrpf + ", baseEmpresario=" + baseEmpresario + ", seguridadSocialEmpresario=" + seguridadSocialEmpresario + ", importeSeguridadSocialEmpresario=" + importeSeguridadSocialEmpresario + ", desempleoEmpresario=" + desempleoEmpresario + ", importeDesempleoEmpresario=" + importeDesempleoEmpresario + ", formacionEmpresario=" + formacionEmpresario + ", importeFormacionEmpresario=" + importeFormacionEmpresario + ", accidentesTrabajoEmpresario=" + accidentesTrabajoEmpresario + ", importeAccidentesTrabajoEmpresario=" + importeAccidentesTrabajoEmpresario + ", fogasaempresario=" + fogasaempresario + ", importeFogasaempresario=" + importeFogasaempresario + ", seguridadSocialTrabajador=" + seguridadSocialTrabajador + ", importeSeguridadSocialTrabajador=" + importeSeguridadSocialTrabajador + ", desempleoTrabajador=" + desempleoTrabajador + ", importeDesempleoTrabajador=" + importeDesempleoTrabajador + ", formacionTrabajador=" + formacionTrabajador + ", importeFormacionTrabajador=" + importeFormacionTrabajador + ", brutoNomina=" + brutoNomina + ", liquidoNomina=" + liquidoNomina + ", costeTotalEmpresario=" + costeTotalEmpresario + '}';
+       return trabajadorbbdd.getNombre();
     }
 
 

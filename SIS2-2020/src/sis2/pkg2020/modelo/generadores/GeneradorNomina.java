@@ -30,7 +30,8 @@ import sis2.pkg2020.modelo.Wrapper.WrapperBrutoRetencion;
 public class GeneradorNomina {
 
     //Nomina
-    Nomina nomina;
+    private Nomina nomina;
+    
     // Nomina básci,a luego asignaremos más nominas si fuesen sin prorratear.
     private Trabajadorbbdd trabajador;
     private String fechaNomina;
@@ -53,10 +54,12 @@ public class GeneradorNomina {
     private double costeTotalEmpresario;
     private double costeTotalTrabajador;
     private double liquidoExtra;
+    private double brutoAnualReal;
 
     public GeneradorNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
         this.trabajador = trabajador;
+       
         this.fechaNomina = fechaNomina;
 
         //Parte trabajador
@@ -65,6 +68,9 @@ public class GeneradorNomina {
         this.complemento = trabajador.getCategorias().getComplementoCategoria();
         this.prorrateoextra = 0.0;
         this.antiguedad = 0.0;
+        
+        
+       
     }
 
     /**
@@ -81,7 +87,8 @@ public class GeneradorNomina {
         if (!siGenerarNomina()) {
             return false;
         }
-
+        nomina = new Nomina(this.trabajador);
+        
         this.devengos = calcularDevengos();
         this.brutoAnual = calcularBrutoAnual();
         System.out.println("****************************************************************");
@@ -110,6 +117,8 @@ public class GeneradorNomina {
         this.costeTotalEmpresario = calculoBaseEmpresario(devengos);
         this.costeTotalTrabajador = devengos + costeTotalEmpresario;
         System.out.printf("\u001B[31m" + "\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", costeTotalTrabajador);
+        
+        imprimirPorPantalla();
         return true;
     }
 
@@ -230,7 +239,7 @@ public class GeneradorNomina {
         
         //Si no  tenemos prorrateo, es sobre el bruto anual
         if (!siProrrateo()) {
-            baseGeneral = brutoAnual/12;
+            baseGeneral = brutoAnualReal/12;
         }
 
         double aux;
@@ -262,13 +271,15 @@ public class GeneradorNomina {
         nomina.setIrpf(IRPF);
         porcentajeIRPF = IRPF;
         double baseIRPF = devengos;
+        
         if (!siProrrateo()) {
-            baseIRPF = brutoAnual / 14;
+            baseIRPF = brutoAnualReal / 14;
         }
 
         IRPF /= 100;
         IRPF *= baseIRPF;
         IRPF = redondearDecimales(IRPF, 2);
+        
         System.out.printf("\t\tContingencias Generales:  %.2f -> %.2f de %.2f \n", porcentajeContigencias, contingenciasGenerales, baseGeneral);
         System.out.printf("\t\tCuota desempleo:          %.2f -> %.2f de %.2f \n", porcentajeDesempleo, desempleo, baseGeneral);
         System.out.printf("\t\tCuota formación:          %.2f -> %.2f de %.2f \n", porcentajeFormacion, cuotaFormacion, baseGeneral);
@@ -393,7 +404,8 @@ public class GeneradorNomina {
         //Caso base -> Año completo sin cambio de trienio.
         double brutoanual = salarioBase + complemento + getValorTrienio(trienios) * 14;
        
-        System.out.println(brutoanual);
+        this.brutoAnualReal = brutoanual;
+        
         //Caso 1 -> Año completo pero con cambio de trienio.
         if (siAnioCompleto()) {
             System.out.println("Cambio trienio? : " + siCambioTrienioEseAnio());
@@ -791,4 +803,44 @@ public class GeneradorNomina {
         return resultado;
     }
 
+     public void imprimirPorPantalla(){
+         
+         System.out.println(nomina.toString());
+         
+          System.out.println("\n****************************************************************");
+        System.out.println("\n                        TRABAJADOR                              ");
+        System.out.println("\n****************************************************************");
+        System.out.printf("\t\tSalario base mes:        %.2f \n", nomina.getImporteSalarioMes());
+        System.out.printf("\t\tComplemento mes:         %.2f \n", nomina.getImporteComplementoMes());
+        System.out.printf("\t\tAntiguedad mes:          %.2f \n", nomina.getImporteTrienios());
+        System.out.printf("\t\tProrrateo extra:         %.2f \n", nomina.getValorProrrateo());
+        System.out.printf("\t\tDevengos/Bruto mensual:  %.2f \n", nomina.getBrutoNomina());
+        System.out.println("****************************************************************");
+        System.out.printf("\t\tContingencias Generales:  %.2f -> %.2f de %.2f \n", nomina.getPorcentajeContigencias(), nomina.getSeguridadSocialTrabajador(), nomina.getBaseGeneral());
+        System.out.printf("\t\tCuota desempleo:          %.2f -> %.2f de %.2f \n", nomina.getPorcentajeDesempleo(), nomina.getImporteDesempleoTrabajador(), nomina.getBaseGeneral());
+        System.out.printf("\t\tCuota formación:          %.2f -> %.2f de %.2f \n", nomina.getPorcentajeFormacion(), nomina.getImporteFormacionTrabajador(), nomina.getBaseGeneral());
+        System.out.printf("\t\tIRPF:                     %.2f -> %.2f de %.2f \n", nomina.getPorcentajeIRPF(), nomina.getIrpf(), nomina.getBaseIRPF());
+        System.out.println("****************************************************************\n");
+        System.out.println("****************************************************************");
+        System.out.printf("\u001B[34m" + "\t\tBruto Anual :    %.2f\n" + "\u001B[0m", nomina.getBrutoAnual());
+        System.out.println("****************************************************************\n");
+        System.out.printf("\t\tDevengos        :    %.2f\n",nomina.getBrutoNomina());
+        System.out.printf("\t\tDeducciones     :    %.2f\n", nomina.getDeducciones());
+        System.out.println("****************************************************************");
+        System.out.printf("\u001B[34m" + "\t\tLiquido mensual :    %.2f\n" + "\u001B[0m", liquidoMensual);
+        System.out.println("****************************************************************");
+        System.out.printf("\u001B[34m" + "\t\tLiquido extra :    %.2f\n" + "\u001B[0m", liquidoExtra);
+        System.out.println("****************************************************************\n");
+        System.out.println("                          EMPRESARIO                              ");
+        System.out.println("\n****************************************************************");
+        System.out.printf("\t\tContingencias Comunes:    %.2f  \n", nomina.getSeguridadSocialEmpresario());
+        System.out.printf("\t\tDesempleo:                %.2f  \n", nomina.getDesempleoEmpresario());
+        System.out.printf("\t\tFormación:                %.2f  \n", nomina.getFormacionEmpresario());
+        System.out.printf("\t\tAccidentes:               %.2f  \n", nomina.getAccidentesTrabajoEmpresario());
+        System.out.printf("\t\tFOGASA:                   %.2f  \n", nomina.getFogasaempresario());
+        System.out.println("****************************************************************\n");
+        System.out.printf("\u001B[36m" + "\t\tCoste TOTAL empresario:   %.2f  \n" + "\u001B[0m", nomina.getCosteTotalEmpresario());
+        System.out.println("****************************************************************\n");
+         System.out.printf("\u001B[31m" + "\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", costeTotalTrabajador);
+     }
 }
