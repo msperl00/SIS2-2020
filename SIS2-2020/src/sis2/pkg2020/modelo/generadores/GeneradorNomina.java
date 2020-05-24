@@ -1,5 +1,6 @@
 package sis2.pkg2020.modelo.generadores;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -8,6 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sis2.pkg2020.controlador.ExcelCrud;
 import sis2.pkg2020.modelo.Categorias;
 import sis2.pkg2020.modelo.Nomina;
@@ -139,16 +142,17 @@ public class GeneradorNomina {
         nomina.setBrutoNomina(redondearDecimales(devengos, 2));
         nomina.setLiquidoNomina(redondearDecimales(liquidoMensual, 2));
         nomina.setDeducciones(redondearDecimales(deducciones, 2));
-
+        System.out.println(nomina.getDeducciones());
+                
         this.liquidoExtra = calculoExtra();
 
-        this.costeTotalEmpresario = calculoBaseEmpresario(devengos);
-        this.costeTotalTrabajador = devengos + costeTotalEmpresario;
+        this.costeTotalEmpresario = redondearDecimales(calculoBaseEmpresario(devengos), 2);
+        this.costeTotalTrabajador = redondearDecimales(devengos + costeTotalEmpresario, 2);
 
         nomina.setCosteTotalEmpresario(costeTotalEmpresario);
         nomina.setCosteTotalTrabajador(costeTotalTrabajador);
 
-        imprimirPorPantalla();
+       // imprimirPorPantalla();
         //Exportación de nomina
         generarModeloPdf();
 
@@ -897,8 +901,13 @@ public class GeneradorNomina {
      * exportara la nomina extra, si esto fuese necesario.
      */
     public void generarModeloPdf() {
-        modelopdf = new ModeloPDF(nomina);
-        modelopdf.generarPdf();
+        
+        ModeloPDF.creamosCarpeta();
+        
+        try {
+            modelopdf = new ModeloPDF(nomina);
+       
+            modelopdf.generarPdf();
 
         if (siNominaExtra()) {
 
@@ -906,7 +915,9 @@ public class GeneradorNomina {
             extra.generarModeloPdf();
 
         }
-
+ } catch (IOException ex) {
+            Logger.getLogger(GeneradorNomina.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

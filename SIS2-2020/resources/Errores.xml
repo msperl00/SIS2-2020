@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Trabajadores>
-    <Trabajador Fila="83">
-        <TipoError>blanco</TipoError>
-        <Nombre>Paulina</Nombre>
-        <PrimerApellido>Orejas</PrimerApellido>
-        <SegundoApellido>Díez</SegundoApellido>
-        <Categoria>Auxiliar</Categoria>
-        <Empresa>PBlankSA</Empresa>
-    </Trabajador>
     <Trabajador Fila="78">
         <TipoError>blanco</TipoError>
         <Nombre>Pilar</Nombre>
@@ -15,6 +7,14 @@
         <SegundoApellido>Vara</SegundoApellido>
         <Categoria>Analista</Categoria>
         <Empresa>TecnoProyectSL</Empresa>
+    </Trabajador>
+    <Trabajador Fila="83">
+        <TipoError>blanco</TipoError>
+        <Nombre>Paulina</Nombre>
+        <PrimerApellido>Orejas</PrimerApellido>
+        <SegundoApellido>Díez</SegundoApellido>
+        <Categoria>Auxiliar</Categoria>
+        <Empresa>PBlankSA</Empresa>
     </Trabajador>
     <Trabajador Fila="11">
         <TipoError>duplicado</TipoError>
