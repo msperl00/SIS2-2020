@@ -98,7 +98,7 @@ public class Controlador {
 
         ExcelCrud excel = new ExcelCrud();
         File excelFile = new File("resources/SistemasInformacionII.xlsx");
-                System.out.println("\n\t\t\t----------------BIENVENIDO AL PROGRAMA DE GENERADOR DE NOMINA--------------------\n");
+        System.out.println("\n\t\t\t----------------BIENVENIDO AL PROGRAMA DE GENERADOR DE NOMINA--------------------\n");
 
         System.out.println("\n\t\t\t1. Solicitando la fecha de las nominas que se quieren generar");
         System.out.println("\n\t\t\t1.1. Continue con el siguiente formato mm/aaaa");
@@ -110,6 +110,7 @@ public class Controlador {
         //practica1();
         practica2y3(excelFile, excel);
         practica4(excel, fechaNomina);
+       // practica5();
 
     }
 
@@ -146,7 +147,7 @@ public class Controlador {
             System.out.println(next.toString());
             GeneradorNomina nominaT = new GeneradorNomina(next, fechaNomina);
             System.out.println("Nomina generada: " + nominaT.generarNomina());
-            
+            practica5(next);
             break;
        }
         System.out.println("FIN DE LA EJECUCCION.");
@@ -185,6 +186,24 @@ public class Controlador {
 //        }
 
        //return fechaNomina;
+    }
+
+    private void practica5(Trabajadorbbdd next) {
+        
+        Session session = HibernateUtil.abrirConexionHibernate();
+        Transaction t = HibernateUtil.abrirConexionBbdd(session);
+        try {
+
+          session.save(next);
+
+            //Cerramos la conexion con hibernate y con la base de datos.
+            HibernateUtil.cerrarConexiones(t, session);
+
+        } catch (HibernateException e) {
+            t.rollback();
+            System.err.println("Error en Hibernate -> controlador.");
+
+        }
     }
 
 }

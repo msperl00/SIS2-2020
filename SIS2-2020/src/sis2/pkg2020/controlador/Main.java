@@ -16,7 +16,7 @@ public class Main {
     
            Controlador controladorPractica = new Controlador();
           //Correspodiente a la práctica 1 HQL
-         // controladorPractica.practica1();
+          controladorPractica.practica1();
            
             System.out.println("\n\n\n");
           //Correspodiente a la práctica 2
