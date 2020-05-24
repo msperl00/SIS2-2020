@@ -31,7 +31,7 @@ import sis2.pkg2020.vista.ModeloPDF;
 public class GeneradorNomina {
 
     //Nomina
-    private Nomina nomina;
+    Nomina nomina;
     
     // Nomina básci,a luego asignaremos más nominas si fuesen sin prorratear.
     private Trabajadorbbdd trabajador;
@@ -55,6 +55,7 @@ public class GeneradorNomina {
     private double liquidoExtra;
     private double brutoAnualReal;
     private ModeloPDF modelopdf;
+    
     public GeneradorNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
         this.trabajador = trabajador;
@@ -68,6 +69,35 @@ public class GeneradorNomina {
         
         
        
+    }
+    /**
+     * Constructor para el generador de la nomina extra.
+     * @param nomina 
+     */
+    public GeneradorNomina(Nomina nomina){
+        this.nomina = new Nomina();
+        this.nomina.setTrabajadorbbdd(nomina.getTrabajadorbbdd());
+        this.nomina.setMes(nomina.getMes());
+        this.nomina.setNumeroTrienios(nomina.getNumeroTrienios());
+        this.nomina.setImporteTrienios(nomina.getImporteTrienios());
+        this.nomina.setImporteSalarioMes(nomina.getImporteSalarioMes());
+        this.nomina.setImporteComplementoMes(nomina.getImporteComplementoMes());
+        this.nomina.setValorProrrateo(nomina.getValorProrrateo());
+        this.nomina.setBrutoAnual(nomina.getBrutoAnual());
+        this.nomina.setBrutoNomina(nomina.getBrutoNomina());
+        this.nomina.setIrpf(nomina.getIrpf());
+        this.nomina.setImporteIrpf(0.0);
+        this.nomina.setFormacionTrabajador(nomina.getFormacionTrabajador());
+        this.nomina.setImporteFormacionTrabajador(0.0);
+        this.nomina.setSeguridadSocialTrabajador(nomina.getSeguridadSocialTrabajador());
+        this.nomina.setImporteSeguridadSocialTrabajador(0.0);
+        this.nomina.setDesempleoTrabajador(nomina.getDesempleoTrabajador());
+        this.nomina.setImporteDesempleoTrabajador(0.0);
+        this.nomina.setLiquidoNomina(nomina.getBrutoNomina()-nomina.getImporteIrpf());
+        this.nomina.setDeducciones(nomina.getDeducciones());
+        
+        
+        
     }
 
     /**
@@ -90,18 +120,19 @@ public class GeneradorNomina {
         this.brutoAnual = calcularBrutoAnual();
         this.deducciones = calcularDeduciones(devengos);
         this.liquidoMensual = devengos - deducciones;
-
-        if (siNominaExtra()) {
-             
-            GeneradorNominaExtra extra = new GeneradorNominaExtra(trabajador, fechaNomina);
-            
-            liquidoExtra = calculoExtra();
-        }
         
         nomina.setBrutoAnual(redondearDecimales(brutoAnual, 2));
         nomina.setBrutoNomina(redondearDecimales(devengos, 2));
         nomina.setLiquidoNomina(redondearDecimales(liquidoMensual, 2));
         nomina.setDeducciones(redondearDecimales(deducciones, 2));
+        if (siNominaExtra()) {
+             
+            GeneradorNominaExtra extra = new GeneradorNominaExtra(nomina);
+            extra.generarModeloPdf();
+            liquidoExtra = calculoExtra();
+        }
+        
+        
         
         this.costeTotalEmpresario = calculoBaseEmpresario(devengos);
         this.costeTotalTrabajador = devengos + costeTotalEmpresario;
@@ -241,7 +272,7 @@ public class GeneradorNomina {
         double porcentajeDesempleo = 0.0;
         double porcentajeFormacion = 0.0;
         double porcentajeIRPF = 0.0;
-        System.out.println("Base general" + baseGeneral);
+        //System.out.println("Base general" + baseGeneral);
         BigDecimal contingenciasGenerales = BigDecimal.valueOf(baseGeneral);
         aux = (Double) ExcelCrud.getMapCuotas().get("Cuota obrera general TRABAJADOR");
         porcentajeContigencias = aux;
@@ -404,7 +435,7 @@ public class GeneradorNomina {
         
         //Caso 1 -> Año completo pero con cambio de trienio.
         if (siAnioCompleto()) {
-            System.out.println("Cambio trienio? : " + siCambioTrienioEseAnio());
+            //System.out.println("Cambio trienio? : " + siCambioTrienioEseAnio());
             //Caso 1.1 Cambio de trienio durante el año, pero sin que sea el 12, ya que no influiria para el año.
             if (siCambioTrienioEseAnio() && getNumeroMesContratacion() != 12) {
                 int nMesesViejos = getNumeroMesContratacion();
@@ -419,10 +450,10 @@ public class GeneradorNomina {
                 }
 
                 int aux = 14 - nMesesViejos;
-                System.out.println("Meses nuevos" + aux);
-                System.out.println("Meses viejos" + nMesesViejos);
-                System.out.println(antiguedadNueva * aux);
-                System.out.println(antiguedadNueva * nMesesViejos);
+//                System.out.println("Meses nuevos" + aux);
+//                System.out.println("Meses viejos" + nMesesViejos);
+//                System.out.println(antiguedadNueva * aux);
+//                System.out.println(antiguedadNueva * nMesesViejos);
 
                 brutoanual = salarioBase + complemento + (antiguedadVieja * nMesesViejos) + (antiguedadNueva * aux);
 
@@ -442,7 +473,7 @@ public class GeneradorNomina {
                 brutoanual /= 12;
                 // Lo multiplicamos por el nº de meses que esta en la empresa ese año.
                 brutoanual *= nNominas;
-                System.out.printf("Bruto anual con prorrateo: %.2f \n", brutoanual);
+         //       System.out.printf("Bruto anual con prorrateo: %.2f \n", brutoanual);
 
             } else {
 
@@ -464,7 +495,7 @@ public class GeneradorNomina {
 
                 //Suma de nominas parciales
                 brutoanual += ((salarioBase + complemento) / 14) * (nExtrasIncompletas);
-                System.out.printf("Bruto anual sin prorrateo: %.2f \n", brutoanual);
+        //        System.out.printf("Bruto anual sin prorrateo: %.2f \n", brutoanual);
 
             }
             // System.out.println("Año no completo");
@@ -718,7 +749,7 @@ public class GeneradorNomina {
         double porcentajeAccidentesEmpresario = 0;
         double porcentajeFOGASAEmpresario = 0;
         
-        System.out.printf("\t\tBase empresario:    %.2f  \n", base);
+       // System.out.printf("\t\tBase empresario:    %.2f  \n", base);
 
         double aux;
 
@@ -754,8 +785,6 @@ public class GeneradorNomina {
         fogasa *= aux;
         
         double suma = contingenciasComunes + desempleo + formacion + accidentes + fogasa;
-        System.out.printf("\u001B[36m" + "\t\tCoste TOTAL empresario:   %.2f  \n" + "\u001B[0m", suma);
-        System.out.println("****************************************************************\n");
 
        
         nomina.setCosteTotalEmpresario(suma);
@@ -862,12 +891,12 @@ public class GeneradorNomina {
     }
     
     /**
-     * Metodo que se encarga de la generación de nomina en pdf, y que tambíne exportara la nomina extra,
+     * Metodo que se encarga de la generación de nomina en pdf, y que también exportara la nomina extra,
      * si esto fuese necesario.
      */
-    private void generarModeloPdf() {
+    public void generarModeloPdf() {
         modelopdf = new ModeloPDF(nomina);
-        modelopdf.generarPDF();
+        modelopdf.generarPdf();
     }
      
 }
