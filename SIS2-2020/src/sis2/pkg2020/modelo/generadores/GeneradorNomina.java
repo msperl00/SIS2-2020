@@ -13,6 +13,7 @@ import sis2.pkg2020.modelo.Categorias;
 import sis2.pkg2020.modelo.Nomina;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
 import sis2.pkg2020.modelo.Wrapper.WrapperBrutoRetencion;
+import sis2.pkg2020.vista.ModeloPDF;
 
 /**
  *
@@ -53,7 +54,7 @@ public class GeneradorNomina {
     private double costeTotalTrabajador;
     private double liquidoExtra;
     private double brutoAnualReal;
-
+    private ModeloPDF modelopdf;
     public GeneradorNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
         this.trabajador = trabajador;
@@ -106,9 +107,11 @@ public class GeneradorNomina {
         this.costeTotalTrabajador = devengos + costeTotalEmpresario;
         
         nomina.setCosteTotalEmpresario(costeTotalEmpresario);
-        
+        nomina.setCosteTotalTrabajador(costeTotalTrabajador);
         
         imprimirPorPantalla();
+        //Exportación de nomina
+        generarModeloPdf();
         return true;
     }
     
@@ -285,7 +288,7 @@ public class GeneradorNomina {
         nomina.setImporteFormacionTrabajador(redondearDecimales(cuotaFormacion.doubleValue(), 2));
         nomina.setImporteSeguridadSocialTrabajador(redondearDecimales(contingenciasGenerales.doubleValue(), 2));
         nomina.setBaseGeneralTrabajador(redondearDecimales(baseGeneral, 2));
-        nomina.setBaseIRPF(baseIRPF);
+        nomina.setBaseIRPF(redondearDecimales(baseIRPF, 2));
         
         return suma.doubleValue();
     }
@@ -756,7 +759,7 @@ public class GeneradorNomina {
 
        
         nomina.setCosteTotalEmpresario(suma);
-        nomina.setBaseEmpresario(base);
+        nomina.setBaseEmpresario(redondearDecimales(base, 2));
         
         nomina.setImporteDesempleoEmpresario(redondearDecimales(desempleo, 2));
         nomina.setDesempleoEmpresario(redondearDecimales(porcentajeDesempleoEmpresario, 2));
@@ -846,7 +849,7 @@ public class GeneradorNomina {
         System.out.println("****************************************************************\n");
         System.out.printf("\u001B[36m" + "\t\tCoste TOTAL empresario:   %.2f  \n" + "\u001B[0m", nomina.getCosteTotalEmpresario());
         System.out.println("****************************************************************\n");
-        System.out.printf("\u001B[31m" + "\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", costeTotalTrabajador);
+        System.out.printf("\u001B[31m" + "\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", nomina.getCosteTotalTrabajador());
         System.out.println("****************************************************************\n");
      }
 
@@ -856,6 +859,15 @@ public class GeneradorNomina {
 
     public void setNomina(Nomina nomina) {
         this.nomina = nomina;
+    }
+    
+    /**
+     * Metodo que se encarga de la generación de nomina en pdf, y que tambíne exportara la nomina extra,
+     * si esto fuese necesario.
+     */
+    private void generarModeloPdf() {
+        modelopdf = new ModeloPDF(nomina);
+        modelopdf.generarPDF();
     }
      
 }

@@ -146,8 +146,7 @@ public class Controlador {
             System.out.println(next.toString());
             GeneradorNomina nominaT = new GeneradorNomina(next, fechaNomina);
             System.out.println("Nomina generada: " + nominaT.generarNomina());
-            ModeloPDF modelopdf = new ModeloPDF(nominaT.getNomina());
-            modelopdf.generarPDF();
+            
             break;
        }
         System.out.println("FIN DE LA EJECUCCION.");
