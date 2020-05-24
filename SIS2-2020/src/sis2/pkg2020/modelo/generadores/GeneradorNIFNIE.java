@@ -1,10 +1,10 @@
 package sis2.pkg2020.modelo.generadores;
 
-import com.sun.xml.internal.ws.developer.Serialization;
-import sis2.pkg2020.controlador.ExcelCrud;
+
+
 import sis2.pkg2020.vista.ModeloXML;
 import sis2.pkg2020.modelo.Trabajadorbbdd;
-import sis2.pkg2020.modelo.enums.TipoColumnasHoja1;
+
 
 /**
  * Clase que se encarga de la validación y correción de los errores en el nif y

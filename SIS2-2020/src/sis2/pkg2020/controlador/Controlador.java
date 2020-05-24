@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import sis2.pkg2020.modelo.generadores.GeneradorNomina;
+import sis2.pkg2020.vista.ModeloPDF;
 
 /**
  *
@@ -137,15 +138,17 @@ public class Controlador {
         return excel;
     }
 
-    private void practica4(ExcelCrud excel, String fechaNomina) {
+    private void practica4(ExcelCrud excel, String fechaNomina) throws IOException{
         HashSet<Trabajadorbbdd> trabajadores = excel.getCleanTrabajadores();
 
         for (Iterator<Trabajadorbbdd> iterator = trabajadores.iterator(); iterator.hasNext();) {
             Trabajadorbbdd next = iterator.next();
             System.out.println(next.toString());
-           GeneradorNomina nominaT = new GeneradorNomina(next, fechaNomina);
-           System.out.println("Nomina generada: " + nominaT.generarNomina());
-           break;
+            GeneradorNomina nominaT = new GeneradorNomina(next, fechaNomina);
+            System.out.println("Nomina generada: " + nominaT.generarNomina());
+            ModeloPDF modelopdf = new ModeloPDF(nominaT.getNomina());
+            modelopdf.generarPDF();
+            break;
        }
         System.out.println("FIN DE LA EJECUCCION.");
     }
@@ -162,27 +165,27 @@ public class Controlador {
         String fechaNomina = null;
         return "12/2019";
         
-        while (!bandera) {
-            fechaNomina = teclado.nextLine();
-            Pattern pat = Pattern.compile("\\d{2}/\\d{4}");
-            Matcher mat = pat.matcher(fechaNomina);
-            if (mat.matches()) {
-                int mes = Integer.valueOf(fechaNomina.substring(0, 2));
-                int anio = Integer.valueOf(fechaNomina.substring(3, 7));
-                if ((mes > 12 || mes < 1) || (anio < 1990 || anio > 2070)) {
-                    System.out.println(ANSI_RED + "Intentelo de nuevo..." + ANSI_RESET);
-                    return recogerFechaConExpresionRegular();
+//        while (!bandera) {
+//            fechaNomina = teclado.nextLine();
+//            Pattern pat = Pattern.compile("\\d{2}/\\d{4}");
+//            Matcher mat = pat.matcher(fechaNomina);
+//            if (mat.matches()) {
+//                int mes = Integer.valueOf(fechaNomina.substring(0, 2));
+//                int anio = Integer.valueOf(fechaNomina.substring(3, 7));
+//                if ((mes > 12 || mes < 1) || (anio < 1990 || anio > 2070)) {
+//                    System.out.println(ANSI_RED + "Intentelo de nuevo..." + ANSI_RESET);
+//                    return recogerFechaConExpresionRegular();
+//
+//                }
+//                bandera = true;
+//            } else {
+//                System.out.println(ANSI_RED + "Intentelo de nuevo..." + ANSI_RESET);
+//
+//            }
+//
+//        }
 
-                }
-                bandera = true;
-            } else {
-                System.out.println(ANSI_RED + "Intentelo de nuevo..." + ANSI_RESET);
-
-            }
-
-        }
-
-        return fechaNomina;
+       //return fechaNomina;
     }
 
 }

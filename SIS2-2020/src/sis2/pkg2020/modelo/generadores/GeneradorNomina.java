@@ -57,9 +57,7 @@ public class GeneradorNomina {
     public GeneradorNomina(Trabajadorbbdd trabajador, String fechaNomina) {
 
         this.trabajador = trabajador;
-       
         this.fechaNomina = fechaNomina;
-
         //Parte trabajador
         this.fechaContratacion = this.trabajador.getFechaAlta();
         this.salarioBase = trabajador.getCategorias().getSalarioBaseCategoria();
@@ -848,7 +846,16 @@ public class GeneradorNomina {
         System.out.println("****************************************************************\n");
         System.out.printf("\u001B[36m" + "\t\tCoste TOTAL empresario:   %.2f  \n" + "\u001B[0m", nomina.getCosteTotalEmpresario());
         System.out.println("****************************************************************\n");
-         System.out.printf("\u001B[31m" + "\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", costeTotalTrabajador);
-           System.out.println("****************************************************************\n");
+        System.out.printf("\u001B[31m" + "\t\tCOSTE TOTAL TRABAJADOR :    %.2f\n" + "\u001B[0m", costeTotalTrabajador);
+        System.out.println("****************************************************************\n");
      }
+
+    public Nomina getNomina() {
+        return nomina;
+    }
+
+    public void setNomina(Nomina nomina) {
+        this.nomina = nomina;
+    }
+     
 }
