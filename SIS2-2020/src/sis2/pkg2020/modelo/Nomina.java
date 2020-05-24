@@ -13,6 +13,7 @@ public class Nomina  implements java.io.Serializable {
      private Trabajadorbbdd trabajadorbbdd;
      private int mes;
      private int anio;
+     private int dia;
      private int numeroTrienios;
      private Double importeTrienios;
      private Double importeSalarioMes;
@@ -366,6 +367,16 @@ public class Nomina  implements java.io.Serializable {
         return "Nomina{"+ trabajadorbbdd.getNombre() + " "+ trabajadorbbdd.getApellido1() + " "+ trabajadorbbdd.getApellido2() + ", mes=" + mes + ", anio=" + anio + ", numeroTrienios=" + numeroTrienios + ", importeTrienios=" + importeTrienios + ", importeSalarioMes=" + importeSalarioMes + ", importeComplementoMes=" + importeComplementoMes + ", valorProrrateo=" + valorProrrateo + ", brutoAnual=" + brutoAnual + ", irpf=" + irpf + ", importeIrpf=" + importeIrpf + ", baseEmpresario=" + baseEmpresario + ", seguridadSocialEmpresario=" + seguridadSocialEmpresario + ", importeSeguridadSocialEmpresario=" + importeSeguridadSocialEmpresario + ", desempleoEmpresario=" + desempleoEmpresario + ", importeDesempleoEmpresario=" + importeDesempleoEmpresario + ", formacionEmpresario=" + formacionEmpresario + ", importeFormacionEmpresario=" + importeFormacionEmpresario + ", accidentesTrabajoEmpresario=" + accidentesTrabajoEmpresario + ", importeAccidentesTrabajoEmpresario=" + importeAccidentesTrabajoEmpresario + ", fogasaempresario=" + fogasaempresario + ", importeFogasaempresario=" + importeFogasaempresario + ", seguridadSocialTrabajador=" + seguridadSocialTrabajador + ", importeSeguridadSocialTrabajador=" + importeSeguridadSocialTrabajador + ", desempleoTrabajador=" + desempleoTrabajador + ", importeDesempleoTrabajador=" + importeDesempleoTrabajador + ", formacionTrabajador=" + formacionTrabajador + ", importeFormacionTrabajador=" + importeFormacionTrabajador + ", brutoNomina=" + brutoNomina + ", liquidoNomina=" + liquidoNomina + ", costeTotalEmpresario=" + costeTotalEmpresario + '}';
 //       return trabajadorbbdd.getNombre();
     }
+
+    public int getDia() {
+        return dia;
+    }
+
+    public void setDia(int dia) {
+        this.dia = dia;
+    }
+
+   
 
    
 
